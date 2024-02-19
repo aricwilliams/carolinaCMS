@@ -7,6 +7,7 @@ import Loadable from 'ui-component/Loadable';
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const Crew = Loadable(lazy(() => import('views/Crew')));
+const CrewMessage = Loadable(lazy(() => import('views/CrewMessage')));
 const CustomerDashboard = Loadable(lazy(() => import('views/CustomerDashboard/index')));
 
 // utilities routing
@@ -36,6 +37,11 @@ const MainRoutes = {
     {
       path: '/CrewPage',
     element: <Crew />
+      
+    },
+    {
+      path: '/CrewMessage',
+    element: <CrewMessage />
       
     },
     {

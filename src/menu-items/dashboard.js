@@ -26,6 +26,13 @@ const dashboard = {
       icon: icons.IconDashboard,
     },
     {
+      id: 'default2',
+      title: 'Crew Message',
+      type: 'item',
+      url: '/CrewMessage',
+      icon: icons.IconDashboard,
+    },
+    {
       id: 'login3a',
       title: 'Login',
       type: 'item',

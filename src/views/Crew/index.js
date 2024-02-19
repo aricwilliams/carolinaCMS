@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Grid, Typography, Avatar, IconButton } from '@mui/material';
-import { Facebook, Twitter, LinkedIn, Instagram } from '@mui/icons-material';
+// import { Facebook, Twitter, LinkedIn, Instagram } from '@mui/icons-material';
 import Paper from '@mui/material/Paper';
-
+import SendIcon from '@mui/icons-material/Send';
 const teamMembers = [
   { name: 'John Doe', title: 'Team Leader', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
   { name: 'Alice Smith', title: 'Lawn Technician', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
@@ -16,19 +16,18 @@ const team2Members = [
   { name: 'Olivia Martinez', title: 'Equipment Operator', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
 ];
 
-const socialIcons = {
-  Facebook: <Facebook />,
-  Twitter: <Twitter />,
-  LinkedIn: <LinkedIn />,
-  Instagram: <Instagram />,
-};
+// const socialIcons = {
+//  Message: <SendIcon/>
+// };
 
 const Crew = () => {
   return (
     <>
     <Paper elevation={3} sx={{ flexGrow: 1, p:2 }}>
       <Typography variant="h4" gutterBottom component="div">
-       Team 1
+       Team 1 <IconButton color="primary">
+                    <SendIcon/>
+                  </IconButton>
       </Typography>
       <Grid container spacing={4} justifyContent="center">
         {teamMembers.map((member, index) => (
@@ -42,11 +41,14 @@ const Crew = () => {
               <Typography variant="h6">{member.name}</Typography>
               <Typography variant="body2">{member.title}</Typography>
               <Box>
-                {member.social.map((network) => (
+                {/* {member.social.map((network) => (
                   <IconButton key={network} color="primary">
                     {socialIcons[network]}
                   </IconButton>
-                ))}
+                ))} */}
+                <IconButton color="primary">
+                    <SendIcon/>
+                  </IconButton>
               </Box>
             </Box>
           </Grid>
@@ -55,7 +57,9 @@ const Crew = () => {
     </Paper>
       <Paper elevation={3} sx={{ flexGrow: 1, my:2, p:2 }}>
       <Typography variant="h4" gutterBottom component="div">
-        Team 2
+        Team 2 <IconButton color="primary">
+                    <SendIcon/>
+                  </IconButton>
       </Typography>
       <Grid container spacing={4} justifyContent="center">
         {team2Members.map((member, index) => (
@@ -69,11 +73,14 @@ const Crew = () => {
               <Typography variant="h6">{member.name}</Typography>
               <Typography variant="body2">{member.title}</Typography>
               <Box>
-                {member.social.map((network) => (
+                {/* {member.social.map((network) => (
                   <IconButton key={network} color="primary">
                     {socialIcons[network]}
                   </IconButton>
-                ))}
+                ))} */}
+                   <IconButton color="primary">
+                    <SendIcon/>
+                  </IconButton>
               </Box>
             </Box>
           </Grid>
