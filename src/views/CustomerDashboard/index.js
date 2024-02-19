@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { users } from '../../../src/Util';
+import { users } from '../../Util';
 
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all'); // State to track the selected date filter

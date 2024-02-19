@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-// import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
@@ -14,7 +14,6 @@ import Customization from '../Customization';
 import { drawerWidth } from 'store/constant';
 import { SET_MENU } from 'store/actions';
 // import Dashboard from 'views/dashboard/Default';
-import CustomerDashboard from 'ui-component/CustomerDashboard';
 // assets
 // import { IconChevronRight } from '@tabler/icons-react';
 
@@ -89,9 +88,8 @@ const MainLayout = () => {
       {/* main content */}
       <Main theme={theme} open={leftDrawerOpened}>
         {/* breadcrumb */}
-        {/* <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
-        <Outlet /> */}
-        <CustomerDashboard />
+        {/* <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />*/}
+        <Outlet /> 
       </Main>
       <Customization />
     </Box>
