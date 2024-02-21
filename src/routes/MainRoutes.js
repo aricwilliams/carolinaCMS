@@ -9,7 +9,7 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')))
 const Crew = Loadable(lazy(() => import('views/Crew')));
 const CrewMessage = Loadable(lazy(() => import('views/CrewMessage')));
 const CustomerDashboard = Loadable(lazy(() => import('views/CustomerDashboard/index')));
-
+const ColorUtility= Loadable(lazy(() => import('views/ColorUtility/index')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -42,6 +42,11 @@ const MainRoutes = {
     {
       path: '/CrewMessage',
     element: <CrewMessage />
+      
+    },
+    {
+      path: '/ColorUtility',
+    element: <ColorUtility />
       
     },
     {

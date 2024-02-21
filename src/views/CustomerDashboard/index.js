@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { List, ListItem, ListItemText, ListItemSecondaryAction, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { users } from '../../Util';
+import { EditBTNStyle, DeleteBTNStyle } from '../../Util';
+
 
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all'); // State to track the selected date filter
@@ -21,7 +23,7 @@ function RecentUsersList() {
     const differenceInDays = Math.ceil((date - currentDate) / (1000 * 60 * 60 * 24));
 
     if (differenceInDays <= 0) {
-      return 'red'; // Past date
+      return '#f6f0fd'; // Past date
     } else if (differenceInDays <= 3) {
       return '#d1f9ff'; // Within 3 days
     } else {
@@ -107,10 +109,10 @@ function RecentUsersList() {
                 style={{ margin: 0 }}
               />
               <ListItemSecondaryAction>
-                <Button color="secondary" variant="contained" style={{ marginRight: 8 }}>
+                <Button color="secondary" variant="contained"  style={EditBTNStyle}>
                   Edit
                 </Button>
-                <Button color="error" variant="contained">
+                <Button color="error" variant="contained" style={DeleteBTNStyle}>
                   Delete
                 </Button>
               </ListItemSecondaryAction>

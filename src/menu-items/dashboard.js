@@ -26,7 +26,7 @@ const dashboard = {
       icon: icons.IconDashboard,
     },
     {
-      id: 'default2',
+      id: 'default6',
       title: 'Crew Message',
       type: 'item',
       url: '/CrewMessage',
@@ -39,6 +39,13 @@ const dashboard = {
       url: '/login',
       icon: icons.IconDashboard,
       target: true
+    },
+    {
+      id: 'default5',
+      title: 'Color Utility',
+      type: 'item',
+      url: '/ColorUtility',
+      icon: icons.IconDashboard,
     },
   
   ]
