@@ -1,7 +1,7 @@
 
 export const EditBTNStyle = {
   name: 'Edit Button',
-  backgroundImage: 'linear-gradient(45deg, #ADD8E6, #87CEFA)',
+  backgroundImage: 'linear-gradient(45deg, #1E90FF, #0000FF)',
   color: 'white',
   marginRight: 8,
 };
