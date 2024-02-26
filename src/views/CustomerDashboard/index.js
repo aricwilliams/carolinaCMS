@@ -11,11 +11,17 @@ import {
   InputLabel,
   Modal,
   Box,
-  Typography
+  Typography,
+  Grid
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { users } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
+// import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
@@ -23,6 +29,46 @@ function RecentUsersList() {
   const [frequencyFilter, setFrequencyFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState(null); // State to track the selected user
   const [openModal, setOpenModal] = useState(false); // State to manage modal open/close
+  const [EquipmentCheckedIn, setEquipmentCheckedIn] = useState(false);
+  const [selectedEquipment, setSelectedEquipment] = useState('');
+  const [invoicePaid, setInvoicePaid] = useState(false);
+  const equipmentList = [
+    { id: 1, name: 'Lawn Mower' },
+    { id: 2, name: 'Hedge Trimmer' },
+    { id: 3, name: 'Leaf Blower' },
+    { id: 4, name: 'String Trimmer (Weed Eater)' },
+    { id: 5, name: 'Chainsaw' },
+    { id: 6, name: 'Garden Shears' },
+    { id: 7, name: 'Pruning Saw' },
+    { id: 8, name: 'Rakes (Leaf, Garden, Lawn)' },
+    { id: 9, name: 'Shovels (Round, Square, Digging)' },
+    { id: 10, name: 'Wheelbarrow' },
+    { id: 11, name: 'Garden Hoe' },
+    { id: 12, name: 'Trowel' },
+    { id: 13, name: 'Mattock' },
+    { id: 14, name: 'Loppers' },
+    { id: 15, name: 'Cultivator' },
+    { id: 16, name: 'Sprinklers' },
+    { id: 17, name: 'Garden Fork' },
+    { id: 18, name: 'Mulching Lawn Mower' },
+    { id: 19, name: 'Garden Cart' },
+    { id: 20, name: 'Edger' },
+    { id: 21, name: 'Tiller' },
+    { id: 22, name: 'Watering Can' },
+    { id: 23, name: 'Leaf Vacuum' },
+    { id: 24, name: 'Pressure Washer' },
+    { id: 25, name: 'Garden Gloves' },
+    { id: 26, name: 'Kneeling Pad' },
+    { id: 27, name: 'Garden Sprayer' },
+    { id: 28, name: 'Soil pH Tester' },
+    { id: 29, name: 'Wheel Edger' },
+    { id: 30, name: 'Manual Lawn Aerator' }
+    // Add more equipment items as needed
+  ];
+
+  const handleEquipmentChange = (event) => {
+    setSelectedEquipment(event.target.value);
+  };
 
   const toolsByServiceItem = {
     Multch: ['Lawnmower', 'Rake', 'Shovel', 'Wheelbarrow'],
@@ -64,6 +110,17 @@ function RecentUsersList() {
     setFrequencyFilter('all');
   };
 
+  const handleToggleChange = (event) => {
+    setEquipmentCheckedIn(event.target.checked);
+
+    // Perform any other actions here when the toggle is toggled
+  };
+
+  const handleInvoicePaid = (event) => {
+    setInvoicePaid(event.target.checked);
+
+    // Perform any other actions here when the toggle is toggled
+  };
   const filterUsers = (user) => {
     const date = new Date(user.date);
     const currentDate = new Date();
@@ -86,6 +143,11 @@ function RecentUsersList() {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleAddress = () => {
+    const address = '6537 castlebrook way shallotte nc'; // specify the address here
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
   };
 
   return (
@@ -174,19 +236,222 @@ function RecentUsersList() {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 400,
+            width: 900,
             bgcolor: 'background.paper',
             boxShadow: 24,
-            p: 4
+            p: 4,
+            maxHeight: '80vh', // Set maximum height
+            overflowY: 'auto' // Allow vertical scrolling
           }}
         >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            {selectedUser && selectedUser.serviceItem} Details
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {/* Display associated landscaping tools */}
-            {selectedUser && toolsByServiceItem[selectedUser.serviceItem]?.map((tool, index) => <div key={index}>{tool}</div>)}
-          </Typography>
+          <Grid container spacing={0.5}>
+            <Grid item xs={4}>
+              <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  style={{
+                    fontFamily: 'Quicksand, Verdana, sans-serif',
+                    fontWeight: 700,
+                    fontSize: '19px',
+                    lineHeight: '23px',
+                    color: 'black'
+                  }}
+                >
+                  {selectedUser && selectedUser.serviceItem} Details
+                </Typography>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {EquipmentCheckedIn ? (
+                    <>
+                      Hector Checked In Equipment
+                      <CheckCircleIcon
+                        style={{
+                          color: 'blue'
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      No one has Checked In Equipment
+                      <DoNotDisturbIcon
+                        style={{
+                          color: 'red'
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
+                <Typography
+                  variant="h5" // You can adjust the variant to match the desired size and weight.
+                  component="h2"
+                  style={{
+                    fontFamily: 'Nunito Sans, Arial, sans-serif',
+                    fontWeight: 400,
+                    color: 'rgb(98, 108, 114)',
+                    fontSize: '14px',
+                    lineHeight: '26px'
+                  }}
+                >
+                  {selectedUser && toolsByServiceItem[selectedUser.serviceItem]?.map((tool, index) => <div key={index}>{tool}</div>)}{' '}
+                </Typography>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={4}>
+              <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>
+                <div>
+                  <FormControl fullWidth>
+                    <InputLabel id="equipment-label">Add More Equipment?</InputLabel>
+                    <br />
+                    <Select labelId="equipment-label" id="equipment-select" value={selectedEquipment} onChange={handleEquipmentChange}>
+                      <MenuItem value="">None</MenuItem>
+                      {equipmentList.map((equipment) => (
+                        <MenuItem key={equipment.id} value={equipment.name}>
+                          {equipment.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <p>Selected Equipment: {selectedEquipment}</p>
+                </div>
+                <FormControlLabel
+                  control={<Switch checked={EquipmentCheckedIn} onChange={handleToggleChange} color="primary" />}
+                  label="Equipment Ready to go?"
+                />
+              </Paper>
+            </Grid>
+            <Grid item xs={4}>
+              <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  style={{
+                    fontFamily: 'Quicksand, Verdana, sans-serif',
+                    fontWeight: 700,
+                    fontSize: '19px',
+                    lineHeight: '23px',
+                    color: 'black'
+                  }}
+                >
+                  Who is on the Job?
+                </Typography>
+
+                <Typography
+                  variant="h5" // You can adjust the variant to match the desired size and weight.
+                  component="h2"
+                  style={{
+                    fontFamily: 'Nunito Sans, Arial, sans-serif',
+                    fontWeight: 400,
+                    color: 'rgb(98, 108, 114)',
+                    fontSize: '14px',
+                    lineHeight: '26px'
+                  }}
+                >
+                  Team#1, <br />
+                  Hecktor <br />
+                  Mike,
+                  <br /> Ray <br />
+                  Sam
+                </Typography>
+                <Button variant="contained">Edit</Button>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}>
+              <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  style={{
+                    fontFamily: 'Quicksand, Verdana, sans-serif',
+                    fontWeight: 700,
+                    fontSize: '19px',
+                    lineHeight: '23px',
+                    color: 'black'
+                  }}
+                >
+                  Invoice Paid?
+                </Typography>
+                <Typography
+                  variant="h5" // You can adjust the variant to match the desired size and weight.
+                  component="h2"
+                  style={{
+                    fontFamily: 'Nunito Sans, Arial, sans-serif',
+                    fontWeight: 400,
+                    color: 'rgb(98, 108, 114)',
+                    fontSize: '14px',
+                    lineHeight: '26px'
+                  }}
+                >
+                  <FormControlLabel control={<Switch checked={invoicePaid} onChange={handleInvoicePaid} color="primary" />} label="Paid?" />
+
+                  {invoicePaid ? (
+                    <React.Fragment>
+                      Yes
+                      <CheckCircleIcon style={{ color: 'blue' }} />
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      No
+                      <DoNotDisturbIcon style={{ color: 'red' }} />
+                    </React.Fragment>
+                  )}
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}>
+              <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  style={{
+                    fontFamily: 'Quicksand, Verdana, sans-serif',
+                    fontWeight: 700,
+                    fontSize: '19px',
+                    lineHeight: '23px',
+                    color: 'black'
+                  }}
+                >
+                  Customer notes
+                </Typography>
+                <Typography
+                  variant="h5" // You can adjust the variant to match the desired size and weight.
+                  component="h2"
+                  style={{
+                    fontFamily: 'Nunito Sans, Arial, sans-serif',
+                    fontWeight: 400,
+                    color: 'rgb(98, 108, 114)',
+                    fontSize: '14px',
+                    lineHeight: '26px'
+                  }}
+                >
+                  Dont cut the grass too short
+                  <br /> Dont cut my Dam Roses <br /> I will write a check
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={4}>
+              <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  style={{
+                    fontFamily: 'Quicksand, Verdana, sans-serif',
+                    fontWeight: 700,
+                    fontSize: '19px',
+                    lineHeight: '23px',
+                    color: 'black'
+                  }}
+                >
+                  Get Directions?
+                </Typography>
+
+                <Button variant="contained" onClick={() => handleAddress()}>
+                  Get Directions to {location.label}
+                </Button>
+              </Paper>
+            </Grid>
+          </Grid>
         </Box>
       </Modal>
     </div>

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
+import DeleteIcon from '@mui/icons-material/Delete';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -14,12 +14,10 @@ import {
   ClickAwayListener,
   Divider,
   Grid,
-  InputAdornment,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  OutlinedInput,
   Paper,
   Popper,
   Stack,
@@ -33,11 +31,10 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import UpgradePlanCard from './UpgradePlanCard';
 import User1 from 'assets/images/users/user-round.svg';
 
 // assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons-react';
+import { IconLogout, IconSettings } from '@tabler/icons-react';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -46,9 +43,6 @@ const ProfileSection = () => {
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
 
-  const [sdm, setSdm] = useState(true);
-  const [value, setValue] = useState('');
-  const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
   /**
@@ -87,6 +81,28 @@ const ProfileSection = () => {
     prevOpen.current = open;
   }, [open]);
 
+  const initialData = [
+    { id: 1, label: 'John', checked: true },
+    { id: 2, label: 'Emma', checked: true },
+    { id: 3, label: 'Michael', checked: true },
+    { id: 4, label: 'Sophia', checked: true },
+    { id: 5, label: 'William', checked: true },
+    { id: 6, label: 'Olivia', checked: true },
+    { id: 7, label: 'James', checked: true },
+    { id: 8, label: 'Ava', checked: true },
+    { id: 9, label: 'Alexander', checked: true },
+    { id: 10, label: 'Mia', checked: true },
+    { id: 11, label: 'Benjamin', checked: true },
+    { id: 12, label: 'Charlotte', checked: true }
+  ];
+
+  // State to store the data
+  const [data, setData] = useState(initialData);
+
+  // Toggle switch handler
+  const handleSwitchToggle = (id) => {
+    setData((prevState) => prevState.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item)));
+  };
   return (
     <>
       <Chip
@@ -159,32 +175,14 @@ const ProfileSection = () => {
                       <Stack direction="row" spacing={0.5} alignItems="center">
                         <Typography variant="h4">Good Morning,</Typography>
                         <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          Johne Doe
+                          John Dale
                         </Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
+                      <Typography variant="subtitle2">Master Admin</Typography>
                     </Stack>
-                    <OutlinedInput
-                      sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
-                      id="input-search-profile"
-                      value={value}
-                      onChange={(e) => setValue(e.target.value)}
-                      placeholder="Search profile options"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
-                        </InputAdornment>
-                      }
-                      aria-describedby="search-helper-text"
-                      inputProps={{
-                        'aria-label': 'weight'
-                      }}
-                    />
-                    <Divider />
                   </Box>
                   <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                     <Box sx={{ p: 2 }}>
-                      <UpgradePlanCard />
                       <Divider />
                       <Card
                         sx={{
@@ -194,37 +192,24 @@ const ProfileSection = () => {
                       >
                         <CardContent>
                           <Grid container spacing={3} direction="column">
-                            <Grid item>
-                              <Grid item container alignItems="center" justifyContent="space-between">
-                                <Grid item>
-                                  <Typography variant="subtitle1">Start DND Mode</Typography>
-                                </Grid>
-                                <Grid item>
-                                  <Switch
-                                    color="primary"
-                                    checked={sdm}
-                                    onChange={(e) => setSdm(e.target.checked)}
-                                    name="sdm"
-                                    size="small"
-                                  />
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                            <Grid item>
-                              <Grid item container alignItems="center" justifyContent="space-between">
-                                <Grid item>
-                                  <Typography variant="subtitle1">Allow Notifications</Typography>
-                                </Grid>
-                                <Grid item>
-                                  <Switch
-                                    checked={notification}
-                                    onChange={(e) => setNotification(e.target.checked)}
-                                    name="sdm"
-                                    size="small"
-                                  />
+                            {data.map((item) => (
+                              <Grid item key={item.id}>
+                                <Grid container alignItems="center" justifyContent="space-between">
+                                  <Grid item>
+                                    <Typography variant="subtitle1">{item.label}</Typography>
+                                  </Grid>
+                                  <Grid item>
+                                    <Switch
+                                      color="primary"
+                                      checked={item.checked}
+                                      onChange={() => handleSwitchToggle(item.id)}
+                                      name={`switch-${item.id}`}
+                                      size="small"
+                                    />
+                                  </Grid>
                                 </Grid>
                               </Grid>
-                            </Grid>
+                            ))}
                           </Grid>
                         </CardContent>
                       </Card>
@@ -251,11 +236,11 @@ const ProfileSection = () => {
                           onClick={(event) => handleListItemClick(event, 0, '#')}
                         >
                           <ListItemIcon>
-                            <IconSettings stroke={1.5} size="1.3rem" />
+                            <DeleteIcon stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
-                          <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
+                          <ListItemText primary={<Typography variant="body2">Trash Ben</Typography>} />
                         </ListItemButton>
-                        <ListItemButton
+                        {/* <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 1}
                           onClick={(event) => handleListItemClick(event, 1, '#')}
@@ -281,8 +266,8 @@ const ProfileSection = () => {
                                 </Grid>
                               </Grid>
                             }
-                          />
-                        </ListItemButton>
+                          /> 
+                        </ListItemButton> */}
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 4}

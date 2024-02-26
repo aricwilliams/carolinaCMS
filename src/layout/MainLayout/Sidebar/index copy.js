@@ -3,21 +3,9 @@ import React, { useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import {
-  Box,
-  Drawer,
-  useMediaQuery,
-  Modal,
-  Grid,
-  Paper,
-  Button,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  TextField,
-  Stack
-} from '@mui/material';
+import { Box, Drawer, useMediaQuery } from '@mui/material';
+import { Grid, Paper, Button, Typography, List, ListItem, ListItemText, TextField, Stack } from '@mui/material';
+// import { EditBTNStyle } from '../../../Util';
 
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -26,13 +14,12 @@ import { BrowserView, MobileView } from 'react-device-detect';
 // project imports
 import MenuList from './MenuList';
 import LogoSection from '../LogoSection';
+// import MenuCard from './MenuCard';
 import { drawerWidth } from 'store/constant';
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
 const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState(null);
   const [recentActivities, setRecentActivities] = useState([
     { text: 'Completed mowing the lawn at the Johnson residence' },
     { text: 'Trimmed bushes and hedges at the Smith property' },
@@ -40,33 +27,8 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
     { text: 'Pruned trees in the park for the city council' }
   ]);
   const [newActivity, setNewActivity] = useState('');
-
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
-  const handleEditActivity = (activity) => {
-    setSelectedActivity(activity);
-    handleOpenModal();
-  };
-
-  const handleSaveEdit = () => {
-    // Update the recent activities list with the edited activity
-    setRecentActivities(
-      recentActivities.map((activity) => (activity === selectedActivity ? { ...activity, text: selectedActivity.text } : activity))
-    );
-    setSelectedActivity(null);
-    handleCloseModal();
-  };
-
-  const handleDeleteActivity = (activity) => {
-    // Remove the selected activity from the recent activities list
-    setRecentActivities(recentActivities.filter((act) => act !== activity));
-  };
+  const [editIndex, setEditIndex] = useState(null);
+  const [editedText, setEditedText] = useState('');
 
   const handleAddActivity = () => {
     if (newActivity.trim() !== '') {
@@ -75,12 +37,31 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
     }
   };
 
+  const handleDeleteActivity = (index) => {
+    const updatedActivities = [...recentActivities];
+    updatedActivities.splice(index, 1);
+    setRecentActivities(updatedActivities);
+  };
+
+  const handleEditActivity = (index) => {
+    setEditIndex(index);
+    setEditedText(recentActivities[index].text);
+  };
+
+  const handleSaveEdit = () => {
+    if (editedText.trim() !== '') {
+      const updatedActivities = [...recentActivities];
+      updatedActivities[editIndex].text = editedText;
+      setRecentActivities(updatedActivities);
+      setEditIndex(null);
+    }
+  };
+
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
 
   const drawer = (
     <>
-      {/* Sidebar content */}
       <Box sx={{ display: { xs: 'block', md: 'none' } }}>
         <Box sx={{ display: 'flex', p: 2, mx: 'auto' }}>
           <LogoSection />
@@ -96,6 +77,10 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
           }}
         >
           <MenuList />
+          {/* <MenuCard />
+          <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
+            <Chip label={process.env.REACT_APP_VERSION} disabled chipcolor="secondary" size="small" sx={{ cursor: 'pointer' }} />
+          </Stack> */}
           <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ padding: 2 }}>
               <Typography variant="h6">To Do List</Typography>
@@ -104,13 +89,24 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                   <List>
                     <ListItem>
                       <Stack direction="column">
-                        <ListItemText primary={activity.text} />
-                        <Button color="secondary" onClick={() => handleEditActivity(activity)}>
-                          Edit
-                        </Button>
-                        <Button color="secondary" onClick={() => handleDeleteActivity(activity)}>
-                          Delete
-                        </Button>
+                        {editIndex === index ? (
+                          <>
+                            <TextField value={editedText} onChange={(e) => setEditedText(e.target.value)} autoFocus />
+                            <Button color="primary" onClick={handleSaveEdit}>
+                              Save
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <ListItemText primary={activity.text} />
+                            <Button color="secondary" onClick={() => handleEditActivity(index)}>
+                              Edit
+                            </Button>
+                            <Button color="secondary" onClick={() => handleDeleteActivity(index)}>
+                              Delete
+                            </Button>
+                          </>
+                        )}
                       </Stack>
                     </ListItem>
                   </List>
@@ -133,6 +129,10 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
       <MobileView>
         <Box sx={{ px: 2 }}>
           <MenuList />
+          {/* <MenuCard />
+          <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
+            <Chip label={process.env.REACT_APP_VERSION} disabled chipcolor="secondary" size="small" sx={{ cursor: 'pointer' }} />
+          </Stack> */}
         </Box>
       </MobileView>
     </>
@@ -164,51 +164,6 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
       >
         {drawer}
       </Drawer>
-      {/* Modal for editing activities */}
-      <Modal open={modalOpen} onClose={handleCloseModal} aria-labelledby="modal-title" aria-describedby="modal-description">
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-            maxWidth: '80vw',
-            maxHeight: '80vh',
-            overflow: 'auto'
-          }}
-        >
-          {selectedActivity && (
-            <>
-              <Typography variant="h6" id="modal-title" gutterBottom>
-                Edit Activity
-              </Typography>
-              <TextField
-                id="edit-activity"
-                label="Activity"
-                multiline
-                fullWidth
-                rows={4}
-                value={selectedActivity.text}
-                onChange={(e) => setSelectedActivity({ ...selectedActivity, text: e.target.value })}
-              />
-              <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                <Button variant="contained" onClick={handleSaveEdit}>
-                  Save
-                </Button>
-                <Button variant="contained" onClick={handleCloseModal}>
-                  Cancel
-                </Button>
-                <Button variant="contained" onClick={() => handleDeleteActivity(selectedActivity)}>
-                  Delete
-                </Button>
-              </Stack>
-            </>
-          )}
-        </Box>
-      </Modal>
     </Box>
   );
 };

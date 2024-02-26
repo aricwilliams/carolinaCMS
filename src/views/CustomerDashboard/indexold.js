@@ -1,13 +1,38 @@
 import React, { useState } from 'react';
-import { List, ListItem, ListItemText, ListItemSecondaryAction, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Modal,
+  Box,
+  Typography
+} from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { users } from '../../Util';
+import { users } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 function RecentUsersList() {
-  const [dateFilter, setDateFilter] = useState('all'); // State to track the selected date filter
-  const [serviceFilter, setServiceFilter] = useState('all'); // State to track the selected serviceItem filter
-  const [frequencyFilter, setFrequencyFilter] = useState('all'); // State to track the selected service frequency filter
+  const [dateFilter, setDateFilter] = useState('all');
+  const [serviceFilter, setServiceFilter] = useState('all');
+  const [frequencyFilter, setFrequencyFilter] = useState('all');
+  const [selectedUser, setSelectedUser] = useState(null); // State to track the selected user
+  const [openModal, setOpenModal] = useState(false); // State to manage modal open/close
+  const [EquipmentCheckedIn, setEquipmentCheckedIn] = useState(false);
+  const toolsByServiceItem = {
+    Multch: ['Lawnmower', 'Rake', 'Shovel', 'Wheelbarrow'],
+    Sod: ['Turf Cutter', 'Spade', 'Trowel', 'Lawn Roller'],
+    BasicPackage: ['Lawnmower', 'Hedge Trimmer', 'Leaf Blower', 'Pruning Shears'],
+    Irrigation: ['Trencher', 'Pipe Cutter', 'Sprinkler Heads', 'Valves'],
+    None: [] // No tools needed for prospect users
+  };
 
   const handleDateChange = (event) => {
     setDateFilter(event.target.value);
@@ -56,8 +81,18 @@ function RecentUsersList() {
     return dateFilterCondition && serviceFilterCondition && frequencyFilterCondition;
   };
 
+  const handleOpenModal = (user) => {
+    setSelectedUser(user);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
   return (
     <div>
+      {/* Filter Controls */}
       <FormControl sx={{ minWidth: 120, marginRight: 2 }}>
         <InputLabel id="date-filter-label">Date Filter</InputLabel>
         <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Date Filter" onChange={handleDateChange}>
@@ -108,17 +143,20 @@ function RecentUsersList() {
         + Add Job
       </Button>
 
+      {/* User List */}
       <List>
-        {users.filter(filterUsers).map((user, index) => (
+        {users.filter(filterUsers)?.map((user, index) => (
           <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
-            <ListItem>
+            <ListItem button onClick={() => handleOpenModal(user)}>
+              {' '}
+              {/* Open modal on user click */}
               <ListItemText sx={{ width: '20px' }} primary="Name" secondary={`${user.firstName} ${user.lastName}`} />
               <ListItemText sx={{ width: '20px' }} primary="Address" secondary={`${user.address}`} />
               <ListItemText sx={{ width: '20px' }} primary="Service Item" secondary={`${user.serviceItem}`} style={{ margin: 0 }} />
               <ListItemText sx={{ width: '20px' }} primary="Date" secondary={user.date} style={{ margin: 0 }} />
               {/* <ListItemText sx={{ width: '20px' }} primary="Frequency" secondary={user.serviceFrequency} style={{ margin: 0 }} /> */}
               <ListItemSecondaryAction>
-                <Button color="secondary" variant="contained" style={EditBTNStyle}>
+                <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
                   Open
                 </Button>
                 <Button color="secondary" variant="contained" style={EditBTNStyle}>
@@ -129,6 +167,73 @@ function RecentUsersList() {
           </Paper>
         ))}
       </List>
+
+      {/* Modal */}
+      <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4
+          }}
+        >
+          <Paper elevation={3} sx={{ my: 2, p: 2 }}>
+            <Typography
+              variant="h5" // You can adjust the variant to match the desired size and weight.
+              component="h2"
+              style={{
+                fontFamily: 'Quicksand, Verdana, sans-serif',
+                fontWeight: 700, // 700 is equivalent to 'bold'
+                fontSize: '19px',
+                lineHeight: '23px',
+                color: 'black' // This is the RGB color provided.
+              }}
+            >
+              {selectedUser && selectedUser.serviceItem} Details{' '}
+            </Typography>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {EquipmentCheckedIn ? (
+                <>
+                  Hector Checked In Equipment
+                  <CheckCircleIcon
+                    style={{
+                      color: 'blue'
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  No one has Checked In Equipment
+                  <DoNotDisturbIcon
+                    style={{
+                      color: 'red' // Change color to red
+                    }}
+                  />
+                </>
+              )}
+            </div>
+
+            <Typography
+              variant="h5" // You can adjust the variant to match the desired size and weight.
+              component="h2"
+              style={{
+                fontFamily: 'Nunito Sans, Arial, sans-serif',
+                fontWeight: 400,
+                color: 'rgb(98, 108, 114)',
+                fontSize: '14px',
+                lineHeight: '26px'
+              }}
+            >
+              {selectedUser && toolsByServiceItem[selectedUser.serviceItem]?.map((tool, index) => <div key={index}>{tool}</div>)}{' '}
+            </Typography>
+          </Paper>
+        </Box>
+      </Modal>
     </div>
   );
 }
