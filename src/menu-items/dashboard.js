@@ -16,21 +16,21 @@ const dashboard = {
       title: 'Customer Dashboard',
       type: 'item',
       url: '/CustomerDashboard',
-      icon: icons.IconDashboard,
+      icon: icons.IconDashboard
     },
-    {
-      id: 'default2',
-      title: 'Crew Dashboard',
-      type: 'item',
-      url: '/CrewPage',
-      icon: icons.IconDashboard,
-    },
+    // {
+    //   id: 'default2',
+    //   title: 'Crew Dashboard',
+    //   type: 'item',
+    //   url: '/CrewPage',
+    //   icon: icons.IconDashboard,
+    // },
     {
       id: 'default6',
       title: 'Crew Message',
       type: 'item',
       url: '/CrewMessage',
-      icon: icons.IconDashboard,
+      icon: icons.IconDashboard
     },
     {
       id: 'login3a',
@@ -45,9 +45,8 @@ const dashboard = {
       title: 'Color Utility',
       type: 'item',
       url: '/ColorUtility',
-      icon: icons.IconDashboard,
-    },
-  
+      icon: icons.IconDashboard
+    }
   ]
 };
 

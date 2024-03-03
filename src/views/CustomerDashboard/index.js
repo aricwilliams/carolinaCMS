@@ -15,23 +15,33 @@ import {
   Grid
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { users } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
+import { usersServerData } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
+import { teamState } from '../../atom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 // import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import { useRecoilState } from 'recoil';
 
+// useSetRecoilState
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('all');
   const [frequencyFilter, setFrequencyFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState(null); // State to track the selected user
   const [openModal, setOpenModal] = useState(false); // State to manage modal open/close
-  const [EquipmentCheckedIn, setEquipmentCheckedIn] = useState(false);
   const [selectedEquipment, setSelectedEquipment] = useState('');
   const [invoicePaid, setInvoicePaid] = useState(false);
+  const [users, setUsers] = useState(usersServerData);
+  const [teamMembers2] = useRecoilState(teamState);
+  console.log(teamMembers2);
+  const teamMembers = JSON.parse(localStorage.getItem('team'));
+  const [selectedMembers, setSelectedMembers] = useState([]);
+
+  // setTeamMembers
+
   const equipmentList = [
     { id: 1, name: 'Lawn Mower' },
     { id: 2, name: 'Hedge Trimmer' },
@@ -66,8 +76,12 @@ function RecentUsersList() {
     // Add more equipment items as needed
   ];
 
+  // const handleEquipmentChange = (event) => {
+  //   setSelectedEquipment(event.target.value);
+  // };
   const handleEquipmentChange = (event) => {
-    setSelectedEquipment(event.target.value);
+    const newEquipment = event.target.value;
+    setSelectedEquipment((prevSelectedEquipment) => [...prevSelectedEquipment, newEquipment]);
   };
 
   const toolsByServiceItem = {
@@ -110,11 +124,31 @@ function RecentUsersList() {
     setFrequencyFilter('all');
   };
 
-  const handleToggleChange = (event) => {
-    setEquipmentCheckedIn(event.target.checked);
-
-    // Perform any other actions here when the toggle is toggled
+  // const handleToggleChange = (event) => {
+  //   setEquipmentCheckedIn(event.target.checked);
+  // };
+  const handleToggleChange = () => {
+    if (selectedUser) {
+      // Ensure selectedUser is not null
+      setSelectedUser((prevUser) => ({
+        ...prevUser,
+        equipmentReady: !prevUser.equipmentReady // Toggle the value of equipmentReady
+      }));
+      setUsers((prevUsers) => {
+        // Assuming users is an array of user objects
+        return prevUsers.map((user) => {
+          if (user.id === selectedUser.id) {
+            return { ...user, equipmentReady: !selectedUser.equipmentReady };
+          }
+          return user;
+        });
+      });
+    }
   };
+  // const handleToggleChange = () => {
+  //   selectedUser.equipmentReady = !selectedUser.equipmentReady;
+  //   console.log(selectedUser);
+  // };
 
   const handleInvoicePaid = (event) => {
     setInvoicePaid(event.target.checked);
@@ -150,6 +184,13 @@ function RecentUsersList() {
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
   };
 
+  const handleMemberToggle = (memberName) => {
+    if (selectedMembers.includes(memberName)) {
+      setSelectedMembers(selectedMembers.filter((name) => name !== memberName));
+    } else {
+      setSelectedMembers([...selectedMembers, memberName]);
+    }
+  };
   return (
     <div>
       {/* Filter Controls */}
@@ -240,7 +281,7 @@ function RecentUsersList() {
             bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
-            maxHeight: '80vh', // Set maximum height
+            height: '95vh', // Set maximum height
             overflowY: 'auto' // Allow vertical scrolling
           }}
         >
@@ -262,7 +303,7 @@ function RecentUsersList() {
                 </Typography>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {EquipmentCheckedIn ? (
+                  {selectedUser?.equipmentReady ? (
                     <>
                       Hector Checked In Equipment
                       <CheckCircleIcon
@@ -293,14 +334,40 @@ function RecentUsersList() {
                     lineHeight: '26px'
                   }}
                 >
-                  {selectedUser && toolsByServiceItem[selectedUser.serviceItem]?.map((tool, index) => <div key={index}>{tool}</div>)}{' '}
+                  {selectedUser && (
+                    <>
+                      {toolsByServiceItem[selectedUser.serviceItem]?.map((tool, index) => (
+                        <div key={index}>{tool}</div>
+                      ))}
+                      {selectedEquipment && selectedEquipment?.map((equipment, index) => <div key={index}>{equipment}</div>)}
+                      <br />
+                    </>
+                  )}
                 </Typography>
               </Paper>
             </Grid>
 
             <Grid item xs={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>
+                {selectedUser && (
+                  <FormControlLabel
+                    control={<Switch checked={selectedUser.equipmentReady} onChange={() => handleToggleChange()} color="primary" />}
+                    label="Equipment Ready to go?"
+                  />
+                )}
+
                 <div>
+                  <Typography
+                    variant="h5"
+                    component="h2"
+                    style={{
+                      fontFamily: 'Nunito Sans, Arial, sans-serif',
+                      fontWeight: 400,
+                      color: 'rgb(98, 108, 114)',
+                      fontSize: '14px',
+                      lineHeight: '26px'
+                    }}
+                  ></Typography>
                   <FormControl fullWidth>
                     <InputLabel id="equipment-label">Add More Equipment?</InputLabel>
                     <br />
@@ -313,12 +380,7 @@ function RecentUsersList() {
                       ))}
                     </Select>
                   </FormControl>
-                  <p>Selected Equipment: {selectedEquipment}</p>
                 </div>
-                <FormControlLabel
-                  control={<Switch checked={EquipmentCheckedIn} onChange={handleToggleChange} color="primary" />}
-                  label="Equipment Ready to go?"
-                />
               </Paper>
             </Grid>
             <Grid item xs={4}>
@@ -337,24 +399,13 @@ function RecentUsersList() {
                   Who is on the Job?
                 </Typography>
 
-                <Typography
-                  variant="h5" // You can adjust the variant to match the desired size and weight.
-                  component="h2"
-                  style={{
-                    fontFamily: 'Nunito Sans, Arial, sans-serif',
-                    fontWeight: 400,
-                    color: 'rgb(98, 108, 114)',
-                    fontSize: '14px',
-                    lineHeight: '26px'
-                  }}
-                >
-                  Team#1, <br />
-                  Hecktor <br />
-                  Mike,
-                  <br /> Ray <br />
-                  Sam
-                </Typography>
-                <Button variant="contained">Edit</Button>
+                {teamMembers &&
+                  teamMembers.map((member, index) => (
+                    <div key={index}>
+                      {member.name}
+                      <Switch checked={selectedMembers.includes(member.name)} onChange={() => handleMemberToggle(member.name)} />
+                    </div>
+                  ))}
               </Paper>
             </Grid>
             <Grid item xs={4}>

@@ -11,7 +11,8 @@ import {
   Avatar,
   Divider,
   TextField,
-  Button
+  Button,
+  Stack
 } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -119,25 +120,45 @@ function CrewMessage() {
                           alignItems={message.me ? 'flex-start' : 'flex-end'}
                           style={{ flexDirection: message.me ? 'row' : 'row-reverse' }}
                         >
-                          <Avatar
+                          {/* <Avatar
                             sx={{ bgcolor: message.me ? 'primary.main' : 'secondary.main', ml: message.me ? 0 : 2, mr: message.me ? 2 : 0 }}
                           >
                             {message.me ? message.me[0] : message.sender[0]}
-                          </Avatar>
+                          </Avatar> */}
                           <ListItemText
-                            primary={message.me ? message.me : message.sender}
+                            primary={
+                              <>
+                                {message.me ? (
+                                  <>
+                                    {message.me}
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.sender}
+                                    </Typography>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                )}
+                              </>
+                            }
                             secondary={
                               <>
-                                <Typography variant="body2" component="span" fontWeight="bold">
-                                  {message.text}
-                                </Typography>
-                                <Typography variant="body2" component="span" color="text.secondary" ml={1}>
-                                  - {message.time}
-                                </Typography>
+                                <Stack direction="column">
+                                  <Typography variant="body2" component="span" fontWeight="bold">
+                                    {message.text}
+                                  </Typography>
+                                </Stack>
                               </>
                             }
                             style={{ textAlign: message.me ? 'left' : 'right' }}
                           />
+
                           {message.me && (
                             <IconButton onClick={() => handleDelete(message.id)} aria-label="delete message">
                               <DeleteIcon />

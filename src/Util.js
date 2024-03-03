@@ -508,192 +508,207 @@ export const RedCoralStyle = {
   marginRight: 8
 };
 
-export const users = [
+export const usersServerData = [
   {
+    id: 1,
     firstName: 'Isabella',
     lastName: 'Christensen',
     address: '123 Main St',
     serviceItem: 'None',
-    date: '2024-05-01T12:56:00', // Updated date
-    lorem: 'Lorem Ipsum is simply...'
+    date: '2024-05-01T12:56:00',
+    lorem: 'Lorem Ipsum is simply...',
+    equipmentReady: false
   },
   {
+    id: 2,
     firstName: 'Mathilde',
     lastName: 'Andersen',
     address: '456 Elm St',
     serviceItem: 'Sod',
-    date: '2024-05-11T10:00:00', // Updated date
-    lorem: 'Lorem Ipsum is simply text of...'
+    date: '2024-05-11T10:00:00',
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 3,
     firstName: 'Karla',
     lastName: 'Sorensen',
     address: '789 Oak St',
     serviceItem: 'BasicPackage',
-    date: '2024-05-09T15:38:00', // Updated date
-    lorem: 'Lorem Ipsum is simply...'
+    date: '2024-05-09T15:38:00',
+    lorem: 'Lorem Ipsum is simply...',
+    equipmentReady: false
   },
   {
+    id: 4,
     firstName: 'Ida',
     lastName: 'Jorgensen',
     address: '1011 Pine St',
     serviceItem: 'Irrigation',
     date: '2024-01-19T12:56:00',
-    lorem: 'Lorem Ipsum is simply text of...'
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 5,
     firstName: 'Albert',
     lastName: 'Andersen',
     address: '1213 Cedar St',
     serviceItem: 'Sod',
     date: '2024-02-19T12:56:00',
-    lorem: 'Lorem Ipsum is simply dummy...'
+    lorem: 'Lorem Ipsum is simply dummy...',
+    equipmentReady: false
   },
   {
+    id: 6,
     firstName: 'Sophia',
     lastName: 'Martinez',
     address: '789 Birch St',
     serviceItem: 'BasicPackage',
     date: '2024-03-20T08:00:00',
-    lorem: 'Lorem Ipsum is simply text of...'
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 7,
     firstName: 'William',
     lastName: 'Brown',
     address: '456 Pine St',
     serviceItem: 'Sod',
     date: '2024-04-15T14:30:00',
-    lorem: 'Lorem Ipsum is simply dummy...'
+    lorem: 'Lorem Ipsum is simply dummy...',
+    equipmentReady: false
   },
   {
+    id: 8,
     firstName: 'Olivia',
     lastName: 'Garcia',
     address: '1011 Elm St',
     serviceItem: 'Sod',
-    date: '2024-05-05T09:45:00', // Updated date
-    lorem: 'Lorem Ipsum is simply text of...'
+    date: '2024-05-05T09:45:00',
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 9,
     firstName: 'James',
     lastName: 'Smith',
     address: '222 Cedar St',
     serviceItem: 'Irrigation',
     date: '2024-06-10T11:20:00',
-    lorem: 'Lorem Ipsum is simply...'
+    lorem: 'Lorem Ipsum is simply...',
+    equipmentReady: false
   },
   {
+    id: 10,
     firstName: 'Amelia',
     lastName: 'Jones',
     address: '777 Maple St',
     serviceItem: 'Sod',
     date: '2024-07-12T13:15:00',
-    lorem: 'Lorem Ipsum is simply text of...'
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 11,
     firstName: 'Liam',
     lastName: 'Wilson',
     address: '888 Oak St',
     serviceItem: 'Sod',
     date: '2024-08-25T09:30:00',
-    lorem: 'Lorem Ipsum is simply text of...'
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 12,
     firstName: 'Charlotte',
     lastName: 'Taylor',
     address: '999 Elm St',
     serviceItem: 'BasicPackage',
     date: '2024-09-15T17:00:00',
-    lorem: 'Lorem Ipsum is simply...'
+    lorem: 'Lorem Ipsum is simply...',
+    equipmentReady: false
   },
   {
+    id: 13,
     firstName: 'Noah',
     lastName: 'Martinez',
     address: '666 Pine St',
     serviceItem: 'Sod',
     date: '2024-10-20T12:45:00',
-    lorem: 'Lorem Ipsum is simply dummy...'
+    lorem: 'Lorem Ipsum is simply dummy...',
+    equipmentReady: false
   },
   {
+    id: 14,
     firstName: 'Sophia',
     lastName: 'Anderson',
     address: '777 Cedar St',
     serviceItem: 'Sod',
     date: '2024-02-25T16:30:00',
-    lorem: 'Lorem Ipsum is simply text of...'
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 15,
     firstName: 'Logan',
     lastName: 'Thompson',
     address: '888 Birch St',
     serviceItem: 'BasicPackage',
     serviceFrequency: 'monthly',
     date: '2024-12-05T16:30:00',
-    lorem: 'Lorem Ipsum is simply dummy...'
+    lorem: 'Lorem Ipsum is simply dummy...',
+    equipmentReady: false
   },
   {
+    id: 16,
     firstName: 'Mia',
     lastName: 'Davis',
     address: '555 Oak St',
     serviceItem: 'Sod',
     date: '2025-01-18T11:00:00',
-    lorem: 'Lorem Ipsum is simply text of...'
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 17,
     firstName: 'Henry',
     lastName: 'Johnson',
     address: '444 Elm St',
     serviceItem: 'Sod',
     date: '2024-02-25T10:00:00',
-    lorem: 'Lorem Ipsum is simply...'
+    lorem: 'Lorem Ipsum is simply...',
+    equipmentReady: false
   },
   {
+    id: 18,
     firstName: 'Emily',
     lastName: 'Brown',
     address: '333 Pine St',
     serviceItem: 'BasicPackage',
     serviceFrequency: 'biweekly',
     date: '2025-03-12T14:45:00',
-    lorem: 'Lorem Ipsum is simply text of...'
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   },
   {
+    id: 19,
     firstName: 'Jacob',
     lastName: 'Wilson',
     address: '222 Cedar St',
     serviceItem: 'Multch',
     date: '2025-04-05T13:20:00',
-    lorem: 'Lorem Ipsum is simply dummy...'
+    lorem: 'Lorem Ipsum is simply dummy...',
+    equipmentReady: false
   },
   {
+    id: 20,
     firstName: 'Elizabeth',
     lastName: 'Taylor',
     address: '111 Oak St',
     serviceItem: 'None',
     date: '2024-02-25T10:00:00',
-    lorem: 'Lorem Ipsum is simply text of...'
-  },
-  {
-    firstName: 'Michael',
-    lastName: 'Anderson',
-    address: '999 Elm St',
-    serviceItem: 'BasicPackage',
-    date: '2025-06-15T15:00:00',
-    lorem: 'Lorem Ipsum is simply...'
-  },
-  {
-    firstName: 'Emma',
-    lastName: 'Garcia',
-    address: '777 Pine St',
-    serviceItem: 'Sod',
-    date: '2025-07-20T12:15:00',
-    lorem: 'Lorem Ipsum is simply text of...'
-  },
-  {
-    firstName: 'Alexander',
-    lastName: 'Martinez',
-    address: '666 Cedar St',
-    serviceFrequency: 'weekly',
-    serviceItem: 'Sod',
-    date: '2025-08-25T08:30:00',
-    lorem: 'Lorem Ipsum is simply text of...'
+    lorem: 'Lorem Ipsum is simply text of...',
+    equipmentReady: false
   }
 ];

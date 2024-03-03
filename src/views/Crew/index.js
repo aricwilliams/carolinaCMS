@@ -1,42 +1,46 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { Box, Grid, Typography, Button, Switch, List, ListItem, ListItemText } from '@mui/material';
 // import { Facebook, Twitter, LinkedIn, Instagram } from '@mui/icons-material';
 import Paper from '@mui/material/Paper';
+import { teamState } from '../../atom';
+import { useRecoilState } from 'recoil';
+
 // import SendIcon from '@mui/icons-material/Send';
-const teamMembers = [
-  { id: 1, name: 'John Doe', title: 'Team Leader', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 2, name: 'Bob Johnson', title: 'Lawn Technician', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 3, name: 'Michael Brown', title: 'Gardener', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 4, name: 'David Martinez', title: 'Horticulturist', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 5, name: 'James Taylor', title: 'Irrigation Specialist', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 6, name: 'Matthew Thomas', title: 'Fertilization Expert', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 7, name: 'Christopher Lee', title: 'Plant Care Technician', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 8, name: 'Daniel Clark', title: 'Mulching Crew Leader', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 9, name: 'Andrew Evans', title: 'Lawn Maintenance Technician', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 10, name: 'Ryan Rodriguez', title: 'Landscaping Crew Foreman', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 11, name: 'Steven Moore', title: 'Arborist', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 12, name: 'Joshua Garcia', title: 'Equipment Operator', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 13, name: 'Tyler Wilson', title: 'Groundskeeper', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 14, name: 'Justin Sanchez', title: 'Sod Installer', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] },
-  { id: 15, name: 'Brandon Hernandez', title: 'Weed Control Specialist', social: ['Facebook', 'Twitter', 'LinkedIn', 'Instagram'] }
-];
 
 const Crew = () => {
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [teamMembers, setTeamMembers] = useRecoilState(teamState);
+  const [team, setTeam] = useState([]); // Local state for team
+  // const saveState = (key, state) => {
+  //   localStorage.setItem(key, JSON.stringify(state));
+  // };
 
+  // Function to load state from localStorage
+  const serializedState = JSON.parse(localStorage.getItem('team'));
+
+  useEffect(() => {
+    // Set local state once Recoil state is initialized
+    if (teamMembers.length > 0) {
+      setTeam(teamMembers);
+    }
+  }, []);
+  console.log(team);
   const handleSwitchToggle = (id) => {
     // Find the member in the selectedMembers array
     const memberIndex = selectedMembers.findIndex((member) => member.id === id);
 
     if (memberIndex === -1) {
       // If member is not found, add it to the selectedMembers array
-      const selectedMember = teamMembers.find((member) => member.id === id);
+      const selectedMember = serializedState.find((member) => member.id === id);
       setSelectedMembers([...selectedMembers, selectedMember]);
+      setTeamMembers([...selectedMembers, selectedMember]);
     } else {
       // If member is found, remove it from the selectedMembers array
       const updatedMembers = [...selectedMembers];
       updatedMembers.splice(memberIndex, 1);
       setSelectedMembers(updatedMembers);
+      setTeamMembers(updatedMembers);
     }
   };
   const handleReset = () => {
@@ -59,22 +63,23 @@ const Crew = () => {
         </Grid>
 
         <Grid container spacing={4} justifyContent="center">
-          {teamMembers.map((member) => (
-            <Grid item xs={2} sm={2} md={2} key={member.id}>
-              <Box textAlign="center">
-                <Switch
-                  color="primary"
-                  checked={selectedMembers.some((selected) => selected.id === member.id)}
-                  onChange={() => handleSwitchToggle(member.id)}
-                  name={`switch-${member.id}`}
-                  size="small"
-                />
-                <Typography variant="h6">{member.name}</Typography>
-                <Typography variant="body2">{member.title}</Typography>
-                <Box></Box>
-              </Box>
-            </Grid>
-          ))}
+          {serializedState &&
+            serializedState.map((member) => (
+              <Grid item xs={2} sm={2} md={2} key={member.id}>
+                <Box textAlign="center">
+                  <Switch
+                    color="primary"
+                    checked={selectedMembers.some((selected) => selected.id === member.id)}
+                    onChange={() => handleSwitchToggle(member.id)}
+                    name={`switch-${member.id}`}
+                    size="small"
+                  />
+                  <Typography variant="h6">{member.name}</Typography>
+                  <Typography variant="body2">{member.title}</Typography>
+                  <Box></Box>
+                </Box>
+              </Grid>
+            ))}
         </Grid>
       </Paper>
       <Paper elevation={3} sx={{ marginTop: 2, p: 2 }}>

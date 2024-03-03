@@ -1,55 +1,60 @@
-import { useEffect, useState } from 'react';
-
-// material-ui
-import { Grid } from '@mui/material';
-
-// project imports
-import EarningCard from './EarningCard';
-import PopularCard from './PopularCard';
-import TotalOrderLineChartCard from './TotalOrderLineChartCard';
-import TotalIncomeDarkCard from './TotalIncomeDarkCard';
-import TotalIncomeLightCard from './TotalIncomeLightCard';
-import TotalGrowthBarChart from './TotalGrowthBarChart';
-import { gridSpacing } from 'store/constant';
-
-// ==============================|| DEFAULT DASHBOARD ||============================== //
+import React, { useEffect, useState } from 'react';
+import { Grid, Typography, Stack } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useSetRecoilState } from 'recoil';
+import { teamState } from '../../../atom';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [isLoading, setLoading] = useState(true);
+  const setRecoilTeamMembers = useSetRecoilState(teamState);
+
   useEffect(() => {
-    setLoading(false);
-  }, []);
+    const teamMembers2 = [
+      { id: 1, name: 'John Doe', title: 'Team Leader' },
+      { id: 2, name: 'Bob Johnson', title: 'Lawn Technician' },
+      { id: 3, name: 'James Taylor', title: 'Irrigation Specialist' },
+      { id: 4, name: 'Daniel Clark', title: 'Mulching Crew Leader' },
+      { id: 5, name: 'Andrew Evans', title: 'Lawn Maintenance Technician' },
+      { id: 6, name: 'Justin Sanchez', title: 'Sod Installer' },
+      { id: 7, name: 'Brandon Hernandez', title: 'Weed Control Specialist' }
+    ];
+
+    // Set Recoil state
+    setRecoilTeamMembers(teamMembers2);
+
+    // Save to localStorage
+    localStorage.setItem('team', JSON.stringify(teamMembers2));
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+      navigate('/CustomerDashboard');
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [navigate, setRecoilTeamMembers]);
 
   return (
-    <Grid container spacing={gridSpacing}>
+    <Grid container spacing={3} justifyContent="center" alignItems="center" minHeight="100vh">
       <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item lg={4} md={6} sm={6} xs={12}>
-            <EarningCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={4} md={6} sm={6} xs={12}>
-            <TotalOrderLineChartCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={4} md={12} sm={12} xs={12}>
-            <Grid container spacing={gridSpacing}>
-              <Grid item sm={6} xs={12} md={6} lg={12}>
-                <TotalIncomeDarkCard isLoading={isLoading} />
+        <Grid container spacing={3} justifyContent="center" alignItems="center">
+          {isLoading ? (
+            <Stack direction="column">
+              <Grid item>
+                <Typography variant="h4" gutterBottom component="div">
+                  Loading Data
+                </Typography>
               </Grid>
-              <Grid item sm={6} xs={12} md={6} lg={12}>
-                <TotalIncomeLightCard isLoading={isLoading} />
+              <Grid item>
+                <CircularProgress color="secondary" />
               </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={12} md={8}>
-            <TotalGrowthBarChart isLoading={isLoading} />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <PopularCard isLoading={isLoading} />
-          </Grid>
+            </Stack>
+          ) : (
+            <Typography variant="h4" gutterBottom component="div">
+              Default Dashboard
+            </Typography>
+          )}
         </Grid>
       </Grid>
     </Grid>
