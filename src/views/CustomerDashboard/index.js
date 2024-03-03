@@ -39,6 +39,7 @@ function RecentUsersList() {
   console.log(teamMembers2);
   const teamMembers = JSON.parse(localStorage.getItem('team'));
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [expandValue, setExpandValue] = useState(100);
 
   // setTeamMembers
 
@@ -190,6 +191,10 @@ function RecentUsersList() {
     } else {
       setSelectedMembers([...selectedMembers, memberName]);
     }
+  };
+
+  const expand = () => {
+    setExpandValue(300);
   };
   return (
     <div>
@@ -385,27 +390,38 @@ function RecentUsersList() {
             </Grid>
             <Grid item xs={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
-                <Typography
-                  variant="h5"
-                  component="h2"
-                  style={{
-                    fontFamily: 'Quicksand, Verdana, sans-serif',
-                    fontWeight: 700,
-                    fontSize: '19px',
-                    lineHeight: '23px',
-                    color: 'black'
-                  }}
-                >
-                  Who is on the Job?
-                </Typography>
+                <Box sx={{ my: 2, p: 2, ml: 1, height: expandValue, overflowY: expandValue === 100 ? 'hidden' : 'scroll' }}>
+                  <Typography
+                    variant="h5"
+                    component="h2"
+                    style={{
+                      fontFamily: 'Quicksand, Verdana, sans-serif',
+                      fontWeight: 700,
+                      fontSize: '19px',
+                      lineHeight: '23px',
+                      color: 'black'
+                    }}
+                  >
+                    Who is on the Job?
+                  </Typography>
 
-                {teamMembers &&
-                  teamMembers.map((member, index) => (
-                    <div key={index}>
-                      {member.name}
-                      <Switch checked={selectedMembers.includes(member.name)} onChange={() => handleMemberToggle(member.name)} />
-                    </div>
-                  ))}
+                  {teamMembers &&
+                    teamMembers.map((member, index) => (
+                      <div key={index}>
+                        {member.name}
+                        <Switch checked={selectedMembers.includes(member.name)} onChange={() => handleMemberToggle(member.name)} />
+                      </div>
+                    ))}
+                </Box>
+                {expandValue === 100 ? (
+                  <Button onClick={expand} variant="contained" sx={{ mt: 0 }}>
+                    Edit
+                  </Button>
+                ) : (
+                  <Button onClick={() => setExpandValue(100)} variant="contained" sx={{ mt: 0 }}>
+                    Done Editing
+                  </Button>
+                )}
               </Paper>
             </Grid>
             <Grid item xs={4}>
