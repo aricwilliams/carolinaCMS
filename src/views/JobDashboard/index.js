@@ -105,10 +105,14 @@ function RecentUsersList() {
     setFrequencyFilter(event.target.value);
   };
 
-  const isFreeWork = (InvoiceStatus, ActiveWork, ScheduledWork) => {
-    if (InvoiceStatus == 'Unpaid' && ActiveWork > 0) {
-      return '#EF7A7A'; // Past date
-    } else if (InvoiceStatus == 'Unpaid' && ScheduledWork > 0) {
+  const isDateSoon = (dateString) => {
+    const date = new Date(dateString);
+    const currentDate = new Date();
+    const differenceInDays = Math.ceil((date - currentDate) / (1000 * 60 * 60 * 24));
+
+    if (differenceInDays <= 0) {
+      return '#f6f0fd'; // Past date
+    } else if (differenceInDays <= 3) {
       return '#d1f9ff'; // Within 3 days
     } else {
       return 'white'; // Default color
@@ -153,14 +157,20 @@ function RecentUsersList() {
     // Perform any other actions here when the toggle is toggled
   };
   const filterUsers = (user) => {
-    if (dateFilter === 'Paid') {
-      return user.invoices === 'Paid';
-    } else if (dateFilter === 'Unpaid') {
-      return user.invoices === 'Unpaid';
-    } else {
-      return true; // Show all users if no filter applied
-    }
+    const date = new Date(user.date);
+    const currentDate = new Date();
+    const differenceInDays = Math.ceil((date - currentDate) / (1000 * 60 * 60 * 24));
+
+    const dateFilterCondition =
+      dateFilter === 'past' ? differenceInDays <= 0 : dateFilter === 'soon' ? differenceInDays > 0 && differenceInDays <= 3 : true;
+
+    const serviceFilterCondition = serviceFilter === 'all' ? true : user.serviceItem === serviceFilter;
+
+    const frequencyFilterCondition = frequencyFilter === 'all' ? true : user.serviceFrequency === frequencyFilter;
+
+    return dateFilterCondition && serviceFilterCondition && frequencyFilterCondition;
   };
+
   const handleOpenModal = (user) => {
     setSelectedUser(user);
     setOpenModal(true);
@@ -190,11 +200,11 @@ function RecentUsersList() {
     <div>
       {/* Filter Controls */}
       <FormControl sx={{ minWidth: 120, marginRight: 2 }}>
-        <InputLabel id="date-filter-label">Invoices</InputLabel>
-        <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Invoice Filter" onChange={handleDateChange}>
-          <MenuItem value="Unpaid">Unpaid</MenuItem>
-          <MenuItem value="Paid">Paid</MenuItem>
-          <MenuItem value="all">None</MenuItem>
+        <InputLabel id="date-filter-label">Date Filter</InputLabel>
+        <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Date Filter" onChange={handleDateChange}>
+          <MenuItem value="all">All Dates</MenuItem>
+          <MenuItem value="past">Past Due & Today</MenuItem>
+          <MenuItem value="soon">Within 3 Days</MenuItem>
         </Select>
       </FormControl>
 
@@ -236,31 +246,28 @@ function RecentUsersList() {
         Reset Filters
       </Button>
       <Button variant="contained" sx={{ marginLeft: '30px' }}>
-        + Add New Customer
+        + Add Job
       </Button>
 
       {/* User List */}
       <List>
         {users.filter(filterUsers)?.map((user, index) => (
-          <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isFreeWork(user.invoices, user.activeJobs, user.jobs) }}>
+          <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
             <ListItem button onClick={() => handleOpenModal(user)}>
               {' '}
               {/* Open modal on user click */}
               <ListItemText sx={{ width: '20px' }} primary="Name" secondary={`${user.firstName} ${user.lastName}`} />
-              <ListItemText sx={{ width: '20px' }} primary="Phone Number" secondary={user.phoneNumber} style={{ margin: 0 }} />
-              <ListItemText sx={{ width: '20px' }} primary="Invoices" secondary={user.invoices} style={{ margin: 0 }} />
-              <ListItemText sx={{ width: '20px' }} primary="Active Jobs" secondary={`${user.activeJobs}`} />
-              {/* <ListItemText sx={{ width: '20px' }} primary="Requests" secondary={`${user.requests}`} style={{ margin: 0 }} /> */}
-              <ListItemText sx={{ width: '20px' }} primary="Quotes" secondary={user.quotes} style={{ margin: 0 }} />
-              <ListItemText sx={{ width: '20px' }} primary="Scheduled Jobs" secondary={user.jobs} style={{ margin: 0 }} />
+              <ListItemText sx={{ width: '20px' }} primary="Address" secondary={`${user.address}`} />
+              <ListItemText sx={{ width: '20px' }} primary="Service Item" secondary={`${user.serviceItem}`} style={{ margin: 0 }} />
+              <ListItemText sx={{ width: '20px' }} primary="Date" secondary={user.date} style={{ margin: 0 }} />
               {/* <ListItemText sx={{ width: '20px' }} primary="Frequency" secondary={user.serviceFrequency} style={{ margin: 0 }} /> */}
               <ListItemSecondaryAction>
-                {/* <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
-                  Open
-                </Button> */}
-                <Button color="secondary" variant="contained" style={EditBTNStyle}>
+                <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
                   Open
                 </Button>
+                {/* <Button color="secondary" variant="contained" style={EditBTNStyle}>
+                  Edit
+                </Button> */}
               </ListItemSecondaryAction>
             </ListItem>
           </Paper>

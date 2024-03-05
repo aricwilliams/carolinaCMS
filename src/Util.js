@@ -517,7 +517,14 @@ export const usersServerData = [
     serviceItem: 'None',
     date: '2024-05-01T12:56:00',
     lorem: 'Lorem Ipsum is simply...',
-    equipmentReady: false
+    equipmentReady: false,
+    businessName: 'Hansen Landscaping',
+    phoneNumber: '910-233-2233',
+    activeJobs: 1,
+    requests: 2,
+    quotes: 1,
+    jobs: 5,
+    invoices: 'Unpaid'
   },
   {
     id: 2,
@@ -527,7 +534,14 @@ export const usersServerData = [
     serviceItem: 'Sod',
     date: '2024-05-11T10:00:00',
     lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
+    equipmentReady: false,
+    businessName: 'Hansen Landscaping',
+    phoneNumber: '910-678-3345',
+    activeJobs: 5,
+    requests: 1,
+    quotes: 3,
+    jobs: 1,
+    invoices: 'Paid'
   },
   {
     id: 3,
@@ -537,178 +551,202 @@ export const usersServerData = [
     serviceItem: 'BasicPackage',
     date: '2024-05-09T15:38:00',
     lorem: 'Lorem Ipsum is simply...',
-    equipmentReady: false
+    equipmentReady: false,
+    businessName: 'Hansen Landscaping',
+    phoneNumber: '212-234-4577',
+    activeJobs: 1,
+    requests: 0,
+    quotes: 1,
+    jobs: 1,
+    invoices: 'Unpaid'
   },
   {
     id: 4,
     firstName: 'Ida',
-    lastName: 'Jorgensen',
-    address: '1011 Pine St',
-    serviceItem: 'Irrigation',
-    date: '2024-01-19T12:56:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
-  },
-  {
-    id: 5,
-    firstName: 'Albert',
-    lastName: 'Andersen',
-    address: '1213 Cedar St',
-    serviceItem: 'Sod',
-    date: '2024-02-19T12:56:00',
-    lorem: 'Lorem Ipsum is simply dummy...',
-    equipmentReady: false
-  },
-  {
-    id: 6,
-    firstName: 'Sophia',
-    lastName: 'Martinez',
-    address: '789 Birch St',
+    lastName: 'Williams',
+    address: '288 Pine St',
     serviceItem: 'BasicPackage',
-    date: '2024-03-20T08:00:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
-  },
-  {
-    id: 7,
-    firstName: 'William',
-    lastName: 'Brown',
-    address: '456 Pine St',
-    serviceItem: 'Sod',
-    date: '2024-04-15T14:30:00',
-    lorem: 'Lorem Ipsum is simply dummy...',
-    equipmentReady: false
-  },
-  {
-    id: 8,
-    firstName: 'Olivia',
-    lastName: 'Garcia',
-    address: '1011 Elm St',
-    serviceItem: 'Sod',
-    date: '2024-05-05T09:45:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
-  },
-  {
-    id: 9,
-    firstName: 'James',
-    lastName: 'Smith',
-    address: '222 Cedar St',
-    serviceItem: 'Irrigation',
-    date: '2024-06-10T11:20:00',
+    date: '2024-05-09T15:38:00',
     lorem: 'Lorem Ipsum is simply...',
-    equipmentReady: false
-  },
-  {
-    id: 10,
-    firstName: 'Amelia',
-    lastName: 'Jones',
-    address: '777 Maple St',
-    serviceItem: 'Sod',
-    date: '2024-07-12T13:15:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
-  },
-  {
-    id: 11,
-    firstName: 'Liam',
-    lastName: 'Wilson',
-    address: '888 Oak St',
-    serviceItem: 'Sod',
-    date: '2024-08-25T09:30:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
-  },
-  {
-    id: 12,
-    firstName: 'Charlotte',
-    lastName: 'Taylor',
-    address: '999 Elm St',
-    serviceItem: 'BasicPackage',
-    date: '2024-09-15T17:00:00',
-    lorem: 'Lorem Ipsum is simply...',
-    equipmentReady: false
-  },
-  {
-    id: 13,
-    firstName: 'Noah',
-    lastName: 'Martinez',
-    address: '666 Pine St',
-    serviceItem: 'Sod',
-    date: '2024-10-20T12:45:00',
-    lorem: 'Lorem Ipsum is simply dummy...',
-    equipmentReady: false
-  },
-  {
-    id: 14,
-    firstName: 'Sophia',
-    lastName: 'Anderson',
-    address: '777 Cedar St',
-    serviceItem: 'Sod',
-    date: '2024-02-25T16:30:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
-  },
-  {
-    id: 15,
-    firstName: 'Logan',
-    lastName: 'Thompson',
-    address: '888 Birch St',
-    serviceItem: 'BasicPackage',
-    serviceFrequency: 'monthly',
-    date: '2024-12-05T16:30:00',
-    lorem: 'Lorem Ipsum is simply dummy...',
-    equipmentReady: false
-  },
-  {
-    id: 16,
-    firstName: 'Mia',
-    lastName: 'Davis',
-    address: '555 Oak St',
-    serviceItem: 'Sod',
-    date: '2025-01-18T11:00:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
-  },
-  {
-    id: 17,
-    firstName: 'Henry',
-    lastName: 'Johnson',
-    address: '444 Elm St',
-    serviceItem: 'Sod',
-    date: '2024-02-25T10:00:00',
-    lorem: 'Lorem Ipsum is simply...',
-    equipmentReady: false
-  },
-  {
-    id: 18,
-    firstName: 'Emily',
-    lastName: 'Brown',
-    address: '333 Pine St',
-    serviceItem: 'BasicPackage',
-    serviceFrequency: 'biweekly',
-    date: '2025-03-12T14:45:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
-  },
-  {
-    id: 19,
-    firstName: 'Jacob',
-    lastName: 'Wilson',
-    address: '222 Cedar St',
-    serviceItem: 'Multch',
-    date: '2025-04-05T13:20:00',
-    lorem: 'Lorem Ipsum is simply dummy...',
-    equipmentReady: false
-  },
-  {
-    id: 20,
-    firstName: 'Elizabeth',
-    lastName: 'Taylor',
-    address: '111 Oak St',
-    serviceItem: 'None',
-    date: '2024-02-25T10:00:00',
-    lorem: 'Lorem Ipsum is simply text of...',
-    equipmentReady: false
+    equipmentReady: false,
+    businessName: 'Hansen Landscaping',
+    phoneNumber: '212-234-4577',
+    activeJobs: 0,
+    requests: 0,
+    quotes: 1,
+    jobs: 3,
+    invoices: 'Unpaid'
   }
+  // {
+  //   id: 4,
+  //   firstName: 'Ida',
+  //   lastName: 'Jorgensen',
+  //   address: '1011 Pine St',
+  //   serviceItem: 'Irrigation',
+  //   date: '2024-01-19T12:56:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 5,
+  //   firstName: 'Albert',
+  //   lastName: 'Andersen',
+  //   address: '1213 Cedar St',
+  //   serviceItem: 'Sod',
+  //   date: '2024-02-19T12:56:00',
+  //   lorem: 'Lorem Ipsum is simply dummy...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 6,
+  //   firstName: 'Sophia',
+  //   lastName: 'Martinez',
+  //   address: '789 Birch St',
+  //   serviceItem: 'BasicPackage',
+  //   date: '2024-03-20T08:00:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 7,
+  //   firstName: 'William',
+  //   lastName: 'Brown',
+  //   address: '456 Pine St',
+  //   serviceItem: 'Sod',
+  //   date: '2024-04-15T14:30:00',
+  //   lorem: 'Lorem Ipsum is simply dummy...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 8,
+  //   firstName: 'Olivia',
+  //   lastName: 'Garcia',
+  //   address: '1011 Elm St',
+  //   serviceItem: 'Sod',
+  //   date: '2024-05-05T09:45:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 9,
+  //   firstName: 'James',
+  //   lastName: 'Smith',
+  //   address: '222 Cedar St',
+  //   serviceItem: 'Irrigation',
+  //   date: '2024-06-10T11:20:00',
+  //   lorem: 'Lorem Ipsum is simply...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 10,
+  //   firstName: 'Amelia',
+  //   lastName: 'Jones',
+  //   address: '777 Maple St',
+  //   serviceItem: 'Sod',
+  //   date: '2024-07-12T13:15:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 11,
+  //   firstName: 'Liam',
+  //   lastName: 'Wilson',
+  //   address: '888 Oak St',
+  //   serviceItem: 'Sod',
+  //   date: '2024-08-25T09:30:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 12,
+  //   firstName: 'Charlotte',
+  //   lastName: 'Taylor',
+  //   address: '999 Elm St',
+  //   serviceItem: 'BasicPackage',
+  //   date: '2024-09-15T17:00:00',
+  //   lorem: 'Lorem Ipsum is simply...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 13,
+  //   firstName: 'Noah',
+  //   lastName: 'Martinez',
+  //   address: '666 Pine St',
+  //   serviceItem: 'Sod',
+  //   date: '2024-10-20T12:45:00',
+  //   lorem: 'Lorem Ipsum is simply dummy...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 14,
+  //   firstName: 'Sophia',
+  //   lastName: 'Anderson',
+  //   address: '777 Cedar St',
+  //   serviceItem: 'Sod',
+  //   date: '2024-02-25T16:30:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 15,
+  //   firstName: 'Logan',
+  //   lastName: 'Thompson',
+  //   address: '888 Birch St',
+  //   serviceItem: 'BasicPackage',
+  //   serviceFrequency: 'monthly',
+  //   date: '2024-12-05T16:30:00',
+  //   lorem: 'Lorem Ipsum is simply dummy...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 16,
+  //   firstName: 'Mia',
+  //   lastName: 'Davis',
+  //   address: '555 Oak St',
+  //   serviceItem: 'Sod',
+  //   date: '2025-01-18T11:00:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 17,
+  //   firstName: 'Henry',
+  //   lastName: 'Johnson',
+  //   address: '444 Elm St',
+  //   serviceItem: 'Sod',
+  //   date: '2024-02-25T10:00:00',
+  //   lorem: 'Lorem Ipsum is simply...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 18,
+  //   firstName: 'Emily',
+  //   lastName: 'Brown',
+  //   address: '333 Pine St',
+  //   serviceItem: 'BasicPackage',
+  //   serviceFrequency: 'biweekly',
+  //   date: '2025-03-12T14:45:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 19,
+  //   firstName: 'Jacob',
+  //   lastName: 'Wilson',
+  //   address: '222 Cedar St',
+  //   serviceItem: 'Multch',
+  //   date: '2025-04-05T13:20:00',
+  //   lorem: 'Lorem Ipsum is simply dummy...',
+  //   equipmentReady: false
+  // },
+  // {
+  //   id: 20,
+  //   firstName: 'Elizabeth',
+  //   lastName: 'Taylor',
+  //   address: '111 Oak St',
+  //   serviceItem: 'None',
+  //   date: '2024-02-25T10:00:00',
+  //   lorem: 'Lorem Ipsum is simply text of...',
+  //   equipmentReady: false
+  // }
 ];

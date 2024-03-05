@@ -18,13 +18,13 @@ const dashboard = {
       url: '/CustomerDashboard',
       icon: icons.IconDashboard
     },
-    // {
-    //   id: 'default2',
-    //   title: 'Crew Dashboard',
-    //   type: 'item',
-    //   url: '/CrewPage',
-    //   icon: icons.IconDashboard,
-    // },
+    {
+      id: 'default2',
+      title: 'Job Dashboard',
+      type: 'item',
+      url: '/JobDashboard',
+      icon: icons.IconDashboard
+    },
     {
       id: 'default6',
       title: 'Crew Message',
