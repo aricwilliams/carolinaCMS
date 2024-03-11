@@ -26,7 +26,7 @@ function Copyright() {
   );
 }
 
-const steps = ['Customer Information', 'Property details', 'Review your order'];
+const steps = ['Customer Information', 'Property details', 'Add Services & Notes'];
 
 function getStepContent(step) {
   switch (step) {
@@ -64,7 +64,7 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
         justifyContent: 'center',
         overflowY: 'auto',
         '& .MuiPaper-root': {
-          maxHeight: '85vh', // Adjust this value as needed
+          maxHeight: '85vh',
           overflowY: 'auto'
         }
       }}
