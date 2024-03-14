@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function AddressForm() {
   return (
@@ -26,6 +27,11 @@ export default function AddressForm() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField id="companyName" name="companyName" label="Company Name" fullWidth autoComplete="family-name" variant="standard" />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Tooltip title="Tags are used for quick identification " arrow>
+            <TextField id="companyName" name="companyName" label="Tag" fullWidth autoComplete="family-name" variant="standard" />
+          </Tooltip>
         </Grid>
         <Grid item xs={12} sm={12}>
           <FormControlLabel

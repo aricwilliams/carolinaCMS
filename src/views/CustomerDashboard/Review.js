@@ -4,7 +4,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
-
+import TextField from '@mui/material/TextField';
 const services = [
   {
     name: 'Lawn Mowing',
@@ -50,7 +50,7 @@ export default function Review() {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Attach services to customer & Notes
+        Fast Addon services to customer & Add Notes
       </Typography>
       <List disablePadding>
         {services.map((service) => (
@@ -71,8 +71,14 @@ export default function Review() {
           </Typography>
         </ListItem>
       </List>
-      <Grid container spacing={2}>
-        {/* Shipping and Payment details section can remain unchanged */}
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <TextField
+          id="outlined-multiline-static"
+          label="Notes"
+          multiline
+          placeholder="Example: Customer will not speak with Joe"
+          rows={8}
+        />
       </Grid>
     </React.Fragment>
   );

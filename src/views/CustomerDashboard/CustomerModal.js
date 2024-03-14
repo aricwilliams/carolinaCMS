@@ -26,7 +26,7 @@ function Copyright() {
   );
 }
 
-const steps = ['Customer Information', 'Property details', 'Add Services & Notes'];
+const steps = ['Customer Information', 'Property details', 'Quick Service Addon & Notes'];
 
 function getStepContent(step) {
   switch (step) {
@@ -100,9 +100,11 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
                       Back
                     </Button>
                   )}
-
+                  <Button variant="contained" sx={{ mt: 3, ml: 1 }}>
+                    Upload CSV File?
+                  </Button>
                   <Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }}>
-                    {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Save Customer' : 'Next'}
                   </Button>
                 </Box>
               </React.Fragment>
