@@ -23,7 +23,7 @@ export default function AddressForm() {
           <TextField id="cell" name="cell" label="Phone" fullWidth autoComplete="given-name" variant="standard" />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField id="work" name="work" label="Work Number" fullWidth autoComplete="family-name" variant="standard" />
+          <TextField id="work" name="work" label="Phone 2" fullWidth autoComplete="family-name" variant="standard" />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField id="companyName" name="companyName" label="Company Name" fullWidth autoComplete="family-name" variant="standard" />

@@ -50,9 +50,9 @@ export default function PropertyDetails() {
             variant="standard"
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        {/* <Grid item xs={12} sm={6}>
           <TextField required id="country" name="country" label="Country" fullWidth autoComplete="shipping country" variant="standard" />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <FormControlLabel
             control={<Checkbox color="secondary" name="saveCard" value="yes" />}

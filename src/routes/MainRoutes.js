@@ -11,6 +11,7 @@ const JobDashboard = Loadable(lazy(() => import('views/JobDashboard')));
 const CrewMessage = Loadable(lazy(() => import('views/CrewMessage')));
 const CustomerDashboard = Loadable(lazy(() => import('views/CustomerDashboard/index')));
 const ColorUtility = Loadable(lazy(() => import('views/ColorUtility/index')));
+const ScheduleQuote = Loadable(lazy(() => import('views/ScheduleQuote')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
@@ -46,6 +47,10 @@ const MainRoutes = {
     {
       path: '/JobDashboard',
       element: <JobDashboard />
+    },
+    {
+      path: '/ScheduleQuote',
+      element: <ScheduleQuote />
     },
     {
       path: '/ColorUtility',

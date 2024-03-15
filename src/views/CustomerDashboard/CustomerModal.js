@@ -12,6 +12,7 @@ import Link from '@mui/material/Link';
 import Address from './Address';
 import PropertyDetails from './PropertyDetails';
 import Review from './Review';
+import Stack from '@mui/material/Stack';
 
 function Copyright() {
   return (
@@ -62,14 +63,22 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        overflowY: 'auto',
-        '& .MuiPaper-root': {
-          maxHeight: '85vh',
-          overflowY: 'auto'
-        }
+        overflowY: 'auto'
       }}
     >
-      <React.Fragment>
+      <Box
+        sx={{
+          // Ensuring the modal content is properly styled
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          '& .MuiPaper-root': {
+            maxHeight: '85vh',
+            overflowY: 'auto',
+            width: '700px'
+          }
+        }}
+      >
         <CssBaseline />
 
         <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
@@ -89,7 +98,12 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
                 <Typography variant="h5" gutterBottom>
                   Customer Added
                 </Typography>
-                <Typography variant="subtitle1">Make a project for this customer?</Typography>
+                <Stack direction={'row'}>
+                  <Typography variant="subtitle1">Schedule a quote for this customer?</Typography>
+                  <Button variant="contained" sx={{ ml: 1 }}>
+                    + Quote
+                  </Button>
+                </Stack>
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -112,7 +126,7 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
           </Paper>
           <Copyright />
         </Container>
-      </React.Fragment>
+      </Box>
     </Modal>
   );
 }

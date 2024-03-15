@@ -78,6 +78,7 @@ export default function Review() {
           multiline
           placeholder="Example: Customer will not speak with Joe"
           rows={8}
+          sx={[{ width: '100%' }]}
         />
       </Grid>
     </React.Fragment>
