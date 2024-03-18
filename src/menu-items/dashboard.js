@@ -33,6 +33,13 @@ const dashboard = {
       icon: icons.IconDashboard
     },
     {
+      id: 'default23',
+      title: 'Schedule Project',
+      type: 'item',
+      url: '/ScheduleProject',
+      icon: icons.IconDashboard
+    },
+    {
       id: 'default6',
       title: 'Crew Message',
       type: 'item',

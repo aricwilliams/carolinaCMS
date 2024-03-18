@@ -464,6 +464,8 @@ function RecentUsersList() {
                     </React.Fragment>
                   )}
                 </Typography>
+
+                <Button variant="contained">Send Invoice?</Button>
               </Paper>
             </Grid>
             <Grid item xs={4}>
