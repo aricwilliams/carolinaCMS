@@ -12,6 +12,7 @@ import PropertyDetails from './PropertyDetails';
 import Review from './Review';
 import Stack from '@mui/material/Stack';
 import Scheduling from './Scheduling';
+import { useMediaQuery } from '@mui/material';
 
 // function Copyright() {
 //   return (
@@ -53,6 +54,7 @@ function CustomerModal() {
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
+  const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   return (
     <Box
@@ -63,7 +65,7 @@ function CustomerModal() {
         justifyContent: 'center',
         '& .MuiPaper-root': {
           overflowY: 'auto',
-          minWidth: 900
+          minWidth: isLessThan600 ? 350 : 900
         }
       }}
     >

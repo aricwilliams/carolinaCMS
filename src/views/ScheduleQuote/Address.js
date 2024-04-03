@@ -3,9 +3,11 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+// import { useMediaQuery } from '@mui/material';
 
 export default function AddressForm() {
   const [editMode, setEditMode] = React.useState(false);
+  // const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   const toggleEditMode = () => {
     setEditMode(!editMode);
