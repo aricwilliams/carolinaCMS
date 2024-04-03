@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { List, ListItem, ListItemText, ListItemSecondaryAction, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { List, ListItem, ListItemText, Button, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { usersServerData } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
-import { teamState } from '../../atom';
-import { useRecoilState } from 'recoil';
+import Grid from '@mui/material/Grid';
+
 import CustomerModalContent from './CustomerModal';
 import CustomerDetailsModal from './CustomerDetailsModal';
 import { equipmentList } from '../../EquipmentUtil';
@@ -20,11 +20,10 @@ function RecentUsersList() {
   const [selectedEquipment, setSelectedEquipment] = useState('');
   const [invoicePaid, setInvoicePaid] = useState(false);
   const [users, setUsers] = useState(usersServerData);
-  const [teamMembers2] = useRecoilState(teamState);
-  console.log(teamMembers2);
   const teamMembers = JSON.parse(localStorage.getItem('team'));
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [expandValue, setExpandValue] = useState(100);
+  const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   // setTeamMembers
 
@@ -141,84 +140,83 @@ function RecentUsersList() {
   return (
     <div>
       {/* Filter Controls */}
-      <FormControl sx={{ minWidth: 120, marginRight: 2 }}>
-        <InputLabel id="date-filter-label">Invoices</InputLabel>
-        <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Invoice Filter" onChange={handleDateChange}>
-          <MenuItem value="Unpaid">Unpaid</MenuItem>
-          <MenuItem value="Paid">Paid</MenuItem>
-          <MenuItem value="all">None</MenuItem>
-        </Select>
-      </FormControl>
-
-      <FormControl sx={{ minWidth: 120, marginRight: 2 }}>
-        <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
-        <Select
-          labelId="service-filter-label"
-          id="service-filter"
-          value={serviceFilter}
-          label="Service Item Filter"
-          onChange={handleServiceChange}
-        >
-          <MenuItem value="all">All Service Items</MenuItem>
-          <MenuItem value="Multch">Multch</MenuItem>
-          <MenuItem value="Sod">Sod</MenuItem>
-          <MenuItem value="BasicPackage">Basic Package</MenuItem>
-          <MenuItem value="Irrigation">Irrigation</MenuItem>
-          <MenuItem value="None">None (Prospect)</MenuItem>
-        </Select>
-      </FormControl>
-
-      <FormControl sx={{ minWidth: 120 }}>
-        <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
-        <Select
-          labelId="frequency-filter-label"
-          id="frequency-filter"
-          value={frequencyFilter}
-          label="Service Frequency Filter"
-          onChange={handleFrequencyChange}
-        >
-          <MenuItem value="all">All Frequencies</MenuItem>
-          <MenuItem value="weekly">Weekly</MenuItem>
-          <MenuItem value="biweekly">Bi-Weekly</MenuItem>
-          <MenuItem value="monthly">Monthly</MenuItem>
-        </Select>
-      </FormControl>
-
-      <Button variant="contained" onClick={handleResetFilters} sx={{ marginLeft: '30px' }}>
-        Reset Filters
-      </Button>
-      <Button variant="contained" onClick={handleOpenCustomerModal} sx={{ marginLeft: '30px' }}>
-        + Add New Customer
-      </Button>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
+            <InputLabel id="date-filter-label">Invoices</InputLabel>
+            <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Invoice Filter" onChange={handleDateChange}>
+              <MenuItem value="Unpaid">Unpaid</MenuItem>
+              <MenuItem value="Paid">Paid</MenuItem>
+              <MenuItem value="all">None</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={1.5} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
+            <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
+            <Select
+              labelId="service-filter-label"
+              id="service-filter"
+              value={serviceFilter}
+              label="Service Item Filter"
+              onChange={handleServiceChange}
+            >
+              <MenuItem value="all">All Service Items</MenuItem>
+              <MenuItem value="Multch">Multch</MenuItem>
+              <MenuItem value="Sod">Sod</MenuItem>
+              <MenuItem value="BasicPackage">Basic Package</MenuItem>
+              <MenuItem value="Irrigation">Irrigation</MenuItem>
+              <MenuItem value="None">None (Prospect)</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={1.3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 150 }}>
+            <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
+            <Select
+              labelId="frequency-filter-label"
+              id="frequency-filter"
+              value={frequencyFilter}
+              label="Service Frequency Filter"
+              onChange={handleFrequencyChange}
+            >
+              <MenuItem value="all">All Frequencies</MenuItem>
+              <MenuItem value="weekly">Weekly</MenuItem>
+              <MenuItem value="biweekly">Bi-Weekly</MenuItem>
+              <MenuItem value="monthly">Monthly</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Button variant="contained" onClick={handleResetFilters} sx={{ width: '100%' }}>
+            Reset Filters
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={1.4} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Button variant="contained" onClick={handleOpenCustomerModal} sx={{ width: '100%' }}>
+            + Add New Customer
+          </Button>
+        </Grid>
+      </Grid>
 
       {/* User List */}
       <List>
         {users.filter(filterUsers)?.map((user, index) => (
           <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isFreeWork(user.invoices, user.activeJobs, user.jobs) }}>
-            <ListItem button onClick={() => handleOpenModal(user)}>
-              {' '}
-              {/* Open modal on user click */}
-              <ListItemText sx={{ width: '20px' }} primary="Name" secondary={`${user.firstName} ${user.lastName}`} />
-              <ListItemText sx={{ width: '20px' }} primary="Phone Number" secondary={user.phoneNumber} style={{ margin: 0 }} />
-              <ListItemText sx={{ width: '20px' }} primary="Invoices" secondary={user.invoices} style={{ margin: 0 }} />
-              <ListItemText sx={{ width: '20px' }} primary="Active Jobs" secondary={`${user.activeJobs}`} />
-              {/* <ListItemText sx={{ width: '20px' }} primary="Requests" secondary={`${user.requests}`} style={{ margin: 0 }} /> */}
-              <ListItemText sx={{ width: '20px' }} primary="Quotes" secondary={user.quotes} style={{ margin: 0 }} />
-              <ListItemText sx={{ width: '20px' }} primary="Scheduled Jobs" secondary={user.jobs} style={{ margin: 0 }} />
-              {/* <ListItemText sx={{ width: '20px' }} primary="Frequency" secondary={user.serviceFrequency} style={{ margin: 0 }} /> */}
-              <ListItemSecondaryAction>
-                {/* <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
-                  Open
-                </Button> */}
-                <Button color="secondary" variant="contained" style={EditBTNStyle}>
-                  Open
-                </Button>
-              </ListItemSecondaryAction>
+            <ListItem button onClick={() => handleOpenModal(user)} sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
+              <ListItemText primary="Name" secondary={`${user.firstName} ${user.lastName}`} sx={{ textAlign: 'center' }} />
+              <ListItemText primary="Phone Number" secondary={user.phoneNumber} sx={{ textAlign: 'center' }} />
+              <ListItemText primary="Invoices" secondary={user.invoices} sx={{ textAlign: 'center' }} />
+              <ListItemText primary="Active Jobs" secondary={`${user.activeJobs}`} sx={{ textAlign: 'center' }} />
+              <ListItemText primary="Quotes" secondary={user.quotes} sx={{ textAlign: 'center' }} />
+              <ListItemText primary="Scheduled Jobs" secondary={user.jobs} sx={{ textAlign: 'center' }} />{' '}
+              <Button color="secondary" variant="contained" style={EditBTNStyle}>
+                Open
+              </Button>
             </ListItem>
           </Paper>
         ))}
       </List>
-
       <CustomerDetailsModal
         openModal={openModal}
         handleCloseModal={handleCloseModal}

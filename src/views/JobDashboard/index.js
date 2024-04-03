@@ -3,7 +3,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
   Button,
   Select,
   MenuItem,
@@ -12,18 +11,19 @@ import {
   Modal,
   Box,
   Typography,
-  Grid
+  Grid,
+  useMediaQuery
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { usersServerData } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
-import { teamState } from '../../atom';
+// import { teamState } from '../../atom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 // import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { useRecoilState } from 'recoil';
+// import { useRecoilState } from 'recoil';
 
 // useSetRecoilState
 function RecentUsersList() {
@@ -35,11 +35,10 @@ function RecentUsersList() {
   const [selectedEquipment, setSelectedEquipment] = useState('');
   const [invoicePaid, setInvoicePaid] = useState(false);
   const [users, setUsers] = useState(usersServerData);
-  const [teamMembers2] = useRecoilState(teamState);
-  console.log(teamMembers2);
   const teamMembers = JSON.parse(localStorage.getItem('team'));
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [expandValue, setExpandValue] = useState(100);
+  const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   // setTeamMembers
 
@@ -198,77 +197,76 @@ function RecentUsersList() {
   };
   return (
     <div>
-      {/* Filter Controls */}
-      <FormControl sx={{ minWidth: 120, marginRight: 2 }}>
-        <InputLabel id="date-filter-label">Date Filter</InputLabel>
-        <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Date Filter" onChange={handleDateChange}>
-          <MenuItem value="all">All Dates</MenuItem>
-          <MenuItem value="past">Past Due & Today</MenuItem>
-          <MenuItem value="soon">Within 3 Days</MenuItem>
-        </Select>
-      </FormControl>
-
-      <FormControl sx={{ minWidth: 120, marginRight: 2 }}>
-        <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
-        <Select
-          labelId="service-filter-label"
-          id="service-filter"
-          value={serviceFilter}
-          label="Service Item Filter"
-          onChange={handleServiceChange}
-        >
-          <MenuItem value="all">All Service Items</MenuItem>
-          <MenuItem value="Multch">Multch</MenuItem>
-          <MenuItem value="Sod">Sod</MenuItem>
-          <MenuItem value="BasicPackage">Basic Package</MenuItem>
-          <MenuItem value="Irrigation">Irrigation</MenuItem>
-          <MenuItem value="None">None (Prospect)</MenuItem>
-        </Select>
-      </FormControl>
-
-      <FormControl sx={{ minWidth: 120 }}>
-        <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
-        <Select
-          labelId="frequency-filter-label"
-          id="frequency-filter"
-          value={frequencyFilter}
-          label="Service Frequency Filter"
-          onChange={handleFrequencyChange}
-        >
-          <MenuItem value="all">All Frequencies</MenuItem>
-          <MenuItem value="weekly">Weekly</MenuItem>
-          <MenuItem value="biweekly">Bi-Weekly</MenuItem>
-          <MenuItem value="monthly">Monthly</MenuItem>
-        </Select>
-      </FormControl>
-
-      <Button variant="contained" onClick={handleResetFilters} sx={{ marginLeft: '30px' }}>
-        Reset Filters
-      </Button>
-      <Button variant="contained" sx={{ marginLeft: '30px' }}>
-        + Add Job
-      </Button>
-
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
+            <InputLabel id="date-filter-label">Date Filter</InputLabel>
+            <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Date Filter" onChange={handleDateChange}>
+              <MenuItem value="all">All Dates</MenuItem>
+              <MenuItem value="past">Past Due & Today</MenuItem>
+              <MenuItem value="soon">Within 3 Days</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={1.5} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
+            <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
+            <Select
+              labelId="service-filter-label"
+              id="service-filter"
+              value={serviceFilter}
+              label="Service Item Filter"
+              onChange={handleServiceChange}
+            >
+              <MenuItem value="all">All Service Items</MenuItem>
+              <MenuItem value="Multch">Multch</MenuItem>
+              <MenuItem value="Sod">Sod</MenuItem>
+              <MenuItem value="BasicPackage">Basic Package</MenuItem>
+              <MenuItem value="Irrigation">Irrigation</MenuItem>
+              <MenuItem value="None">None (Prospect)</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={1.3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 150 }}>
+            <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
+            <Select
+              labelId="frequency-filter-label"
+              id="frequency-filter"
+              value={frequencyFilter}
+              label="Service Frequency Filter"
+              onChange={handleFrequencyChange}
+            >
+              <MenuItem value="all">All Frequencies</MenuItem>
+              <MenuItem value="weekly">Weekly</MenuItem>
+              <MenuItem value="biweekly">Bi-Weekly</MenuItem>
+              <MenuItem value="monthly">Monthly</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Button variant="contained" onClick={handleResetFilters} sx={{ width: '100%' }}>
+            Reset Filters
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={1.4} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Button variant="contained" sx={{ width: '100%' }}>
+            + Add Job
+          </Button>
+        </Grid>
+      </Grid>
       {/* User List */}
       <List>
         {users.filter(filterUsers)?.map((user, index) => (
           <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
-            <ListItem button onClick={() => handleOpenModal(user)}>
-              {' '}
-              {/* Open modal on user click */}
-              <ListItemText sx={{ width: '20px' }} primary="Name" secondary={`${user.firstName} ${user.lastName}`} />
-              <ListItemText sx={{ width: '20px' }} primary="Address" secondary={`${user.address}`} />
-              <ListItemText sx={{ width: '20px' }} primary="Service Item" secondary={`${user.serviceItem}`} style={{ margin: 0 }} />
-              <ListItemText sx={{ width: '20px' }} primary="Date" secondary={user.date} style={{ margin: 0 }} />
-              {/* <ListItemText sx={{ width: '20px' }} primary="Frequency" secondary={user.serviceFrequency} style={{ margin: 0 }} /> */}
-              <ListItemSecondaryAction>
-                <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
-                  Open
-                </Button>
-                {/* <Button color="secondary" variant="contained" style={EditBTNStyle}>
-                  Edit
-                </Button> */}
-              </ListItemSecondaryAction>
+            <ListItem button onClick={() => handleOpenModal(user)} sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
+              <ListItemText sx={{ textAlign: 'center' }} primary="Name" secondary={`${user.firstName} ${user.lastName}`} />
+              <ListItemText sx={{ textAlign: 'center' }} primary="Address" secondary={`${user.address}`} />
+              <ListItemText sx={{ textAlign: 'center' }} primary="Service Item" secondary={`${user.serviceItem}`} style={{ margin: 0 }} />
+              <ListItemText sx={{ textAlign: 'center' }} primary="Date" secondary={user.date} style={{ margin: 0 }} />
+              <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
+                Open
+              </Button>
             </ListItem>
           </Paper>
         ))}

@@ -14,6 +14,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 export default function PropertyDetails() {
   const [invoice, setInvoice] = React.useState('');
+  const [invoiceNew, setInvoiceNew] = React.useState(false);
+
   const [showInvoice, setShowInvoice] = useState(false);
   const handleShowCheckboxInvoice = (event) => {
     setShowInvoice(event.target.checked);
@@ -22,7 +24,9 @@ export default function PropertyDetails() {
   const handleChangeInvoice = (event) => {
     setInvoice(event.target.value);
   };
-
+  const handleChangeNewInvoice = () => {
+    setInvoiceNew(!invoiceNew);
+  };
   const [landscapingItems] = useState([
     { id: 1, name: 'Shrubs', cost: 30 },
     { id: 2, name: 'Mulch', cost: 25 },
@@ -136,92 +140,185 @@ export default function PropertyDetails() {
             </FormControl>
           )}
         </Stack>
+        <Grid item xs={12} sm={6}>
+          <Button onClick={handleChangeNewInvoice} variant="contained">
+            New Customer?
+          </Button>
+        </Grid>
       </Grid>
+      {invoice && (
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
+              <Grid container spacing={3}>
+                {landscapingItems.map((item) => (
+                  <Grid item xs={2} key={item.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          color="secondary"
+                          checked={selectedItems.some((selectedItem) => selectedItem.id === item.id)}
+                          onChange={() => handleCheckboxChange(item)}
+                        />
+                      }
+                      label={<Typography fontWeight="bold">{item.name}</Typography>}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Paper>
+          </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
-            <Grid container spacing={3}>
-              {landscapingItems.map((item) => (
-                <Grid item xs={2} key={item.id}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        color="secondary"
-                        checked={selectedItems.some((selectedItem) => selectedItem.id === item.id)}
-                        onChange={() => handleCheckboxChange(item)}
-                      />
-                    }
-                    label={<Typography fontWeight="bold">{item.name}</Typography>}
+          <Grid item xs={6}>
+            <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
+              {selectedItems.map((item) => (
+                <div key={item.id}>
+                  <Typography fontWeight="bold" sx={{ my: 1 }}>
+                    {item.name}
+                  </Typography>
+                  <TextField
+                    type="number"
+                    label="Quantity"
+                    value={item.quantity}
+                    onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
                   />
-                </Grid>
+                  {' x '}
+                  <TextField
+                    type="number"
+                    label="Unit Price"
+                    value={item.unitPrice}
+                    onChange={(e) => handleUnitPriceChange(item.id, parseInt(e.target.value))}
+                  />
+                  {' = '}${item.quantity * item.unitPrice}
+                  <TextField
+                    label="Description"
+                    variant="outlined"
+                    value={item.description}
+                    onChange={(e) => handleDescriptionChange(item.id, e.target.value)}
+                    sx={{ mt: -2 }}
+                  />
+                </div>
               ))}
-            </Grid>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={6}>
-          <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
-            {selectedItems.map((item) => (
-              <div key={item.id}>
-                <Typography fontWeight="bold" sx={{ my: 1 }}>
-                  {item.name}
-                </Typography>
-                <TextField
-                  type="number"
-                  label="Quantity"
-                  value={item.quantity}
-                  onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
-                />
-                {' x '}
-                <TextField
-                  type="number"
-                  label="Unit Price"
-                  value={item.unitPrice}
-                  onChange={(e) => handleUnitPriceChange(item.id, parseInt(e.target.value))}
-                />
-                {' = '}${item.quantity * item.unitPrice}
-                <TextField
-                  label="Description"
-                  variant="outlined"
-                  value={item.description}
-                  onChange={(e) => handleDescriptionChange(item.id, e.target.value)}
-                  sx={{ mt: -2 }}
-                />
-              </div>
-            ))}
-            <Typography fontWeight="bold" sx={{ mt: 5 }}>
-              Subtotal: ${subtotal.toFixed(2)}
-            </Typography>
-            <TextField
-              label="Discount (%)"
-              variant="outlined"
-              value={discountPercentage}
-              onChange={(e) => setDiscountPercentage(parseFloat(e.target.value))}
-              sx={{ mt: 2 }}
-            />
-            <TextField
-              label="Tax (%)"
-              variant="outlined"
-              value={taxPercentage}
-              onChange={(e) => setTaxPercentage(parseFloat(e.target.value))}
-              sx={{ mt: 2 }}
-            />
-            <Typography fontWeight="bold" sx={{ mt: 5 }}>
-              Required Down Payment: ?
-            </Typography>
-            <br></br>
-            <Stack direction={'row'} alignItems="center">
-              <Button variant="contained" onClick={calculateSubtotal} sx={{ mt: 3 }}>
-                Calculate Total:
-              </Button>
-              <Typography sx={{ pt: 3, ml: 2 }} fontWeight="bold">
-                ${totalCost.toFixed(2)}
+              <Typography fontWeight="bold" sx={{ mt: 5 }}>
+                Subtotal: ${subtotal.toFixed(2)}
               </Typography>
-            </Stack>
-          </Paper>
+              <TextField
+                label="Discount (%)"
+                variant="outlined"
+                value={discountPercentage}
+                onChange={(e) => setDiscountPercentage(parseFloat(e.target.value))}
+                sx={{ mt: 2 }}
+              />
+              <TextField
+                label="Tax (%)"
+                variant="outlined"
+                value={taxPercentage}
+                onChange={(e) => setTaxPercentage(parseFloat(e.target.value))}
+                sx={{ mt: 2 }}
+              />
+              <Typography fontWeight="bold" sx={{ mt: 5 }}>
+                Required Down Payment: ?
+              </Typography>
+              <br></br>
+              <Stack direction={'row'} alignItems="center">
+                <Button variant="contained" onClick={calculateSubtotal} sx={{ mt: 3 }}>
+                  Calculate Total:
+                </Button>
+                <Typography sx={{ pt: 3, ml: 2 }} fontWeight="bold">
+                  ${totalCost.toFixed(2)}
+                </Typography>
+              </Stack>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
+      {/* ////// */}
+      {invoiceNew && (
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
+              <Grid container spacing={3}>
+                {landscapingItems.map((item) => (
+                  <Grid item xs={2} key={item.id}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          color="secondary"
+                          checked={selectedItems.some((selectedItem) => selectedItem.id === item.id)}
+                          onChange={() => handleCheckboxChange(item)}
+                        />
+                      }
+                      label={<Typography fontWeight="bold">{item.name}</Typography>}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
+              {selectedItems.map((item) => (
+                <div key={item.id}>
+                  <Typography fontWeight="bold" sx={{ my: 1 }}>
+                    {item.name}
+                  </Typography>
+                  <TextField
+                    type="number"
+                    label="Quantity"
+                    value={item.quantity}
+                    onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
+                  />
+                  {' x '}
+                  <TextField
+                    type="number"
+                    label="Unit Price"
+                    value={item.unitPrice}
+                    onChange={(e) => handleUnitPriceChange(item.id, parseInt(e.target.value))}
+                  />
+                  {' = '}${item.quantity * item.unitPrice}
+                  <TextField
+                    label="Description"
+                    variant="outlined"
+                    value={item.description}
+                    onChange={(e) => handleDescriptionChange(item.id, e.target.value)}
+                    sx={{ mt: -2 }}
+                  />
+                </div>
+              ))}
+              <Typography fontWeight="bold" sx={{ mt: 5 }}>
+                Subtotal: ${subtotal.toFixed(2)}
+              </Typography>
+              <TextField
+                label="Discount (%)"
+                variant="outlined"
+                value={discountPercentage}
+                onChange={(e) => setDiscountPercentage(parseFloat(e.target.value))}
+                sx={{ mt: 2 }}
+              />
+              <TextField
+                label="Tax (%)"
+                variant="outlined"
+                value={taxPercentage}
+                onChange={(e) => setTaxPercentage(parseFloat(e.target.value))}
+                sx={{ mt: 2 }}
+              />
+              <Typography fontWeight="bold" sx={{ mt: 5 }}>
+                Required Down Payment: ?
+              </Typography>
+              <br></br>
+              <Stack direction={'row'} alignItems="center">
+                <Button variant="contained" onClick={calculateSubtotal} sx={{ mt: 3 }}>
+                  Calculate Total:
+                </Button>
+                <Typography sx={{ pt: 3, ml: 2 }} fontWeight="bold">
+                  ${totalCost.toFixed(2)}
+                </Typography>
+              </Stack>
+            </Paper>
+          </Grid>
+        </Grid>
+      )}
     </React.Fragment>
   );
 }

@@ -9,6 +9,9 @@ import FormControl from '@mui/material/FormControl';
 import Checkbox from '@mui/material/Checkbox';
 import Select from '@mui/material/Select';
 import { FormControlLabel } from '@mui/material';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 export default function AddressForm() {
@@ -35,9 +38,15 @@ export default function AddressForm() {
 
   const toggleEditMode = () => {
     setEditMode(!editMode);
+    if (editMode == true) {
+      toast.success(`Changes Saved`);
+    }
   };
   const toggleEditModeNew = () => {
     setEditModeNew(!editModeNew);
+    if (editModeNew == false) {
+      toast.success(`Changes Saved`);
+    }
   };
   const NewCustomerFunc = () => {
     setCustomer('');

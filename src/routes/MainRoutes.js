@@ -12,6 +12,7 @@ const CrewMessage = Loadable(lazy(() => import('views/CrewMessage')));
 const CustomerDashboard = Loadable(lazy(() => import('views/CustomerDashboard/index')));
 const ColorUtility = Loadable(lazy(() => import('views/ColorUtility/index')));
 const ScheduleQuote = Loadable(lazy(() => import('views/ScheduleQuote')));
+const Invoice = Loadable(lazy(() => import('views/Invoice')));
 const ScheduleProject = Loadable(lazy(() => import('views/ScheduleProject')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
@@ -52,6 +53,10 @@ const MainRoutes = {
     {
       path: '/ScheduleQuote',
       element: <ScheduleQuote />
+    },
+    {
+      path: '/Invoice',
+      element: <Invoice />
     },
     {
       path: '/ScheduleProject',

@@ -40,6 +40,13 @@ const dashboard = {
       icon: icons.IconDashboard
     },
     {
+      id: 'default24',
+      title: 'Invoice',
+      type: 'item',
+      url: '/Invoice',
+      icon: icons.IconDashboard
+    },
+    {
       id: 'default6',
       title: 'Crew Message',
       type: 'item',
