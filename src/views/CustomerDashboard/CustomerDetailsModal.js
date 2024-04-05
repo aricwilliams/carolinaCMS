@@ -6,6 +6,7 @@ import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { equipmentList } from '../../EquipmentUtil';
+import { useMediaQuery } from '@mui/material';
 
 function CustomerDetailsModalFUNC({
   openModal,
@@ -25,6 +26,8 @@ function CustomerDetailsModalFUNC({
   expand,
   invoicePaid
 }) {
+  const isLessThan600 = useMediaQuery('(max-width:600px)');
+
   return (
     <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
       <Box
@@ -33,7 +36,7 @@ function CustomerDetailsModalFUNC({
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 900,
+          width: isLessThan600 ? 350 : 900,
           bgcolor: 'background.paper',
           boxShadow: 24,
           p: 4,
@@ -42,7 +45,7 @@ function CustomerDetailsModalFUNC({
         }}
       >
         <Grid container spacing={0.5}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>
               <Typography
                 variant="h5"
@@ -103,7 +106,7 @@ function CustomerDetailsModalFUNC({
             </Paper>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>
               {selectedUser && (
                 <FormControlLabel
@@ -139,7 +142,7 @@ function CustomerDetailsModalFUNC({
               </div>
             </Paper>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
               <Box sx={{ my: 2, p: 2, ml: 1, height: expandValue, overflowY: expandValue === 100 ? 'hidden' : 'scroll' }}>
                 <Typography
@@ -175,7 +178,7 @@ function CustomerDetailsModalFUNC({
               )}
             </Paper>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
               <Typography
                 variant="h5"
@@ -217,7 +220,7 @@ function CustomerDetailsModalFUNC({
               </Typography>
             </Paper>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
               <Typography
                 variant="h5"
@@ -248,7 +251,7 @@ function CustomerDetailsModalFUNC({
               </Typography>
             </Paper>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
               <Typography
                 variant="h5"

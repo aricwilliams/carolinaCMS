@@ -110,9 +110,9 @@ function RecentUsersList() {
     const differenceInDays = Math.ceil((date - currentDate) / (1000 * 60 * 60 * 24));
 
     if (differenceInDays <= 0) {
-      return '#f6f0fd'; // Past date
+      return 'white'; // Past date
     } else if (differenceInDays <= 3) {
-      return '#d1f9ff'; // Within 3 days
+      return 'white'; // Within 3 days
     } else {
       return 'white'; // Default color
     }
@@ -195,6 +195,7 @@ function RecentUsersList() {
   const expand = () => {
     setExpandValue(300);
   };
+
   return (
     <div>
       <Grid container spacing={2}>
@@ -280,7 +281,7 @@ function RecentUsersList() {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 900,
+            width: isLessThan600 ? 350 : 900,
             bgcolor: 'background.paper',
             boxShadow: 24,
             p: 4,
@@ -289,7 +290,7 @@ function RecentUsersList() {
           }}
         >
           <Grid container spacing={0.5}>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>
                 <Typography
                   variant="h5"
@@ -350,7 +351,7 @@ function RecentUsersList() {
               </Paper>
             </Grid>
 
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>
                 {selectedUser && (
                   <FormControlLabel
@@ -386,7 +387,7 @@ function RecentUsersList() {
                 </div>
               </Paper>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
                 <Box sx={{ my: 2, p: 2, ml: 1, height: expandValue, overflowY: expandValue === 100 ? 'hidden' : 'scroll' }}>
                   <Typography
@@ -422,7 +423,7 @@ function RecentUsersList() {
                 )}
               </Paper>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
                 <Typography
                   variant="h5"
@@ -466,7 +467,7 @@ function RecentUsersList() {
                 <Button variant="contained">Send Invoice?</Button>
               </Paper>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
                 <Typography
                   variant="h5"
@@ -497,7 +498,7 @@ function RecentUsersList() {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, ml: 1 }}>
                 <Typography
                   variant="h5"

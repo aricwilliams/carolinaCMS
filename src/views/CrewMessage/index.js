@@ -1,23 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Grid,
-  Paper,
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
-  Divider,
-  TextField,
-  Button,
-  Stack
-} from '@mui/material';
+import { Grid, Paper, Box, Typography, List, ListItem, ListItemText, TextField, Button, Stack } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import DeleteIcon from '@mui/icons-material/Delete'; // Import DeleteIcon from MUI
 import IconButton from '@mui/material/IconButton';
+import { useMediaQuery } from '@mui/material';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -36,6 +23,7 @@ function TabPanel(props) {
 function CrewMessage() {
   const [value, setValue] = React.useState(0);
   const [inputMessage, setInputMessage] = useState('');
+  const isLessThan600 = useMediaQuery('(max-width:600px)');
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -103,7 +91,13 @@ function CrewMessage() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Paper elevation={3} sx={{ padding: 2 }}>
-                  <Tabs value={value} onChange={handleChange} aria-label="wrapped label tabs example">
+                  <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="wrapped label tabs example"
+                    orientation={isLessThan600 ? 'vertical' : 'horizontal'} // Set orientation based on screen size
+                    variant={isLessThan600 ? 'scrollable' : 'standard'}
+                  >
                     <Tab value={0} label="Team A" wrapped />
                     <Tab value={1} label="Tim" />
                     <Tab value={2} label="Adam" />
@@ -174,58 +168,362 @@ function CrewMessage() {
                         onChange={handleInputChange}
                         sx={{ mt: 2 }}
                       />
-                      <Button variant="contained" onClick={handleSubmit} sx={{ mt: 1 }}>
-                        Send
-                      </Button>
+                      <div style={{ textAlign: isLessThan600 ? 'center' : 'left' }}>
+                        <Button variant="contained" onClick={handleSubmit} sx={{ mt: 1, display: 'inline-block' }}>
+                          Send
+                        </Button>
+                      </div>
                     </List>
                   </TabPanel>
                   <TabPanel value={value} index={1}>
-                    <Typography variant="h6">My photos</Typography>
-                    <List>
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar>PH</Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Photo 1" secondary="July 2023" />
-                      </ListItem>
-                      {/* Add more items as needed */}
-                    </List>{' '}
+                    <Typography variant="h6">Messages</Typography>
+                    <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+                      {messages.map((message) => (
+                        <ListItem
+                          key={message.id}
+                          alignItems={message.me ? 'flex-start' : 'flex-end'}
+                          style={{ flexDirection: message.me ? 'row' : 'row-reverse' }}
+                        >
+                          {/* <Avatar
+                            sx={{ bgcolor: message.me ? 'primary.main' : 'secondary.main', ml: message.me ? 0 : 2, mr: message.me ? 2 : 0 }}
+                          >
+                            {message.me ? message.me[0] : message.sender[0]}
+                          </Avatar> */}
+                          <ListItemText
+                            primary={
+                              <>
+                                {message.me ? (
+                                  <>
+                                    {message.me}
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.sender}
+                                    </Typography>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                )}
+                              </>
+                            }
+                            secondary={
+                              <>
+                                <Stack direction="column">
+                                  <Typography variant="body2" component="span" fontWeight="bold">
+                                    {message.text}
+                                  </Typography>
+                                </Stack>
+                              </>
+                            }
+                            style={{ textAlign: message.me ? 'left' : 'right' }}
+                          />
+
+                          {message.me && (
+                            <IconButton onClick={() => handleDelete(message.id)} aria-label="delete message">
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </ListItem>
+                      ))}
+                      <TextField
+                        label="Type a message..."
+                        variant="outlined"
+                        fullWidth
+                        value={inputMessage}
+                        onChange={handleInputChange}
+                        sx={{ mt: 2 }}
+                      />
+                      <div style={{ textAlign: isLessThan600 ? 'center' : 'left' }}>
+                        <Button variant="contained" onClick={handleSubmit} sx={{ mt: 1, display: 'inline-block' }}>
+                          Send
+                        </Button>
+                      </div>
+                    </List>
                   </TabPanel>
                   <TabPanel value={value} index={2}>
-                    {/* Content for Tab One */}
-                    <Typography variant="h6">Friends</Typography>
-                    <Typography variant="subtitle1">1</Typography>
-                    <Divider sx={{ marginY: 2 }} />
-                    <Typography variant="h6">Groups</Typography>
-                    <Typography variant="subtitle1">3</Typography>
-                    {/* Add more items as needed */}{' '}
+                    <Typography variant="h6">Messages</Typography>
+                    <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+                      {messages.map((message) => (
+                        <ListItem
+                          key={message.id}
+                          alignItems={message.me ? 'flex-start' : 'flex-end'}
+                          style={{ flexDirection: message.me ? 'row' : 'row-reverse' }}
+                        >
+                          {/* <Avatar
+                            sx={{ bgcolor: message.me ? 'primary.main' : 'secondary.main', ml: message.me ? 0 : 2, mr: message.me ? 2 : 0 }}
+                          >
+                            {message.me ? message.me[0] : message.sender[0]}
+                          </Avatar> */}
+                          <ListItemText
+                            primary={
+                              <>
+                                {message.me ? (
+                                  <>
+                                    {message.me}
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.sender}
+                                    </Typography>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                )}
+                              </>
+                            }
+                            secondary={
+                              <>
+                                <Stack direction="column">
+                                  <Typography variant="body2" component="span" fontWeight="bold">
+                                    {message.text}
+                                  </Typography>
+                                </Stack>
+                              </>
+                            }
+                            style={{ textAlign: message.me ? 'left' : 'right' }}
+                          />
+
+                          {message.me && (
+                            <IconButton onClick={() => handleDelete(message.id)} aria-label="delete message">
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </ListItem>
+                      ))}
+                      <TextField
+                        label="Type a message..."
+                        variant="outlined"
+                        fullWidth
+                        value={inputMessage}
+                        onChange={handleInputChange}
+                        sx={{ mt: 2 }}
+                      />
+                      <div style={{ textAlign: isLessThan600 ? 'center' : 'left' }}>
+                        <Button variant="contained" onClick={handleSubmit} sx={{ mt: 1, display: 'inline-block' }}>
+                          Send
+                        </Button>
+                      </div>
+                    </List>
                   </TabPanel>
                   <TabPanel value={value} index={3}>
-                    {/* Content for Tab One */}
-                    <Typography variant="h6">Friends</Typography>
-                    <Typography variant="subtitle1">1</Typography>
-                    <Divider sx={{ marginY: 2 }} />
-                    <Typography variant="h6">Groups</Typography>
-                    <Typography variant="subtitle1">3</Typography>
-                    {/* Add more items as needed */}{' '}
+                    <Typography variant="h6">Messages</Typography>
+                    <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+                      {messages.map((message) => (
+                        <ListItem
+                          key={message.id}
+                          alignItems={message.me ? 'flex-start' : 'flex-end'}
+                          style={{ flexDirection: message.me ? 'row' : 'row-reverse' }}
+                        >
+                          {/* <Avatar
+                            sx={{ bgcolor: message.me ? 'primary.main' : 'secondary.main', ml: message.me ? 0 : 2, mr: message.me ? 2 : 0 }}
+                          >
+                            {message.me ? message.me[0] : message.sender[0]}
+                          </Avatar> */}
+                          <ListItemText
+                            primary={
+                              <>
+                                {message.me ? (
+                                  <>
+                                    {message.me}
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.sender}
+                                    </Typography>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                )}
+                              </>
+                            }
+                            secondary={
+                              <>
+                                <Stack direction="column">
+                                  <Typography variant="body2" component="span" fontWeight="bold">
+                                    {message.text}
+                                  </Typography>
+                                </Stack>
+                              </>
+                            }
+                            style={{ textAlign: message.me ? 'left' : 'right' }}
+                          />
+
+                          {message.me && (
+                            <IconButton onClick={() => handleDelete(message.id)} aria-label="delete message">
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </ListItem>
+                      ))}
+                      <TextField
+                        label="Type a message..."
+                        variant="outlined"
+                        fullWidth
+                        value={inputMessage}
+                        onChange={handleInputChange}
+                        sx={{ mt: 2 }}
+                      />
+                      <div style={{ textAlign: isLessThan600 ? 'center' : 'left' }}>
+                        <Button variant="contained" onClick={handleSubmit} sx={{ mt: 1, display: 'inline-block' }}>
+                          Send
+                        </Button>
+                      </div>
+                    </List>
                   </TabPanel>
                   <TabPanel value={value} index={4}>
-                    {/* Content for Tab One */}
-                    <Typography variant="h6">Friends</Typography>
-                    <Typography variant="subtitle1">1</Typography>
-                    <Divider sx={{ marginY: 2 }} />
-                    <Typography variant="h6">Groups</Typography>
-                    <Typography variant="subtitle1">3</Typography>
-                    {/* Add more items as needed */}{' '}
+                    <Typography variant="h6">Messages</Typography>
+                    <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+                      {messages.map((message) => (
+                        <ListItem
+                          key={message.id}
+                          alignItems={message.me ? 'flex-start' : 'flex-end'}
+                          style={{ flexDirection: message.me ? 'row' : 'row-reverse' }}
+                        >
+                          {/* <Avatar
+                            sx={{ bgcolor: message.me ? 'primary.main' : 'secondary.main', ml: message.me ? 0 : 2, mr: message.me ? 2 : 0 }}
+                          >
+                            {message.me ? message.me[0] : message.sender[0]}
+                          </Avatar> */}
+                          <ListItemText
+                            primary={
+                              <>
+                                {message.me ? (
+                                  <>
+                                    {message.me}
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.sender}
+                                    </Typography>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                )}
+                              </>
+                            }
+                            secondary={
+                              <>
+                                <Stack direction="column">
+                                  <Typography variant="body2" component="span" fontWeight="bold">
+                                    {message.text}
+                                  </Typography>
+                                </Stack>
+                              </>
+                            }
+                            style={{ textAlign: message.me ? 'left' : 'right' }}
+                          />
+
+                          {message.me && (
+                            <IconButton onClick={() => handleDelete(message.id)} aria-label="delete message">
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </ListItem>
+                      ))}
+                      <TextField
+                        label="Type a message..."
+                        variant="outlined"
+                        fullWidth
+                        value={inputMessage}
+                        onChange={handleInputChange}
+                        sx={{ mt: 2 }}
+                      />
+                      <div style={{ textAlign: isLessThan600 ? 'center' : 'left' }}>
+                        <Button variant="contained" onClick={handleSubmit} sx={{ mt: 1, display: 'inline-block' }}>
+                          Send
+                        </Button>
+                      </div>
+                    </List>
                   </TabPanel>
                   <TabPanel value={value} index={5}>
-                    {/* Content for Tab One */}
-                    <Typography variant="h6">Friends</Typography>
-                    <Typography variant="subtitle1">1</Typography>
-                    <Divider sx={{ marginY: 2 }} />
-                    <Typography variant="h6">Groups</Typography>
-                    <Typography variant="subtitle1">3</Typography>
-                    {/* Add more items as needed */}{' '}
+                    <Typography variant="h6">Messages</Typography>
+                    <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+                      {messages.map((message) => (
+                        <ListItem
+                          key={message.id}
+                          alignItems={message.me ? 'flex-start' : 'flex-end'}
+                          style={{ flexDirection: message.me ? 'row' : 'row-reverse' }}
+                        >
+                          {/* <Avatar
+                            sx={{ bgcolor: message.me ? 'primary.main' : 'secondary.main', ml: message.me ? 0 : 2, mr: message.me ? 2 : 0 }}
+                          >
+                            {message.me ? message.me[0] : message.sender[0]}
+                          </Avatar> */}
+                          <ListItemText
+                            primary={
+                              <>
+                                {message.me ? (
+                                  <>
+                                    {message.me}
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.sender}
+                                    </Typography>
+                                    <Typography variant="body2" component="span" color="text.secondary" ml={1}>
+                                      {message.time}
+                                    </Typography>
+                                  </>
+                                )}
+                              </>
+                            }
+                            secondary={
+                              <>
+                                <Stack direction="column">
+                                  <Typography variant="body2" component="span" fontWeight="bold">
+                                    {message.text}
+                                  </Typography>
+                                </Stack>
+                              </>
+                            }
+                            style={{ textAlign: message.me ? 'left' : 'right' }}
+                          />
+
+                          {message.me && (
+                            <IconButton onClick={() => handleDelete(message.id)} aria-label="delete message">
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                        </ListItem>
+                      ))}
+                      <TextField
+                        label="Type a message..."
+                        variant="outlined"
+                        fullWidth
+                        value={inputMessage}
+                        onChange={handleInputChange}
+                        sx={{ mt: 2 }}
+                      />
+                      <div style={{ textAlign: isLessThan600 ? 'center' : 'left' }}>
+                        <Button variant="contained" onClick={handleSubmit} sx={{ mt: 1, display: 'inline-block' }}>
+                          Send
+                        </Button>
+                      </div>
+                    </List>
                   </TabPanel>
                 </Paper>
               </Grid>

@@ -13,6 +13,7 @@ import Address from './Address';
 import PropertyDetails from './PropertyDetails';
 import Review from './Review';
 import Stack from '@mui/material/Stack';
+import { useMediaQuery } from '@mui/material';
 
 function Copyright() {
   return (
@@ -44,6 +45,7 @@ function getStepContent(step) {
 
 function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
   const [activeStep, setActiveStep] = React.useState(0);
+  const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
@@ -75,7 +77,7 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
           '& .MuiPaper-root': {
             maxHeight: '85vh',
             overflowY: 'auto',
-            width: '700px'
+            width: isLessThan600 ? 350 : 750
           }
         }}
       >

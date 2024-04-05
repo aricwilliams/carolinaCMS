@@ -57,9 +57,9 @@ function RecentUsersList() {
 
   const isFreeWork = (InvoiceStatus, ActiveWork, ScheduledWork) => {
     if (InvoiceStatus == 'Unpaid' && ActiveWork > 0) {
-      return '#EF7A7A'; // Past date
+      return 'white'; // Past date
     } else if (InvoiceStatus == 'Unpaid' && ScheduledWork > 0) {
-      return '#d1f9ff'; // Within 3 days
+      return 'white'; // Within 3 days
     } else {
       return 'white'; // Default color
     }
