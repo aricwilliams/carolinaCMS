@@ -213,6 +213,8 @@ function RecentUsersList() {
 
   return (
     <div>
+      <Typography sx={{ display: isLessThan600 ? 'block' : 'none', textAlign: 'center', paddingBottom: '20px' }}>Job DashBoard</Typography>
+
       <Grid container spacing={2}>
         <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>

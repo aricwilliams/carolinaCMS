@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { List, ListItem, ListItemText, Button, Select, MenuItem, FormControl, InputLabel, useMediaQuery } from '@mui/material';
+import { List, ListItem, ListItemText, Button, Select, MenuItem, FormControl, InputLabel, useMediaQuery, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { usersServerData } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
@@ -137,39 +137,46 @@ function RecentUsersList() {
   const expand = () => {
     setExpandValue(300);
   };
+  let noShow = true;
   return (
     <div>
+      <Typography sx={{ display: isLessThan600 ? 'block' : 'none', textAlign: 'center', paddingBottom: '20px' }}>
+        Customer DashBoard
+      </Typography>
       {/* Filter Controls */}
       <Grid container spacing={2}>
         <Grid item xs={12} sm={1} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
             <InputLabel id="date-filter-label">Invoices</InputLabel>
             <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Invoice Filter" onChange={handleDateChange}>
-              <MenuItem value="Unpaid">Unpaid</MenuItem>
+              <MenuItem value="Unpaid">Outstanding Invoice Not Paid</MenuItem>
               <MenuItem value="Paid">Paid</MenuItem>
               <MenuItem value="all">None</MenuItem>
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={1.5} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
-            <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
-            <Select
-              labelId="service-filter-label"
-              id="service-filter"
-              value={serviceFilter}
-              label="Service Item Filter"
-              onChange={handleServiceChange}
-            >
-              <MenuItem value="all">All Service Items</MenuItem>
-              <MenuItem value="Multch">Multch</MenuItem>
-              <MenuItem value="Sod">Sod</MenuItem>
-              <MenuItem value="BasicPackage">Basic Package</MenuItem>
-              <MenuItem value="Irrigation">Irrigation</MenuItem>
-              <MenuItem value="None">None (Prospect)</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+        {isLessThan600 ? null : noShow ? null : (
+          <Grid item xs={12} sm={1.5} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
+              <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
+              <Select
+                labelId="service-filter-label"
+                id="service-filter"
+                value={serviceFilter}
+                label="Service Item Filter"
+                onChange={handleServiceChange}
+              >
+                <MenuItem value="all">All Service Items</MenuItem>
+                <MenuItem value="Multch">Multch</MenuItem>
+                <MenuItem value="Sod">Sod</MenuItem>
+                <MenuItem value="BasicPackage">Basic Package</MenuItem>
+                <MenuItem value="Irrigation">Irrigation</MenuItem>
+                <MenuItem value="None">None (Prospect)</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
+
         <Grid item xs={12} sm={1.3} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <FormControl sx={{ minWidth: isLessThan600 ? 320 : 150 }}>
             <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
