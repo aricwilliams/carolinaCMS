@@ -24,7 +24,7 @@ import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 // import { useRecoilState } from 'recoil';
-
+import CloseIcon from '@mui/icons-material/Close';
 // useSetRecoilState
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
@@ -40,6 +40,16 @@ function RecentUsersList() {
   const [expandValue, setExpandValue] = useState(100);
   const isLessThan600 = useMediaQuery('(max-width:600px)');
 
+  const buttonStyle = {
+    border: 'none',
+    outline: 'none',
+    backgroundColor: 'transparent',
+    color: 'red',
+    padding: '1px 1px', // Adjust padding as needed
+    cursor: 'pointer',
+    fontSize: '0.8rem',
+    marginTop: '10px'
+  };
   // setTeamMembers
 
   const equipmentList = [
@@ -196,6 +206,11 @@ function RecentUsersList() {
     setExpandValue(300);
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+  };
+
   return (
     <div>
       <Grid container spacing={2}>
@@ -261,10 +276,28 @@ function RecentUsersList() {
         {users.filter(filterUsers)?.map((user, index) => (
           <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
             <ListItem button onClick={() => handleOpenModal(user)} sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
-              <ListItemText sx={{ textAlign: 'center' }} primary="Name" secondary={`${user.firstName} ${user.lastName}`} />
-              <ListItemText sx={{ textAlign: 'center' }} primary="Address" secondary={`${user.address}`} />
-              <ListItemText sx={{ textAlign: 'center' }} primary="Service Item" secondary={`${user.serviceItem}`} style={{ margin: 0 }} />
-              <ListItemText sx={{ textAlign: 'center' }} primary="Date" secondary={user.date} style={{ margin: 0 }} />
+              <ListItemText
+                sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                primary="Name"
+                secondary={`${user.firstName} ${user.lastName}`}
+              />
+              <ListItemText
+                sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                primary="Address"
+                secondary={`${user.address}`}
+              />
+              <ListItemText
+                sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                primary="Service Item"
+                secondary={`${user.serviceItem}`}
+                style={{ margin: 0 }}
+              />
+              <ListItemText
+                sx={{ textAlign: 'center', paddingBottom: isLessThan600 ? 1.5 : 0, paddingTop: isLessThan600 ? 1.5 : 0 }}
+                primary="Date"
+                secondary={formatDate(user.date)}
+                style={{ margin: 0 }}
+              />{' '}
               <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
                 Open
               </Button>
@@ -289,6 +322,12 @@ function RecentUsersList() {
             overflowY: 'auto' // Allow vertical scrolling
           }}
         >
+          <Box sx={{ textAlign: 'right' }}>
+            <Button style={buttonStyle} onClick={handleCloseModal} variant="contained" disableElevation>
+              <CloseIcon />
+            </Button>
+          </Box>
+
           <Grid container spacing={0.5}>
             <Grid item xs={12} md={4}>
               <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>

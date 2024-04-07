@@ -31,7 +31,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import User1 from 'assets/images/users/user-round.svg';
+import User1 from 'assets/images/users/icon.png';
 
 // assets
 import { IconLogout, IconSettings } from '@tabler/icons-react';
@@ -175,7 +175,7 @@ const ProfileSection = () => {
                       <Stack direction="row" spacing={0.5} alignItems="center">
                         <Typography variant="h4">Good Morning,</Typography>
                         <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          John Dale
+                          Aric Williams
                         </Typography>
                       </Stack>
                       <Typography variant="subtitle2">Master Admin</Typography>
