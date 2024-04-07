@@ -11,6 +11,8 @@ const JobDashboard = Loadable(lazy(() => import('views/JobDashboard')));
 const CrewMessage = Loadable(lazy(() => import('views/CrewMessage')));
 const CustomerDashboard = Loadable(lazy(() => import('views/CustomerDashboard/index')));
 const ColorUtility = Loadable(lazy(() => import('views/ColorUtility/index')));
+const Home = Loadable(lazy(() => import('views/Home')));
+
 const ScheduleQuote = Loadable(lazy(() => import('views/ScheduleQuote')));
 const Invoice = Loadable(lazy(() => import('views/Invoice')));
 const ScheduleProject = Loadable(lazy(() => import('views/ScheduleProject')));
@@ -41,6 +43,10 @@ const MainRoutes = {
     {
       path: '/CrewPage',
       element: <Crew />
+    },
+    {
+      path: '/Home',
+      element: <Home />
     },
     {
       path: '/CrewMessage',

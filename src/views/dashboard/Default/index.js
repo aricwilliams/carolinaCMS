@@ -29,7 +29,7 @@ const Dashboard = () => {
 
     const timer = setTimeout(() => {
       setLoading(false);
-      navigate('/CustomerDashboard');
+      navigate('/Home');
     }, 3000);
 
     return () => clearTimeout(timer);

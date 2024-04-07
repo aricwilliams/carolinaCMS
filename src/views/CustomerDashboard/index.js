@@ -141,7 +141,7 @@ function RecentUsersList() {
     <div>
       {/* Filter Controls */}
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Grid item xs={12} sm={1} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
             <InputLabel id="date-filter-label">Invoices</InputLabel>
             <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Invoice Filter" onChange={handleDateChange}>
@@ -151,7 +151,7 @@ function RecentUsersList() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={1.5} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Grid item xs={12} sm={1.5} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
             <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
             <Select
@@ -170,7 +170,7 @@ function RecentUsersList() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={1.3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Grid item xs={12} sm={1.3} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <FormControl sx={{ minWidth: isLessThan600 ? 320 : 150 }}>
             <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
             <Select
