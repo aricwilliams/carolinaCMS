@@ -173,7 +173,11 @@ function CrewMessage() {
       <Grid item xs={12}>
         <Paper elevation={3} sx={{ padding: 2 }}>
           <FormControl fullWidth>
-            <InputLabel id="conversation-select-label">Select Conversation</InputLabel>
+            <InputLabel id="conversation-select-label" sx={{ marginBottom: '40px', color: 'white' }}>
+              Select Conversation
+            </InputLabel>
+            <div style={{ color: 'white' }}>d</div>
+
             <Select labelId="conversation-select-label" id="conversation-select" value={selectedConversation} onChange={handleChange}>
               {conversations.map((conversation) => (
                 <MenuItem key={conversation.id} value={conversation.id}>
@@ -184,7 +188,7 @@ function CrewMessage() {
           </FormControl>
           <TabPanel value={selectedConversation} index={selectedConversation}>
             <Typography variant="h6">Messages</Typography>
-            <List sx={{ maxHeight: 400, overflow: 'auto' }}>
+            <List sx={{ maxHeight: isLessThan600 ? 'calc(100vh - 350px)' : 400, overflow: 'auto' }}>
               {messages[selectedConversation].map((message) => (
                 <ListItem
                   key={message.id}
