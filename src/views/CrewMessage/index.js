@@ -224,7 +224,7 @@ function CrewMessage() {
               ))}
               <div ref={messagesEndRef} />
             </List>{' '}
-            <div style={{ position: 'absolute', bottom: '10px', width: '80%' }}>
+            <div style={{ width: '100%' }}>
               <TextField
                 label="Type a message..."
                 variant="outlined"
@@ -232,6 +232,12 @@ function CrewMessage() {
                 value={inputMessage}
                 onChange={handleInputChange}
                 sx={{ mt: 2 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSubmit();
+                  }
+                }}
               />
               <div style={{ textAlign: isLessThan600 ? 'center' : 'left' }}>
                 <Button variant="contained" onClick={handleSubmit} sx={{ mt: 1, display: 'inline-block' }}>
