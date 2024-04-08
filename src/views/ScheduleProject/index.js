@@ -13,6 +13,7 @@ import Review from './Review';
 import Stack from '@mui/material/Stack';
 import Scheduling from './Scheduling';
 import { useMediaQuery } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 // function Copyright() {
 //   return (
@@ -46,11 +47,14 @@ function getStepContent(step) {
 
 function CustomerModal() {
   const [activeStep, setActiveStep] = React.useState(0);
+  const navigate = useNavigate();
 
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
-
+  const handleClickJob = () => {
+    navigate('/JobDashboard');
+  };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
   };
@@ -85,12 +89,12 @@ function CustomerModal() {
         {activeStep === steps.length ? (
           <React.Fragment>
             <Typography variant="h5" gutterBottom>
-              Customer Added
+              Project Added!
             </Typography>
             <Stack direction={'row'}>
-              <Typography variant="subtitle1">Schedule a project for this customer?</Typography>
-              <Button variant="contained" sx={{ ml: 1 }}>
-                + Project
+              <Typography variant="subtitle1">See project in dashboard?</Typography>
+              <Button onClick={handleClickJob} variant="contained" sx={{ ml: 1 }}>
+                See Project
               </Button>
             </Stack>
           </React.Fragment>

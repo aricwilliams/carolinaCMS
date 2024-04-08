@@ -11,6 +11,7 @@ import Address from './Address';
 import PropertyDetails from './PropertyDetails';
 import Review from './Review';
 import Stack from '@mui/material/Stack';
+import { useNavigate } from 'react-router-dom';
 import { useMediaQuery } from '@mui/material';
 
 // function Copyright() {
@@ -42,8 +43,12 @@ function getStepContent(step) {
 }
 
 function CustomerModal() {
-  const [activeStep, setActiveStep] = React.useState(0);
+  const navigate = useNavigate();
 
+  const [activeStep, setActiveStep] = React.useState(0);
+  const handleClickProject = () => {
+    navigate('/ScheduleProject');
+  };
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -82,11 +87,11 @@ function CustomerModal() {
         {activeStep === steps.length ? (
           <React.Fragment>
             <Typography variant="h5" gutterBottom>
-              Customer Added
+              Quote Added!
             </Typography>
             <Stack direction={'row'}>
               <Typography variant="subtitle1">Schedule a project for this customer?</Typography>
-              <Button variant="contained" sx={{ ml: 1 }}>
+              <Button onClick={handleClickProject} variant="contained" sx={{ ml: 1 }}>
                 + Project
               </Button>
             </Stack>

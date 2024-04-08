@@ -50,12 +50,21 @@ export default function PropertyDetails() {
     // Add more items as needed
   ]);
 
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState(() => {
+    const savedItems = JSON.parse(localStorage.getItem('selectedItems'));
+    return savedItems || [];
+  });
+  const [selectedItemsNew, setSelectedItemsNew] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
+  const [totalCostNew, setTotalCostNew] = useState(0);
+
   const [subtotal, setSubtotal] = useState(0);
+  const [subtotalNew, setSubtotalNew] = useState(0);
+
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [taxPercentage, setTaxPercentage] = useState(0);
-
+  const [discountPercentageNew, setDiscountPercentageNew] = useState(0);
+  const [taxPercentageNew, setTaxPercentageNew] = useState(0);
   const handleDescriptionChange = (itemId, newDescription) => {
     const updatedItems = selectedItems.map((item) => {
       if (item.id === itemId) {
@@ -66,17 +75,49 @@ export default function PropertyDetails() {
 
     setSelectedItems(updatedItems);
   };
+  const handleDescriptionChangeNew = (itemId, newDescription) => {
+    const updatedItems = selectedItemsNew.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, description: newDescription };
+      }
+      return item;
+    });
 
+    setSelectedItemsNew(updatedItems);
+  };
+  // const handleCheckboxChange = (item) => {
+  //   const isItemSelected = selectedItems.some((selectedItem) => selectedItem.id === item.id);
+
+  //   if (!isItemSelected) {
+  //     setSelectedItems([...selectedItems, { ...item, quantity: 1, unitPrice: item.cost }]);
+  //   } else {
+  //     setSelectedItems(selectedItems.filter((selectedItem) => selectedItem.id !== item.id));
+  //   }
+  // };
   const handleCheckboxChange = (item) => {
     const isItemSelected = selectedItems.some((selectedItem) => selectedItem.id === item.id);
 
     if (!isItemSelected) {
-      setSelectedItems([...selectedItems, { ...item, quantity: 1, unitPrice: item.cost }]);
+      const updatedItems = [...selectedItems, { ...item, quantity: 1, unitPrice: item.cost }];
+      setSelectedItems(updatedItems);
+      localStorage.setItem('selectedItems', JSON.stringify(updatedItems));
     } else {
-      setSelectedItems(selectedItems.filter((selectedItem) => selectedItem.id !== item.id));
+      const updatedItems = selectedItems.filter((selectedItem) => selectedItem.id !== item.id);
+      setSelectedItems(updatedItems);
+      localStorage.setItem('selectedItems', JSON.stringify(updatedItems));
     }
   };
+  const handleCheckboxChangeNew = (item) => {
+    const isItemSelected = selectedItemsNew.some((selectedItem) => selectedItem.id === item.id);
 
+    if (!isItemSelected) {
+      const updatedItems = [...selectedItemsNew, { ...item, quantity: 1, unitPrice: item.cost }];
+      setSelectedItemsNew(updatedItems);
+    } else {
+      const updatedItems = selectedItemsNew.filter((selectedItem) => selectedItem.id !== item.id);
+      setSelectedItemsNew(updatedItems);
+    }
+  };
   const handleQuantityChange = (itemId, newQuantity) => {
     const updatedItems = selectedItems.map((item) => {
       if (item.id === itemId) {
@@ -85,7 +126,18 @@ export default function PropertyDetails() {
       return item;
     });
 
-    setSelectedItems(updatedItems);
+    setSelectedItems(updatedItems); // Update state
+    localStorage.setItem('selectedItems', JSON.stringify(updatedItems)); // Store in local storage
+  };
+  const handleQuantityChangeNew = (itemId, newQuantity) => {
+    const updatedItems = selectedItemsNew.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+
+    setSelectedItemsNew(updatedItems);
   };
 
   const handleUnitPriceChange = (itemId, newUnitPrice) => {
@@ -98,7 +150,16 @@ export default function PropertyDetails() {
 
     setSelectedItems(updatedItems);
   };
+  const handleUnitPriceChangeNew = (itemId, newUnitPrice) => {
+    const updatedItems = selectedItemsNew.map((item) => {
+      if (item.id === itemId) {
+        return { ...item, unitPrice: newUnitPrice };
+      }
+      return item;
+    });
 
+    setSelectedItemsNew(updatedItems);
+  };
   const calculateSubtotal = () => {
     const newSubtotal = selectedItems.reduce((acc, item) => {
       return acc + item.quantity * item.unitPrice;
@@ -106,13 +167,26 @@ export default function PropertyDetails() {
     setSubtotal(newSubtotal);
     calculateTotalCost(newSubtotal);
   };
-
+  const calculateSubtotalNew = () => {
+    const newSubtotal = selectedItemsNew.reduce((acc, item) => {
+      return acc + item.quantity * item.unitPrice;
+    }, 0);
+    setSubtotalNew(newSubtotal);
+    calculateTotalCostNew(newSubtotal);
+  };
   const calculateTotalCost = (newSubtotal) => {
     const newDiscount = (newSubtotal * discountPercentage) / 100;
     const newTaxableAmount = newSubtotal - newDiscount;
     const newTax = (newTaxableAmount * taxPercentage) / 100;
     const newTotal = newTaxableAmount + newTax;
     setTotalCost(newTotal);
+  };
+  const calculateTotalCostNew = (newSubtotal) => {
+    const newDiscount = (newSubtotal * discountPercentageNew) / 100;
+    const newTaxableAmount = newSubtotal - newDiscount;
+    const newTax = (newTaxableAmount * taxPercentage) / 100;
+    const newTotal = newTaxableAmount + newTax;
+    setTotalCostNew(newTotal);
   };
 
   return (
@@ -267,88 +341,116 @@ export default function PropertyDetails() {
       {/* ////// */}
       {invoiceNew && (
         <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
-              <Grid container spacing={3}>
-                {landscapingItems.map((item) => (
-                  <Grid item xs={2} key={item.id}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          color="secondary"
-                          checked={selectedItems.some((selectedItem) => selectedItem.id === item.id)}
-                          onChange={() => handleCheckboxChange(item)}
-                        />
-                      }
-                      label={<Typography fontWeight="bold">{item.name}</Typography>}
+          <Box
+            sx={{
+              // Ensuring the modal content is properly styled
+              display: 'flex',
+              alignItems: 'center',
+              margin: 'auto',
+              justifyContent: 'center',
+              '& .MuiPaper-root': {
+                overflowY: 'auto',
+                minWidth: isLessThan600 ? 320 : 900
+              }
+            }}
+          >
+            <Grid item xs={12}>
+              <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
+                <Grid container spacing={3}>
+                  {landscapingItems.map((item) => (
+                    <Grid item xs={isLessThan600 ? 4 : 2} key={item.id}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            color="secondary"
+                            checked={selectedItemsNew.some((selectedItem) => selectedItem.id === item.id)}
+                            onChange={() => handleCheckboxChangeNew(item)}
+                          />
+                        }
+                        label={<Typography fontWeight="bold">{item.name}</Typography>}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Paper>
+            </Grid>
+          </Box>
+          <Box
+            sx={{
+              // Ensuring the modal content is properly styled
+              display: 'flex',
+              alignItems: 'center',
+              margin: 'auto',
+              marginTop: '20px',
+              justifyContent: 'center',
+              '& .MuiPaper-root': {
+                overflowY: 'auto',
+                minWidth: isLessThan600 ? 320 : 900
+              }
+            }}
+          >
+            <Grid item xs={12}>
+              <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
+                {selectedItemsNew.map((item) => (
+                  <div key={item.id}>
+                    <Typography fontWeight="bold" sx={{ my: 1 }}>
+                      {item.name}
+                    </Typography>
+                    <TextField
+                      type="number"
+                      label="Quantity"
+                      value={item.quantity}
+                      onChange={(e) => handleQuantityChangeNew(item.id, parseInt(e.target.value))}
                     />
-                  </Grid>
+                    {' x '}
+                    <TextField
+                      type="number"
+                      label="Unit Price"
+                      value={item.unitPrice}
+                      onChange={(e) => handleUnitPriceChangeNew(item.id, parseInt(e.target.value))}
+                    />
+                    {' = '}${item.quantity * item.unitPrice}
+                    <TextField
+                      label="Description"
+                      variant="outlined"
+                      value={item.description}
+                      onChange={(e) => handleDescriptionChangeNew(item.id, e.target.value)}
+                      sx={{ mt: -2 }}
+                    />
+                  </div>
                 ))}
-              </Grid>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Paper square={false} elevation={3} sx={{ width: '100%', p: 3 }}>
-              {selectedItems.map((item) => (
-                <div key={item.id}>
-                  <Typography fontWeight="bold" sx={{ my: 1 }}>
-                    {item.name}
-                  </Typography>
-                  <TextField
-                    type="number"
-                    label="Quantity"
-                    value={item.quantity}
-                    onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
-                  />
-                  {' x '}
-                  <TextField
-                    type="number"
-                    label="Unit Price"
-                    value={item.unitPrice}
-                    onChange={(e) => handleUnitPriceChange(item.id, parseInt(e.target.value))}
-                  />
-                  {' = '}${item.quantity * item.unitPrice}
-                  <TextField
-                    label="Description"
-                    variant="outlined"
-                    value={item.description}
-                    onChange={(e) => handleDescriptionChange(item.id, e.target.value)}
-                    sx={{ mt: -2 }}
-                  />
-                </div>
-              ))}
-              <Typography fontWeight="bold" sx={{ mt: 5 }}>
-                Subtotal: ${subtotal.toFixed(2)}
-              </Typography>
-              <TextField
-                label="Discount (%)"
-                variant="outlined"
-                value={discountPercentage}
-                onChange={(e) => setDiscountPercentage(parseFloat(e.target.value))}
-                sx={{ mt: 2 }}
-              />
-              <TextField
-                label="Tax (%)"
-                variant="outlined"
-                value={taxPercentage}
-                onChange={(e) => setTaxPercentage(parseFloat(e.target.value))}
-                sx={{ mt: 2 }}
-              />
-              <Typography fontWeight="bold" sx={{ mt: 5 }}>
-                Required Down Payment: ?
-              </Typography>
-              <br></br>
-              <Stack direction={'row'} alignItems="center">
-                <Button variant="contained" onClick={calculateSubtotal} sx={{ mt: 3 }}>
-                  Calculate Total:
-                </Button>
-                <Typography sx={{ pt: 3, ml: 2 }} fontWeight="bold">
-                  ${totalCost.toFixed(2)}
+                <Typography fontWeight="bold" sx={{ mt: 5 }}>
+                  Subtotal: ${subtotalNew.toFixed(2)}
                 </Typography>
-              </Stack>
-            </Paper>
-          </Grid>
+                <TextField
+                  label="Discount (%)"
+                  variant="outlined"
+                  value={discountPercentageNew}
+                  onChange={(e) => setDiscountPercentageNew(parseFloat(e.target.value))}
+                  sx={{ mt: 2 }}
+                />
+                <TextField
+                  label="Tax (%)"
+                  variant="outlined"
+                  value={taxPercentageNew}
+                  onChange={(e) => setTaxPercentageNew(parseFloat(e.target.value))}
+                  sx={{ mt: 2 }}
+                />
+                <Typography fontWeight="bold" sx={{ mt: 5 }}>
+                  Required Down Payment: ?
+                </Typography>
+                <br></br>
+                <Stack direction={'row'} alignItems="center">
+                  <Button variant="contained" onClick={calculateSubtotalNew} sx={{ mt: 3 }}>
+                    Calculate Total:
+                  </Button>
+                  <Typography sx={{ pt: 3, ml: 2 }} fontWeight="bold">
+                    ${totalCostNew.toFixed(2)}
+                  </Typography>
+                </Stack>
+              </Paper>
+            </Grid>
+          </Box>
         </Grid>
       )}
     </React.Fragment>

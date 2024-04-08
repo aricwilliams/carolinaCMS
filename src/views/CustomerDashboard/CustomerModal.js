@@ -14,6 +14,7 @@ import PropertyDetails from './PropertyDetails';
 import Review from './Review';
 import Stack from '@mui/material/Stack';
 import { useMediaQuery } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -46,7 +47,11 @@ function getStepContent(step) {
 function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const isLessThan600 = useMediaQuery('(max-width:600px)');
+  const navigate = useNavigate();
 
+  const handleClickQuote = () => {
+    navigate('/ScheduleQuote');
+  };
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -102,7 +107,7 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
                 </Typography>
                 <Stack direction={'row'}>
                   <Typography variant="subtitle1">Schedule a quote for this customer?</Typography>
-                  <Button variant="contained" sx={{ ml: 1 }}>
+                  <Button onClick={handleClickQuote} variant="contained" sx={{ ml: 1 }}>
                     + Quote
                   </Button>
                 </Stack>
