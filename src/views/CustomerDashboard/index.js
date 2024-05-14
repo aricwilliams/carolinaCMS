@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { List, ListItem, ListItemText, Button, Select, MenuItem, FormControl, InputLabel, useMediaQuery, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { usersServerData } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
@@ -8,8 +8,8 @@ import Grid from '@mui/material/Grid';
 import CustomerModalContent from './CustomerModal';
 import CustomerDetailsModal from './CustomerDetailsModal';
 import { equipmentList } from '../../EquipmentUtil';
+import { useLocation } from 'react-router-dom';
 
-// useSetRecoilState
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('all');
@@ -24,6 +24,13 @@ function RecentUsersList() {
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [expandValue, setExpandValue] = useState(100);
   const isLessThan600 = useMediaQuery('(max-width:600px)');
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state && location.state.runCode) {
+      // Code to execute when component mounts after button click
+      setOpenCustomerModal(true); // Your other code here
+    }
+  }, [location.state]);
 
   // setTeamMembers
 

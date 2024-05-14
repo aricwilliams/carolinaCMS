@@ -1,5 +1,11 @@
 // assets
 import { IconDashboard } from '@tabler/icons-react';
+import HomeIcon from '@mui/icons-material/Home';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import MessageIcon from '@mui/icons-material/Message';
+import HardwareIcon from '@mui/icons-material/Hardware';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+// import AddIcon from '@mui/icons-material/Add';
 
 // constant
 const icons = { IconDashboard };
@@ -16,35 +22,36 @@ const dashboard = {
       title: 'Home',
       type: 'item',
       url: '/Home',
-      icon: icons.IconDashboard
+      icon: HomeIcon
     },
     {
       id: 'default3',
       title: 'Customer Dashboard',
       type: 'item',
       url: '/CustomerDashboard',
-      icon: icons.IconDashboard
+      icon: SupervisedUserCircleIcon
     },
     {
       id: 'default2',
       title: 'Job Dashboard',
       type: 'item',
       url: '/JobDashboard',
-      icon: icons.IconDashboard
+      icon: HardwareIcon
     },
-    {
-      id: 'default22',
-      title: 'Schedule Quote',
-      type: 'item',
-      url: '/ScheduleQuote',
-      icon: icons.IconDashboard
-    },
+
     {
       id: 'default23',
       title: 'Schedule Project',
       type: 'item',
       url: '/ScheduleProject',
-      icon: icons.IconDashboard
+      icon: AttachMoneyIcon
+    },
+    {
+      id: 'default6',
+      title: 'Crew Message',
+      type: 'item',
+      url: '/CrewMessage',
+      icon: MessageIcon
     },
     {
       id: 'default24',
@@ -54,12 +61,13 @@ const dashboard = {
       icon: icons.IconDashboard
     },
     {
-      id: 'default6',
-      title: 'Crew Message',
+      id: 'default22',
+      title: 'Schedule Quote',
       type: 'item',
-      url: '/CrewMessage',
+      url: '/ScheduleQuote',
       icon: icons.IconDashboard
     },
+
     {
       id: 'login3a',
       title: 'Login',

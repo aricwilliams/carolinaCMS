@@ -8,26 +8,12 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 import Address from './Address';
 import PropertyDetails from './PropertyDetails';
 import Review from './Review';
 import Stack from '@mui/material/Stack';
 import { useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const steps = ['Customer Information', 'Property details', 'Quick Service Addon & Notes'];
 
@@ -131,7 +117,6 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
               </React.Fragment>
             )}
           </Paper>
-          <Copyright />
         </Container>
       </Box>
     </Modal>

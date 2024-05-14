@@ -11,17 +11,24 @@ import Select from '@mui/material/Select';
 import { FormControlLabel } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Tooltip from '@mui/material/Tooltip';
+import Chip from '@mui/material/Chip';
+import { useMediaQuery } from '@mui/material';
+import Box from '@mui/material/Box';
 
 import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 export default function AddressForm() {
   const [editMode, setEditMode] = React.useState(false);
   const [editModeNew, setEditModeNew] = React.useState(false);
+  const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   const [customer, setCustomer] = React.useState('');
   const [newCustomer, setNewCustomer] = React.useState(false);
   const [showCustomer, setShowCustomer] = useState(false);
 
+  const [tagValue, setTagValue] = useState('');
+  const [tags, setTags] = useState([]);
   const handleChangeCustomer = (event) => {
     setCustomer(event.target.value);
   };
@@ -52,6 +59,37 @@ export default function AddressForm() {
     setCustomer('');
     setNewCustomer(true);
     setShowCustomer(false);
+  };
+  const handleTagChange = (event) => {
+    setTagValue(event.target.value);
+  };
+
+  const handleTagSubmit = () => {
+    if (tagValue.trim() !== '') {
+      setTags([...tags, tagValue.trim()]);
+      setTagValue('');
+    }
+  };
+
+  const handleTagDelete = (index) => {
+    const updatedTags = [...tags];
+    updatedTags.splice(index, 1);
+    setTags(updatedTags);
+  };
+
+  const handleTagClick = (index) => {
+    const editedTag = prompt('Edit Tag', tags[index]);
+    if (editedTag !== null) {
+      const updatedTags = [...tags];
+      updatedTags[index] = editedTag.trim();
+      setTags(updatedTags);
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleTagSubmit();
+    }
   };
 
   return (
@@ -93,6 +131,97 @@ export default function AddressForm() {
 
       {customer && (
         <Grid container spacing={3} sx={{ mt: 4 }}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              required
+              id="firstName"
+              name="firstName"
+              label="First name"
+              fullWidth
+              autoComplete="given-name"
+              variant="standard"
+              disabled={!editMode}
+              defaultValue="Joann"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              required
+              id="lastName"
+              name="lastName"
+              label="Last name"
+              fullWidth
+              autoComplete="family-name"
+              variant="standard"
+              disabled={!editMode}
+              defaultValue="Kannelston"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id="cell"
+              name="cell"
+              label="Phone"
+              fullWidth
+              autoComplete="given-name"
+              variant="standard"
+              disabled={!editMode}
+              defaultValue="(910)234-5543"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id="work"
+              name="work"
+              label="Phone 2"
+              fullWidth
+              autoComplete="family-name"
+              variant="standard"
+              disabled={!editMode}
+              defaultValue="(910)234-5543"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id="companyName"
+              name="companyName"
+              label="Company Name"
+              fullWidth
+              autoComplete="family-name"
+              variant="standard"
+              disabled={!editMode}
+              defaultValue="N/A"
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Tooltip title="Tags are used for quick identification " arrow>
+              <>
+                <Stack direction={isLessThan600 ? 'column' : 'row'} spacing={1}>
+                  {tags.map((tag, index) => (
+                    <Box key={index}>
+                      <Chip label={tag} variant="outlined" onDelete={() => handleTagDelete(index)} onClick={() => handleTagClick(index)} />
+                    </Box>
+                  ))}
+                </Stack>
+
+                <TextField
+                  id="tag"
+                  name="tag"
+                  label="Tag"
+                  fullWidth
+                  autoComplete="family-name"
+                  variant="standard"
+                  value={tagValue}
+                  onChange={handleTagChange}
+                  disabled={!editMode}
+                  onKeyPress={handleKeyPress}
+                />
+                <Button sx={{ mt: 1 }} variant="contained" disabled={!editMode} onClick={handleTagSubmit}>
+                  Submit
+                </Button>
+              </>
+            </Tooltip>
+          </Grid>
           <Grid item xs={12}>
             <TextField
               required
@@ -154,6 +283,49 @@ export default function AddressForm() {
       )}
       {newCustomer && (
         <Grid container spacing={3} sx={{ mt: 4 }}>
+          <Grid item xs={12} sm={6}>
+            <TextField required id="firstName" name="firstName" label="First name" fullWidth autoComplete="given-name" variant="standard" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField required id="lastName" name="lastName" label="Last name" fullWidth autoComplete="family-name" variant="standard" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField id="cell" name="cell" label="Phone" fullWidth autoComplete="given-name" variant="standard" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField id="work" name="work" label="Phone 2" fullWidth autoComplete="family-name" variant="standard" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField id="companyName" name="companyName" label="Company Name" fullWidth autoComplete="family-name" variant="standard" />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Tooltip title="Tags are used for quick identification " arrow>
+              <>
+                <Stack direction={isLessThan600 ? 'column' : 'row'} spacing={1}>
+                  {tags.map((tag, index) => (
+                    <Box key={index}>
+                      <Chip label={tag} variant="outlined" onDelete={() => handleTagDelete(index)} onClick={() => handleTagClick(index)} />
+                    </Box>
+                  ))}
+                </Stack>
+
+                <TextField
+                  id="tag"
+                  name="tag"
+                  label="Tag"
+                  fullWidth
+                  autoComplete="family-name"
+                  variant="standard"
+                  value={tagValue}
+                  onChange={handleTagChange}
+                  onKeyPress={handleKeyPress}
+                />
+                <Button variant="contained" onClick={handleTagSubmit}>
+                  Submit
+                </Button>
+              </>
+            </Tooltip>
+          </Grid>
           <Grid item xs={12}>
             <TextField
               required
