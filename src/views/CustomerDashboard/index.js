@@ -4,11 +4,13 @@ import Paper from '@mui/material/Paper';
 import { usersServerData } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
 import Grid from '@mui/material/Grid';
-
+import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import CustomerModalContent from './CustomerModal';
 import CustomerDetailsModal from './CustomerDetailsModal';
 import { equipmentList } from '../../EquipmentUtil';
 import { useLocation } from 'react-router-dom';
+import Stack from '@mui/material/Stack';
 
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
@@ -24,7 +26,11 @@ function RecentUsersList() {
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [expandValue, setExpandValue] = useState(100);
   const isLessThan600 = useMediaQuery('(max-width:600px)');
+  const [userHasData, setUserHasData] = useState(false);
   const location = useLocation();
+  const [isButtonClicked, setIsButtonClicked] = useState(true);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (location.state && location.state.runCode) {
       // Code to execute when component mounts after button click
@@ -111,7 +117,25 @@ function RecentUsersList() {
       return true; // Show all users if no filter applied
     }
   };
+  const handleNavigateToInvoice = (invoice) => {
+    console.log(invoice);
+    navigate('/invoice');
+  };
+  const handleNavigateToActiveJobs = (invoice) => {
+    console.log(invoice);
+    navigate('/JobDashboard');
+  };
+  const handleNavigateToScheduleJobs = (invoice) => {
+    console.log(invoice);
+    navigate('/JobDashboard');
+  };
+  const handleNavigateToQuotes = (invoice) => {
+    console.log(invoice);
+    navigate('/JobDashboard');
+  };
   const handleOpenModal = (user) => {
+    setUserHasData(false);
+
     setSelectedUser(user);
     setOpenModal(true);
   };
@@ -145,92 +169,206 @@ function RecentUsersList() {
     setExpandValue(300);
   };
   let noShow = true;
+
+  const handleMakeNewCustomerNoData = () => {
+    setIsButtonClicked(true);
+
+    navigate('/CustomerDashboard', { state: { runCode: true } });
+  };
+
   return (
     <div>
-      <Typography sx={{ display: isLessThan600 ? 'block' : 'none', textAlign: 'center', paddingBottom: '20px' }}>
-        Customer DashBoard
-      </Typography>
-      {/* Filter Controls */}
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={1} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
-            <InputLabel id="date-filter-label">Invoices</InputLabel>
-            <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Invoice Filter" onChange={handleDateChange}>
-              <MenuItem value="Unpaid">Outstanding Invoice Not Paid</MenuItem>
-              <MenuItem value="Paid">Paid</MenuItem>
-              <MenuItem value="all">None</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        {isLessThan600 ? null : noShow ? null : (
-          <Grid item xs={12} sm={1.5} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
-              <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
-              <Select
-                labelId="service-filter-label"
-                id="service-filter"
-                value={serviceFilter}
-                label="Service Item Filter"
-                onChange={handleServiceChange}
+      {userHasData ? (
+        <Grid item xs={12} sm={1.4} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 5 }}>
+          <Stack direction="column">
+            <Typography variant="h3" gutterBottom>
+              You have no Customers, Please add some customers!
+            </Typography>
+            <Box sx={{ my: 2 }}></Box>
+            <Stack direction="row">
+              <Button
+                onClick={handleMakeNewCustomerNoData}
+                variant="outlined"
+                sx={{
+                  ml: '40%',
+                  mb: 1,
+                  animation: isButtonClicked ? 'bounce 1s infinite' : 'none',
+                  '@keyframes bounce': {
+                    '0%, 20%, 50%, 80%, 100%': {
+                      transform: 'translateY(0)'
+                    },
+                    '40%': {
+                      transform: 'translateY(-10px)'
+                    },
+                    '60%': {
+                      transform: 'translateY(-5px)'
+                    }
+                  }
+                }}
               >
-                <MenuItem value="all">All Service Items</MenuItem>
-                <MenuItem value="Multch">Multch</MenuItem>
-                <MenuItem value="Sod">Sod</MenuItem>
-                <MenuItem value="BasicPackage">Basic Package</MenuItem>
-                <MenuItem value="Irrigation">Irrigation</MenuItem>
-                <MenuItem value="None">None (Prospect)</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
-
-        <Grid item xs={12} sm={1.3} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 150 }}>
-            <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
-            <Select
-              labelId="frequency-filter-label"
-              id="frequency-filter"
-              value={frequencyFilter}
-              label="Service Frequency Filter"
-              onChange={handleFrequencyChange}
-            >
-              <MenuItem value="all">All Frequencies</MenuItem>
-              <MenuItem value="weekly">Weekly</MenuItem>
-              <MenuItem value="biweekly">Bi-Weekly</MenuItem>
-              <MenuItem value="monthly">Monthly</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Button variant="contained" onClick={handleResetFilters} sx={{ width: '100%' }}>
-            Reset Filters
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={1.4} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Button variant="contained" onClick={handleOpenCustomerModal} sx={{ width: '100%' }}>
-            + Add New Customer
-          </Button>
-        </Grid>
-      </Grid>
-
-      {/* User List */}
-      <List>
-        {users.filter(filterUsers)?.map((user, index) => (
-          <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isFreeWork(user.invoices, user.activeJobs, user.jobs) }}>
-            <ListItem button onClick={() => handleOpenModal(user)} sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
-              <ListItemText primary="Name" secondary={`${user.firstName} ${user.lastName}`} sx={{ textAlign: 'center' }} />
-              <ListItemText primary="Phone Number" secondary={user.phoneNumber} sx={{ textAlign: 'center' }} />
-              <ListItemText primary="Invoices" secondary={user.invoices} sx={{ textAlign: 'center' }} />
-              <ListItemText primary="Active Jobs" secondary={`${user.activeJobs}`} sx={{ textAlign: 'center' }} />
-              <ListItemText primary="Quotes" secondary={user.quotes} sx={{ textAlign: 'center' }} />
-              <ListItemText primary="Scheduled Jobs" secondary={user.jobs} sx={{ textAlign: 'center' }} />{' '}
-              <Button color="secondary" variant="contained" style={EditBTNStyle}>
-                Open
+                Add First Customer
               </Button>
-            </ListItem>
-          </Paper>
-        ))}
-      </List>
+            </Stack>
+          </Stack>
+        </Grid>
+      ) : (
+        <>
+          <Typography sx={{ display: isLessThan600 ? 'block' : 'none', textAlign: 'center', paddingBottom: '20px' }}>
+            Customer DashBoard
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={1} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
+                <InputLabel id="date-filter-label">Invoices</InputLabel>
+                <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Invoice Filter" onChange={handleDateChange}>
+                  <MenuItem value="Unpaid">Outstanding Invoice Not Paid</MenuItem>
+                  <MenuItem value="Paid">Paid</MenuItem>
+                  <MenuItem value="all">None</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            {isLessThan600 ? null : noShow ? null : (
+              <Grid item xs={12} sm={1.5} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
+                  <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
+                  <Select
+                    labelId="service-filter-label"
+                    id="service-filter"
+                    value={serviceFilter}
+                    label="Service Item Filter"
+                    onChange={handleServiceChange}
+                  >
+                    <MenuItem value="all">All Service Items</MenuItem>
+                    <MenuItem value="Multch">Multch</MenuItem>
+                    <MenuItem value="Sod">Sod</MenuItem>
+                    <MenuItem value="BasicPackage">Basic Package</MenuItem>
+                    <MenuItem value="Irrigation">Irrigation</MenuItem>
+                    <MenuItem value="None">None (Prospect)</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
+
+            <Grid item xs={12} sm={1.3} md={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FormControl sx={{ minWidth: isLessThan600 ? 320 : 150 }}>
+                <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
+                <Select
+                  labelId="frequency-filter-label"
+                  id="frequency-filter"
+                  value={frequencyFilter}
+                  label="Service Frequency Filter"
+                  onChange={handleFrequencyChange}
+                >
+                  <MenuItem value="all">All Frequencies</MenuItem>
+                  <MenuItem value="weekly">Weekly</MenuItem>
+                  <MenuItem value="biweekly">Bi-Weekly</MenuItem>
+                  <MenuItem value="monthly">Monthly</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button variant="contained" onClick={handleResetFilters} sx={{ width: '100%' }}>
+                Reset Filters
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={2.5} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button variant="contained" onClick={handleOpenCustomerModal} sx={{ width: '100%' }}>
+                + Add New Customer
+              </Button>
+            </Grid>
+          </Grid>
+          <List>
+            {users.filter(filterUsers)?.map((user, index) => (
+              <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isFreeWork(user.invoices, user.activeJobs, user.jobs) }}>
+                <ListItem sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
+                  <ListItemText
+                    primary={<Typography sx={{ textAlign: 'center' }}>Name</Typography>}
+                    secondary={
+                      <Typography sx={{ textAlign: 'center' }}>
+                        {user.firstName} {user.lastName}
+                      </Typography>
+                    }
+                    sx={{ textAlign: 'center' }}
+                  />
+                  <ListItemText
+                    primary={<Typography sx={{ textAlign: 'center' }}>Phone Number</Typography>}
+                    secondary={
+                      <Typography
+                        sx={{ textAlign: 'center' }}
+                        // onClick={() => handleNavigateTo('phoneNumber')}
+                      >
+                        {user.phoneNumber}
+                      </Typography>
+                    }
+                    sx={{ textAlign: 'center' }}
+                  />
+                  <ListItemText
+                    primary={<Typography sx={{ textAlign: 'center' }}>Invoices</Typography>}
+                    secondary={
+                      <Typography
+                        sx={{
+                          textAlign: 'center',
+                          color: 'blue',
+                          textDecoration: 'none',
+                          cursor: 'pointer',
+                          padding: '0',
+                          margin: '0'
+                        }}
+                        variant="body1"
+                        onClick={() => handleNavigateToInvoice('2')}
+                      >
+                        {user.invoices}
+                      </Typography>
+                    }
+                  />
+                  <ListItemText
+                    primary={<Typography sx={{ textAlign: 'center' }}>Active Jobs</Typography>}
+                    secondary={
+                      <Typography
+                        sx={{ textAlign: 'center', cursor: 'pointer', color: 'blue' }}
+                        onClick={() => handleNavigateToActiveJobs('activeJobs')}
+                      >
+                        {user.activeJobs}
+                      </Typography>
+                    }
+                    sx={{ textAlign: 'center' }}
+                  />
+                  <ListItemText
+                    primary={<Typography sx={{ textAlign: 'center' }}>Quotes</Typography>}
+                    secondary={
+                      <Typography
+                        sx={{ textAlign: 'center', cursor: 'pointer', color: 'blue' }}
+                        onClick={() => handleNavigateToQuotes('quotes')}
+                      >
+                        {user.quotes}
+                      </Typography>
+                    }
+                    sx={{ textAlign: 'center' }}
+                  />
+                  <ListItemText
+                    primary={<Typography sx={{ textAlign: 'center' }}>Scheduled Jobs</Typography>}
+                    secondary={
+                      <Typography
+                        sx={{ textAlign: 'center', cursor: 'pointer', color: 'blue' }}
+                        onClick={() => handleNavigateToScheduleJobs('scheduledJobs')}
+                      >
+                        {user.jobs}
+                      </Typography>
+                    }
+                    sx={{ textAlign: 'center' }}
+                  />
+
+                  <Button color="secondary" variant="contained" onClick={() => handleOpenModal(user)} style={EditBTNStyle}>
+                    Open
+                  </Button>
+                </ListItem>
+              </Paper>
+            ))}
+          </List>
+        </>
+      )}
+      {/* User List */}
+
       <CustomerDetailsModal
         openModal={openModal}
         handleCloseModal={handleCloseModal}

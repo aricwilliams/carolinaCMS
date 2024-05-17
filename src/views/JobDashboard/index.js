@@ -25,7 +25,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 // import { useRecoilState } from 'recoil';
 import CloseIcon from '@mui/icons-material/Close';
-// useSetRecoilState
+import Stack from '@mui/material/Stack';
+import { useNavigate } from 'react-router-dom';
+
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
   const [serviceFilter, setServiceFilter] = useState('all');
@@ -38,7 +40,10 @@ function RecentUsersList() {
   const teamMembers = JSON.parse(localStorage.getItem('team'));
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [expandValue, setExpandValue] = useState(100);
+  const [userHasData, setUserHasData] = useState(false);
   const isLessThan600 = useMediaQuery('(max-width:600px)');
+  const navigate = useNavigate();
+  const [isButtonClicked, setIsButtonClicked] = useState(true);
 
   const buttonStyle = {
     border: 'none',
@@ -181,6 +186,8 @@ function RecentUsersList() {
   };
 
   const handleOpenModal = (user) => {
+    setUserHasData(false);
+
     setSelectedUser(user);
     setOpenModal(true);
   };
@@ -211,103 +218,156 @@ function RecentUsersList() {
     return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
   };
 
+  const handleMakeNewProjectNoData = () => {
+    setIsButtonClicked(true);
+
+    navigate('/ScheduleProject', { state: { runCode: true } });
+  };
+  const handleGoToNewJob = () => {
+    navigate('/ScheduleProject', { state: { runCode: true } });
+  };
   return (
     <div>
       <Typography sx={{ display: isLessThan600 ? 'block' : 'none', textAlign: 'center', paddingBottom: '20px' }}>Job DashBoard</Typography>
-
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
-            <InputLabel id="date-filter-label">Date Filter</InputLabel>
-            <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Date Filter" onChange={handleDateChange}>
-              <MenuItem value="all">All Dates</MenuItem>
-              <MenuItem value="past">Past Due & Today</MenuItem>
-              <MenuItem value="soon">Within 3 Days</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={1.5} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
-            <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
-            <Select
-              labelId="service-filter-label"
-              id="service-filter"
-              value={serviceFilter}
-              label="Service Item Filter"
-              onChange={handleServiceChange}
-            >
-              <MenuItem value="all">All Service Items</MenuItem>
-              <MenuItem value="Multch">Multch</MenuItem>
-              <MenuItem value="Sod">Sod</MenuItem>
-              <MenuItem value="BasicPackage">Basic Package</MenuItem>
-              <MenuItem value="Irrigation">Irrigation</MenuItem>
-              <MenuItem value="None">None (Prospect)</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={1.3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <FormControl sx={{ minWidth: isLessThan600 ? 320 : 150 }}>
-            <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
-            <Select
-              labelId="frequency-filter-label"
-              id="frequency-filter"
-              value={frequencyFilter}
-              label="Service Frequency Filter"
-              onChange={handleFrequencyChange}
-            >
-              <MenuItem value="all">All Frequencies</MenuItem>
-              <MenuItem value="weekly">Weekly</MenuItem>
-              <MenuItem value="biweekly">Bi-Weekly</MenuItem>
-              <MenuItem value="monthly">Monthly</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Button variant="contained" onClick={handleResetFilters} sx={{ width: '100%' }}>
-            Reset Filters
-          </Button>
-        </Grid>
-        <Grid item xs={12} sm={1.4} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Button variant="contained" sx={{ width: '100%' }}>
-            + Add Job
-          </Button>
-        </Grid>
-      </Grid>
-      {/* User List */}
-      <List>
-        {users.filter(filterUsers)?.map((user, index) => (
-          <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
-            <ListItem button onClick={() => handleOpenModal(user)} sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
-              <ListItemText
-                sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
-                primary="Name"
-                secondary={`${user.firstName} ${user.lastName}`}
-              />
-              <ListItemText
-                sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
-                primary="Address"
-                secondary={`${user.address}`}
-              />
-              <ListItemText
-                sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
-                primary="Service Item"
-                secondary={`${user.serviceItem}`}
-                style={{ margin: 0 }}
-              />
-              <ListItemText
-                sx={{ textAlign: 'center', paddingBottom: isLessThan600 ? 1.5 : 0, paddingTop: isLessThan600 ? 1.5 : 0 }}
-                primary="Date"
-                secondary={formatDate(user.date)}
-                style={{ margin: 0 }}
-              />{' '}
-              <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
-                Open
+      {userHasData ? (
+        <Grid item xs={12} sm={1.4} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 5 }}>
+          <Stack direction="column">
+            <Typography variant="h3" gutterBottom>
+              You have no Jobs, Please add some Jobs!
+            </Typography>
+            <Box sx={{ my: 2 }}></Box>
+            <Stack direction="row">
+              <Button
+                onClick={handleMakeNewProjectNoData}
+                variant="outlined"
+                sx={{
+                  ml: '40%',
+                  mb: 1,
+                  animation: isButtonClicked ? 'myAnim 2s ease 0s infinite normal forwards' : 'none',
+                  '@keyframes myAnim': {
+                    '0%, 100%': {
+                      transform: 'rotate(0deg)',
+                      'transform-origin': '50% 100%'
+                    },
+                    '10%': {
+                      transform: 'rotate(2deg)'
+                    },
+                    '20%, 40%, 60%': {
+                      transform: 'rotate(-4deg)'
+                    },
+                    '30%, 50%, 70%': {
+                      transform: 'rotate(4deg)'
+                    },
+                    '80%': {
+                      transform: 'rotate(-2deg)'
+                    },
+                    '90%': {
+                      transform: 'rotate(2deg)'
+                    }
+                  }
+                }}
+              >
+                Add First Job
               </Button>
-            </ListItem>
-          </Paper>
-        ))}
-      </List>
-
+            </Stack>
+          </Stack>
+        </Grid>
+      ) : (
+        <>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
+                <InputLabel id="date-filter-label">Date Filter</InputLabel>
+                <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Date Filter" onChange={handleDateChange}>
+                  <MenuItem value="all">All Dates</MenuItem>
+                  <MenuItem value="past">Past Due & Today</MenuItem>
+                  <MenuItem value="soon">Within 3 Days</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={2.5} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FormControl sx={{ minWidth: isLessThan600 ? 320 : 170 }}>
+                <InputLabel id="service-filter-label">Service Item Filter</InputLabel>
+                <Select
+                  labelId="service-filter-label"
+                  id="service-filter"
+                  value={serviceFilter}
+                  label="Service Item Filter"
+                  onChange={handleServiceChange}
+                >
+                  <MenuItem value="all">All Service Items</MenuItem>
+                  <MenuItem value="Multch">Multch</MenuItem>
+                  <MenuItem value="Sod">Sod</MenuItem>
+                  <MenuItem value="BasicPackage">Basic Package</MenuItem>
+                  <MenuItem value="Irrigation">Irrigation</MenuItem>
+                  <MenuItem value="None">None (Prospect)</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FormControl sx={{ minWidth: isLessThan600 ? 320 : 150 }}>
+                <InputLabel id="frequency-filter-label">Service Frequency Filter</InputLabel>
+                <Select
+                  labelId="frequency-filter-label"
+                  id="frequency-filter"
+                  value={frequencyFilter}
+                  label="Service Frequency Filter"
+                  onChange={handleFrequencyChange}
+                >
+                  <MenuItem value="all">All Frequencies</MenuItem>
+                  <MenuItem value="weekly">Weekly</MenuItem>
+                  <MenuItem value="biweekly">Bi-Weekly</MenuItem>
+                  <MenuItem value="monthly">Monthly</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button variant="contained" onClick={handleResetFilters} sx={{ width: '100%' }}>
+                Reset Filters
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button variant="contained" onClick={handleGoToNewJob} sx={{ width: '100%' }}>
+                + Add Job
+              </Button>
+            </Grid>
+          </Grid>
+          {/* User List */}
+          <List>
+            {users.filter(filterUsers)?.map((user, index) => (
+              <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
+                <ListItem button onClick={() => handleOpenModal(user)} sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
+                  <ListItemText
+                    sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                    primary="Name"
+                    secondary={`${user.firstName} ${user.lastName}`}
+                  />
+                  <ListItemText
+                    sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                    primary="Address"
+                    secondary={`${user.address}`}
+                  />
+                  <ListItemText
+                    sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                    primary="Service Item"
+                    secondary={`${user.serviceItem}`}
+                    style={{ margin: 0 }}
+                  />
+                  <ListItemText
+                    sx={{ textAlign: 'center', paddingBottom: isLessThan600 ? 1.5 : 0, paddingTop: isLessThan600 ? 1.5 : 0 }}
+                    primary="Date"
+                    secondary={formatDate(user.date)}
+                    style={{ margin: 0 }}
+                  />{' '}
+                  <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
+                    Open
+                  </Button>
+                </ListItem>
+              </Paper>
+            ))}
+          </List>
+        </>
+      )}
       {/* Modal */}
       <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box
@@ -504,8 +564,39 @@ function RecentUsersList() {
                     </React.Fragment>
                   )}
                 </Typography>
-
-                <Button variant="contained">Send Invoice?</Button>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  style={{
+                    fontFamily: 'Quicksand, Verdana, sans-serif',
+                    fontWeight: 700,
+                    fontSize: '19px',
+                    lineHeight: '23px',
+                    color: 'black'
+                  }}
+                >
+                  Invoice Amount
+                </Typography>
+                <Typography
+                  variant="h5" // You can adjust the variant to match the desired size and weight.
+                  component="h2"
+                  style={{
+                    fontFamily: 'Nunito Sans, Arial, sans-serif',
+                    fontWeight: 400,
+                    color: 'rgb(98, 108, 114)',
+                    fontSize: '14px',
+                    lineHeight: '26px'
+                  }}
+                >
+                  $300.00
+                </Typography>
+                {invoicePaid ? (
+                  <Button disabled variant="contained">
+                    PAID
+                  </Button>
+                ) : (
+                  <Button variant="contained">Send Invoice?</Button>
+                )}
               </Paper>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -554,7 +645,19 @@ function RecentUsersList() {
                 >
                   Get Directions?
                 </Typography>
-
+                <Typography
+                  variant="h5" // You can adjust the variant to match the desired size and weight.
+                  component="h2"
+                  style={{
+                    fontFamily: 'Nunito Sans, Arial, sans-serif',
+                    fontWeight: 400,
+                    color: 'rgb(98, 108, 114)',
+                    fontSize: '14px',
+                    lineHeight: '26px'
+                  }}
+                >
+                  3345 Scotts dale lane, Wilmingotn NC 28402
+                </Typography>
                 <Button variant="contained" onClick={() => handleAddress()}>
                   Get Directions to {location.label}
                 </Button>

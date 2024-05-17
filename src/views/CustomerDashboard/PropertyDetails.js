@@ -50,6 +50,20 @@ export default function PropertyDetails() {
             variant="standard"
           />
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            id="notes"
+            name="notes"
+            label="notes "
+            fullWidth
+            autoComplete="Customer Notes"
+            variant="standard"
+            multiline
+            rows={2} // You can adjust the number of rows as needed
+          />
+        </Grid>
+
         {/* <Grid item xs={12} sm={6}>
           <TextField required id="country" name="country" label="Country" fullWidth autoComplete="shipping country" variant="standard" />
         </Grid> */}
