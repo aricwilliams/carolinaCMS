@@ -11,6 +11,7 @@ import CustomerDetailsModal from './CustomerDetailsModal';
 import { equipmentList } from '../../EquipmentUtil';
 import { useLocation } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
+import axios from 'axios';
 
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
@@ -30,6 +31,19 @@ function RecentUsersList() {
   const location = useLocation();
   const [isButtonClicked, setIsButtonClicked] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('https://localhost:7185/api/Customers/GetAllCustomersController');
+        setUsers(response.data);
+      } catch (error) {
+        console.error('Error fetching the users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     if (location.state && location.state.runCode) {
@@ -65,6 +79,7 @@ function RecentUsersList() {
   };
 
   const handleFrequencyChange = (event) => {
+    console.log('targett', event.target.value);
     setFrequencyFilter(event.target.value);
   };
 
@@ -108,15 +123,31 @@ function RecentUsersList() {
 
     // Perform any other actions here when the toggle is toggled
   };
+  // const filterUsers = (user) => {
+  //   if (dateFilter === 'Paid') {
+  //     return user.invoices === 'Paid';
+  //   } else if (dateFilter === 'Unpaid') {
+  //     return user.invoices === 'Unpaid';
+  //   } else {
+  //     return true; // Show all users if no filter applied
+  //   }
+  // };
+
   const filterUsers = (user) => {
+    let dateFilterCondition;
+
     if (dateFilter === 'Paid') {
-      return user.invoices === 'Paid';
-    } else if (dateFilter === 'Unpaid') {
-      return user.invoices === 'Unpaid';
+      dateFilterCondition = user.invoices === 'paid';
+    } else if (dateFilter === 'unpaid') {
+      dateFilterCondition = user.invoices === 'unpaid';
     } else {
-      return true; // Show all users if no filter applied
+      dateFilterCondition = true; // Show all users if no filter applied
     }
+    const frequencyFilterCondition = frequencyFilter === 'all' ? true : user.service === frequencyFilter;
+
+    return dateFilterCondition && frequencyFilterCondition;
   };
+
   const handleNavigateToInvoice = (invoice) => {
     console.log(invoice);
     navigate('/invoice');
@@ -221,7 +252,7 @@ function RecentUsersList() {
               <FormControl sx={{ minWidth: isLessThan600 ? 320 : 120 }}>
                 <InputLabel id="date-filter-label">Invoices</InputLabel>
                 <Select labelId="date-filter-label" id="date-filter" value={dateFilter} label="Invoice Filter" onChange={handleDateChange}>
-                  <MenuItem value="Unpaid">Outstanding Invoice Not Paid</MenuItem>
+                  <MenuItem value="unpaid">Outstanding Invoice Not Paid</MenuItem>
                   <MenuItem value="Paid">Paid</MenuItem>
                   <MenuItem value="all">None</MenuItem>
                 </Select>
@@ -288,7 +319,7 @@ function RecentUsersList() {
                         {user.firstName} {user.lastName}
                       </Typography>
                     }
-                    sx={{ textAlign: 'center' }}
+                    sx={{ textAlign: 'center', width: '16.6%' }}
                   />
                   <ListItemText
                     primary={<Typography sx={{ textAlign: 'center' }}>Phone Number</Typography>}
@@ -297,7 +328,7 @@ function RecentUsersList() {
                         sx={{ textAlign: 'center' }}
                         // onClick={() => handleNavigateTo('phoneNumber')}
                       >
-                        {user.phoneNumber}
+                        {user.phone}
                       </Typography>
                     }
                     sx={{ textAlign: 'center' }}
@@ -352,7 +383,7 @@ function RecentUsersList() {
                         sx={{ textAlign: 'center', cursor: 'pointer', color: 'blue' }}
                         onClick={() => handleNavigateToScheduleJobs('scheduledJobs')}
                       >
-                        {user.jobs}
+                        {user.scheduledJobs}
                       </Typography>
                     }
                     sx={{ textAlign: 'center' }}
@@ -368,7 +399,6 @@ function RecentUsersList() {
         </>
       )}
       {/* User List */}
-
       <CustomerDetailsModal
         openModal={openModal}
         handleCloseModal={handleCloseModal}
