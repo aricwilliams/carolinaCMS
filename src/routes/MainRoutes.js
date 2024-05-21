@@ -15,6 +15,8 @@ const Home = Loadable(lazy(() => import('views/Home')));
 
 const ScheduleQuote = Loadable(lazy(() => import('views/ScheduleQuote')));
 const Invoice = Loadable(lazy(() => import('views/Invoice')));
+const MyProducts = Loadable(lazy(() => import('views/MyProducts')));
+
 const ScheduleProject = Loadable(lazy(() => import('views/ScheduleProject')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
@@ -63,6 +65,10 @@ const MainRoutes = {
     {
       path: '/Invoice',
       element: <Invoice />
+    },
+    {
+      path: '/MyProducts',
+      element: <MyProducts />
     },
     {
       path: '/ScheduleProject',

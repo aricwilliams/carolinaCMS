@@ -5,6 +5,7 @@ import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import MessageIcon from '@mui/icons-material/Message';
 import HardwareIcon from '@mui/icons-material/Hardware';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 // import AddIcon from '@mui/icons-material/Add';
 
 // constant
@@ -52,6 +53,13 @@ const dashboard = {
       type: 'item',
       url: '/CrewMessage',
       icon: MessageIcon
+    },
+    {
+      id: 'default243',
+      title: 'My Products',
+      type: 'item',
+      url: '/MyProducts',
+      icon: AddCircleIcon
     },
     {
       id: 'default24',
