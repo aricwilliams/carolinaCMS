@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { List, ListItem, ListItemText, Button, Select, MenuItem, FormControl, InputLabel, useMediaQuery, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { usersServerData } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
 import Grid from '@mui/material/Grid';
 import { Box } from '@mui/material';
@@ -12,6 +11,8 @@ import { equipmentList } from '../../EquipmentUtil';
 import { useLocation } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
@@ -22,7 +23,7 @@ function RecentUsersList() {
   const [openCustomerModal, setOpenCustomerModal] = useState(false); // State to manage modal open/close
   const [selectedEquipment, setSelectedEquipment] = useState('');
   const [invoicePaid, setInvoicePaid] = useState(false);
-  const [users, setUsers] = useState(usersServerData);
+  const [users, setUsers] = useState([]);
   const teamMembers = JSON.parse(localStorage.getItem('team'));
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [expandValue, setExpandValue] = useState(100);
@@ -37,7 +38,9 @@ function RecentUsersList() {
       try {
         const response = await axios.get('https://localhost:7185/api/Customers/GetAllCustomersController');
         setUsers(response.data);
+        setUserHasData(false);
       } catch (error) {
+        setUserHasData(true);
         console.error('Error fetching the users:', error);
       }
     };
@@ -165,8 +168,6 @@ function RecentUsersList() {
     navigate('/JobDashboard');
   };
   const handleOpenModal = (user) => {
-    setUserHasData(false);
-
     setSelectedUser(user);
     setOpenModal(true);
   };
@@ -207,6 +208,13 @@ function RecentUsersList() {
     navigate('/CustomerDashboard', { state: { runCode: true } });
   };
 
+  const handleShowToast = (message, type) => {
+    if (type === 'success') {
+      toast.success(message);
+    } else if (type === 'error') {
+      toast.error(message);
+    }
+  };
   return (
     <div>
       {userHasData ? (
@@ -417,6 +425,7 @@ function RecentUsersList() {
         location={location}
         invoicePaid={invoicePaid}
         expand={expand}
+        showToast={handleShowToast}
       />
       <CustomerModalContent handleCloseCustomerModal={handleCloseCustomerModal} openCustomerModal={openCustomerModal} />
     </div>

@@ -4,8 +4,9 @@ import { useMediaQuery } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
+import axios from 'axios';
 
-function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser }) {
+function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, showToast }) {
   const isLessThan600 = useMediaQuery('(max-width:600px)');
   const buttonStyle = {
     border: 'none',
@@ -31,7 +32,17 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser })
     city: '',
     state: '',
     zip: '',
-    notes: ''
+    notes: '',
+    billingSameAddress: false,
+    invoices: '',
+    activeJobs: '',
+    quotes: '',
+    scheduledJobs: '',
+    frequencies: '',
+    status: '',
+    nextServiceDate: '',
+    service: '',
+    activeCustomer: true
   });
 
   useEffect(() => {
@@ -49,7 +60,17 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser })
         city: selectedUser.city || '',
         state: selectedUser.state || '',
         zip: selectedUser.zip || '',
-        notes: selectedUser.notes || ''
+        notes: selectedUser.notes || '',
+        billingSameAddress: selectedUser.billingSameAddress || false,
+        invoices: selectedUser.invoices || '',
+        activeJobs: selectedUser.activeJobs || '',
+        quotes: selectedUser.quotes || 0,
+        scheduledJobs: selectedUser.scheduledJobs || '',
+        frequencies: selectedUser.frequencies || '',
+        status: selectedUser.status || '',
+        nextServiceDate: selectedUser.nextServiceDate || '',
+        service: selectedUser.service || '',
+        activeCustomer: selectedUser.activeCustomer || true
       });
     }
   }, [selectedUser]);
@@ -59,6 +80,19 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser })
       ...formData,
       [field]: event.target.value
     });
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(`https://localhost:7185/api/Customers/updateCustomer/${selectedUser.id}`, formData);
+      console.log('Customer updated:', response.data);
+
+      showToast('Customer updated successfully!', 'success');
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      showToast('Failed to update customer.', 'error');
+    }
   };
 
   return (
@@ -98,6 +132,9 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser })
               <TextField label="State" value={formData.state} onChange={handleChange('state')} fullWidth />
               <TextField label="ZIP" value={formData.zip} onChange={handleChange('zip')} fullWidth />
               <TextField label="Notes" multiline rows={4} value={formData.notes} onChange={handleChange('notes')} fullWidth />
+              <Button variant="contained" color="primary" onClick={handleSave}>
+                Save
+              </Button>
             </Stack>
           </Grid>
         </Grid>
