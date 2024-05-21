@@ -1,41 +1,49 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-const services = [
-  {
-    name: 'Lawn Mowing',
-    desc: 'Mowing your lawn to perfection',
-    price: '$50'
-  },
-  {
-    name: 'Hedge Trimming',
-    desc: 'Trimming hedges for a tidy look',
-    price: '$80'
-  },
-  {
-    name: 'Weed Control',
-    desc: 'Controlling unwanted weeds in your garden',
-    price: '$60'
-  },
-  {
-    name: 'Planting',
-    desc: 'Planting new flowers or shrubs',
-    price: '$100'
-  },
-  {
-    name: 'Mulching',
-    desc: 'Adding mulch to retain soil moisture and suppress weeds',
-    price: '$70'
-  }
-];
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import axios from 'axios';
 
 export default function Review() {
-  const [selectedServices, setSelectedServices] = React.useState([]);
-  const [totalPrice, setTotalPrice] = React.useState(0);
+  const [availableServices, setAvailableServices] = useState([]);
+  const [additionalServiceOptions, setAdditionalServiceOptions] = useState([]);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [selectedAdditionalService, setSelectedAdditionalService] = useState('');
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get('https://localhost:7185/api/Products');
+        const services = response.data.map((service) => ({
+          name: service.name,
+          desc: service.productDetail,
+          price: `$${service.cost}`,
+          quickSelectOption: service.quickSelectOption
+        }));
+
+        const quickSelectServices = services.filter((service) => service.quickSelectOption);
+        const additionalServices = services.filter((service) => !service.quickSelectOption);
+
+        setAvailableServices(quickSelectServices);
+        setAdditionalServiceOptions(additionalServices);
+
+        // Initialize selected services and total price with quick select options
+        setSelectedServices([]);
+        setTotalPrice(0);
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   const handleCheckboxChange = (serviceName, price) => {
     if (selectedServices.includes(serviceName)) {
@@ -47,13 +55,22 @@ export default function Review() {
     }
   };
 
+  const handleAddService = () => {
+    const serviceToAdd = additionalServiceOptions.find((service) => service.name === selectedAdditionalService);
+    if (serviceToAdd) {
+      setAvailableServices([...availableServices, serviceToAdd]);
+      setAdditionalServiceOptions(additionalServiceOptions.filter((service) => service.name !== selectedAdditionalService));
+      setSelectedAdditionalService('');
+    }
+  };
+
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
         Fast Addon services to customer & Add Notes
       </Typography>
       <List disablePadding>
-        {services.map((service) => (
+        {availableServices?.map((service) => (
           <ListItem key={service.name} sx={{ py: 1, px: 0 }}>
             <ListItemText primary={service.name} secondary={service.desc} />
             <Typography variant="body2">{service.price}</Typography>
@@ -72,13 +89,32 @@ export default function Review() {
         </ListItem>
       </List>
       <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid item xs={8}>
+          <Select value={selectedAdditionalService} onChange={(e) => setSelectedAdditionalService(e.target.value)} displayEmpty fullWidth>
+            <MenuItem value="" disabled>
+              Select additional service
+            </MenuItem>
+            {additionalServiceOptions.map((service) => (
+              <MenuItem key={service.name} value={service.name}>
+                {service.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+        <Grid item xs={4}>
+          <Button variant="contained" color="primary" onClick={handleAddService} disabled={!selectedAdditionalService}>
+            Add Service
+          </Button>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
         <TextField
           id="outlined-multiline-static"
           label="Notes"
           multiline
           placeholder="Example: Customer will not speak with Joe"
           rows={8}
-          sx={[{ width: '100%' }]}
+          sx={{ width: '100%' }}
         />
       </Grid>
     </React.Fragment>
