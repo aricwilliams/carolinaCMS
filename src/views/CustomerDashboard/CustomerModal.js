@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, Typography } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -17,14 +17,14 @@ import { useNavigate } from 'react-router-dom';
 
 const steps = ['Customer Information', 'Property details', 'Quick Service Addon & Notes'];
 
-function getStepContent(step) {
+function getStepContent(step, formData, handleInputChange) {
   switch (step) {
     case 0:
-      return <Address />;
+      return <Address formData={formData} handleInputChange={handleInputChange} />;
     case 1:
-      return <PropertyDetails />;
+      return <PropertyDetails formData={formData} handleInputChange={handleInputChange} />;
     case 2:
-      return <Review />;
+      return <Review formData={formData} handleInputChange={handleInputChange} />;
     default:
       throw new Error('Unknown step');
   }
@@ -32,8 +32,31 @@ function getStepContent(step) {
 
 function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    cell: '',
+    work: '',
+    companyName: '',
+    tags: [],
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    notes: '',
+    selectedServices: []
+  });
   const isLessThan600 = useMediaQuery('(max-width:600px)');
   const navigate = useNavigate();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
 
   const handleClickQuote = () => {
     navigate('/ScheduleQuote');
@@ -44,6 +67,18 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
+  };
+
+  const handleFormSubmit = () => {
+    console.log('ff', formData);
+    // axios
+    //   .post('/api/customer', formData)
+    //   .then((response) => {
+    //     console.log('Customer saved successfully', response);
+    //   })
+    //   .catch((error) => {
+    //     console.error('There was an error saving the customer!', error);
+    //   });
   };
 
   return (
@@ -97,10 +132,13 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
                     + Quote
                   </Button>
                 </Stack>
+                <Button variant="contained" onClick={handleFormSubmit} sx={{ mt: 3, ml: 1 }}>
+                  Submit
+                </Button>
               </React.Fragment>
             ) : (
               <React.Fragment>
-                {getStepContent(activeStep)}
+                {getStepContent(activeStep, formData, handleInputChange)}
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                   {activeStep !== 0 && (
                     <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>

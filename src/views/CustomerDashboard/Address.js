@@ -3,16 +3,16 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-
 import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
 import { useMediaQuery } from '@mui/material';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import { useState } from 'react';
-export default function AddressForm() {
+
+export default function AddressForm({ formData, handleInputChange }) {
   const [tagValue, setTagValue] = useState('');
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(formData.tags || []);
 
   const isLessThan600 = useMediaQuery('(max-width:600px)');
   const handleTagChange = (event) => {
@@ -21,8 +21,10 @@ export default function AddressForm() {
 
   const handleTagSubmit = () => {
     if (tagValue.trim() !== '') {
-      setTags([...tags, tagValue.trim()]);
+      const updatedTags = [...tags, tagValue.trim()];
+      setTags(updatedTags);
       setTagValue('');
+      handleInputChange({ target: { name: 'tags', value: updatedTags } });
     }
   };
 
@@ -30,6 +32,7 @@ export default function AddressForm() {
     const updatedTags = [...tags];
     updatedTags.splice(index, 1);
     setTags(updatedTags);
+    handleInputChange({ target: { name: 'tags', value: updatedTags } });
   };
 
   const handleTagClick = (index) => {
@@ -38,6 +41,7 @@ export default function AddressForm() {
       const updatedTags = [...tags];
       updatedTags[index] = editedTag.trim();
       setTags(updatedTags);
+      handleInputChange({ target: { name: 'tags', value: updatedTags } });
     }
   };
 
@@ -54,19 +58,66 @@ export default function AddressForm() {
       </Typography>
       <Grid container spacing={3} sx={{ mt: 4 }}>
         <Grid item xs={12} sm={6}>
-          <TextField required id="firstName" name="firstName" label="First name" fullWidth autoComplete="given-name" variant="standard" />
+          <TextField
+            required
+            id="firstName"
+            name="firstName"
+            label="First name"
+            fullWidth
+            autoComplete="given-name"
+            variant="standard"
+            value={formData.firstName}
+            onChange={handleInputChange}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField required id="lastName" name="lastName" label="Last name" fullWidth autoComplete="family-name" variant="standard" />
+          <TextField
+            required
+            id="lastName"
+            name="lastName"
+            label="Last name"
+            fullWidth
+            autoComplete="family-name"
+            variant="standard"
+            value={formData.lastName}
+            onChange={handleInputChange}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField id="cell" name="cell" label="Phone" fullWidth autoComplete="given-name" variant="standard" />
+          <TextField
+            id="cell"
+            name="cell"
+            label="Phone"
+            fullWidth
+            autoComplete="given-name"
+            variant="standard"
+            value={formData.cell}
+            onChange={handleInputChange}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField id="work" name="work" label="Phone 2" fullWidth autoComplete="family-name" variant="standard" />
+          <TextField
+            id="work"
+            name="work"
+            label="Phone 2"
+            fullWidth
+            autoComplete="family-name"
+            variant="standard"
+            value={formData.work}
+            onChange={handleInputChange}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField id="companyName" name="companyName" label="Company Name" fullWidth autoComplete="family-name" variant="standard" />
+          <TextField
+            id="companyName"
+            name="companyName"
+            label="Company Name"
+            fullWidth
+            autoComplete="family-name"
+            variant="standard"
+            value={formData.companyName}
+            onChange={handleInputChange}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <Tooltip title="Tags are used for quick identification " arrow>

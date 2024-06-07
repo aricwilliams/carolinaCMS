@@ -2,10 +2,10 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Checkbox from '@mui/material/Checkbox';
 
-export default function PropertyDetails() {
+export default function PropertyDetails({ formData, handleInputChange }) {
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
@@ -21,6 +21,8 @@ export default function PropertyDetails() {
             fullWidth
             autoComplete="shipping address-line1"
             variant="standard"
+            value={formData.address1 || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12}>
@@ -31,13 +33,33 @@ export default function PropertyDetails() {
             fullWidth
             autoComplete="shipping address-line2"
             variant="standard"
+            value={formData.address2 || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField required id="city" name="city" label="City" fullWidth autoComplete="shipping address-level2" variant="standard" />
+          <TextField
+            required
+            id="city"
+            name="city"
+            label="City"
+            fullWidth
+            autoComplete="shipping address-level2"
+            variant="standard"
+            value={formData.city || ''}
+            onChange={handleInputChange}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField id="state" name="state" label="State/Province/Region" fullWidth variant="standard" />
+          <TextField
+            id="state"
+            name="state"
+            label="State/Province/Region"
+            fullWidth
+            variant="standard"
+            value={formData.state || ''}
+            onChange={handleInputChange}
+          />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -48,6 +70,8 @@ export default function PropertyDetails() {
             fullWidth
             autoComplete="shipping postal-code"
             variant="standard"
+            value={formData.zip || ''}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -55,24 +79,22 @@ export default function PropertyDetails() {
             required
             id="notes"
             name="notes"
-            label="notes "
+            label="Notes"
             fullWidth
             autoComplete="Customer Notes"
             variant="standard"
             multiline
             rows={2} // You can adjust the number of rows as needed
+            value={formData.notes || ''}
+            onChange={handleInputChange}
           />
         </Grid>
-
-        {/* <Grid item xs={12} sm={6}>
-          <TextField required id="country" name="country" label="Country" fullWidth autoComplete="shipping country" variant="standard" />
-        </Grid> */}
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <FormControlLabel
             control={<Checkbox color="secondary" name="saveCard" value="yes" />}
             label="Billing address is the same as property address"
           />
-        </Grid>
+        </Grid> */}
       </Grid>
     </React.Fragment>
   );

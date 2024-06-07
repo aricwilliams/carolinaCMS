@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import axios from 'axios';
 
-export default function Review() {
+export default function Review({ formData, handleInputChange }) {
   const [availableServices, setAvailableServices] = useState([]);
   const [additionalServiceOptions, setAdditionalServiceOptions] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -20,7 +20,7 @@ export default function Review() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('https://localhost:7185/api/Products');
+        const response = await axios.get('http://localhost:3001/api/products');
         const services = response.data.map((service) => ({
           name: service.name,
           desc: service.productDetail,
@@ -53,6 +53,14 @@ export default function Review() {
       setSelectedServices([...selectedServices, serviceName]);
       setTotalPrice(totalPrice + parseInt(price.replace('$', '')));
     }
+    handleInputChange({
+      target: {
+        name: 'selectedServices',
+        value: selectedServices.includes(serviceName)
+          ? selectedServices.filter((service) => service !== serviceName)
+          : [...selectedServices, serviceName]
+      }
+    });
   };
 
   const handleAddService = () => {
@@ -110,11 +118,14 @@ export default function Review() {
       <Grid container spacing={2} sx={{ mt: 2 }}>
         <TextField
           id="outlined-multiline-static"
+          name="notes"
           label="Notes"
           multiline
           placeholder="Example: Customer will not speak with Joe"
           rows={8}
           sx={{ width: '100%' }}
+          value={formData.notes || ''}
+          onChange={handleInputChange}
         />
       </Grid>
     </React.Fragment>
