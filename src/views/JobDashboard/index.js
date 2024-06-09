@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import {
   List,
   ListItem,
@@ -27,6 +28,7 @@ import Switch from '@mui/material/Switch';
 import CloseIcon from '@mui/icons-material/Close';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
@@ -226,6 +228,19 @@ function RecentUsersList() {
   const handleGoToNewJob = () => {
     navigate('/ScheduleProject', { state: { runCode: true } });
   };
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/api/jobs')
+      .then((response) => {
+        setUsers(response.data);
+        setUserHasData(response.data.length === 0);
+      })
+      .catch((error) => {
+        console.error('There was an error fetching the users!', error);
+      });
+  }, []);
+
   return (
     <div>
       <Typography sx={{ display: isLessThan600 ? 'block' : 'none', textAlign: 'center', paddingBottom: '20px' }}>Job DashBoard</Typography>
@@ -340,23 +355,23 @@ function RecentUsersList() {
                   <ListItemText
                     sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
                     primary="Name"
-                    secondary={`${user.firstName} ${user.lastName}`}
+                    secondary={`${user.JobTitle}`}
                   />
                   <ListItemText
                     sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
                     primary="Address"
-                    secondary={`${user.address}`}
+                    secondary={`${user.Address}`}
                   />
                   <ListItemText
                     sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
-                    primary="Service Item"
-                    secondary={`${user.serviceItem}`}
+                    primary="Service Items"
+                    secondary={`${user.ServiceItems}`}
                     style={{ margin: 0 }}
                   />
                   <ListItemText
                     sx={{ textAlign: 'center', paddingBottom: isLessThan600 ? 1.5 : 0, paddingTop: isLessThan600 ? 1.5 : 0 }}
                     primary="Date"
-                    secondary={formatDate(user.date)}
+                    secondary={formatDate(user.JobDate)}
                     style={{ margin: 0 }}
                   />{' '}
                   <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
@@ -368,6 +383,7 @@ function RecentUsersList() {
           </List>
         </>
       )}
+
       {/* Modal */}
       <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box

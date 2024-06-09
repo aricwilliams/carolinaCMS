@@ -95,6 +95,26 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:3001/api/customers/${selectedUser.id}`);
+      if (response.status === 204) {
+        showToast('Customer deleted successfully!', 'success');
+        handleCloseModal();
+        refreshPage();
+      } else {
+        showToast('Failed to delete customer.', 'error');
+      }
+    } catch (error) {
+      console.error('Error deleting customer:', error);
+      showToast('Failed to delete customer.', 'error');
+    }
+  };
+
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   return (
     <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
       <Box
@@ -134,6 +154,9 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
               <TextField label="Notes" multiline rows={4} value={formData.notes} onChange={handleChange('notes')} fullWidth />
               <Button variant="contained" color="primary" onClick={handleSave}>
                 Save
+              </Button>
+              <Button variant="contained" color="error" onClick={handleDelete}>
+                Delete Customer
               </Button>
             </Stack>
           </Grid>

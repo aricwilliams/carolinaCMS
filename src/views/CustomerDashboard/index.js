@@ -146,7 +146,7 @@ function RecentUsersList() {
     } else {
       dateFilterCondition = true; // Show all users if no filter applied
     }
-    const frequencyFilterCondition = frequencyFilter === 'all' ? true : user.service === frequencyFilter;
+    const frequencyFilterCondition = frequencyFilter === 'all' ? true : user.frequencies === frequencyFilter;
 
     return dateFilterCondition && frequencyFilterCondition;
   };
