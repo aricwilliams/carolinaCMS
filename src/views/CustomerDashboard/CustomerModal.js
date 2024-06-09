@@ -14,6 +14,7 @@ import Review from './Review';
 import Stack from '@mui/material/Stack';
 import { useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const steps = ['Customer Information', 'Property details', 'Quick Service Addon & Notes'];
 
@@ -35,18 +36,29 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    cell: '',
-    work: '',
+    phone: '',
+    phone2: '',
     companyName: '',
-    tags: [],
-    address1: '',
+    tag: [], // This can be an array or null based on your backend handling
+    address: '', // Renamed from address1 to address
     address2: '',
+    email: '',
     city: '',
     state: '',
     zip: '',
     notes: '',
-    selectedServices: []
+    billingSameAddress: true, // Corrected spelling
+    invoices: '',
+    activeJobs: '',
+    quotes: '',
+    scheduledJobs: '',
+    frequencies: '',
+    status: '',
+    nextServiceDate: '', // Ensure this matches your backend date format
+    activeCustomer: true,
+    service: [] // This can be an array or null based on your backend handling
   });
+
   const isLessThan600 = useMediaQuery('(max-width:600px)');
   const navigate = useNavigate();
 
@@ -71,14 +83,14 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
 
   const handleFormSubmit = () => {
     console.log('ff', formData);
-    // axios
-    //   .post('/api/customer', formData)
-    //   .then((response) => {
-    //     console.log('Customer saved successfully', response);
-    //   })
-    //   .catch((error) => {
-    //     console.error('There was an error saving the customer!', error);
-    //   });
+    axios
+      .post('http://localhost:3001/api/customers', formData)
+      .then((response) => {
+        console.log('Customer saved successfully', response);
+      })
+      .catch((error) => {
+        console.error('There was an error saving the customer!', error);
+      });
   };
 
   return (

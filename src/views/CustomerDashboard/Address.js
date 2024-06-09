@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 export default function AddressForm({ formData, handleInputChange }) {
   const [tagValue, setTagValue] = useState('');
-  const [tags, setTags] = useState(formData.tags || []);
+  const [tag, setTags] = useState(formData.tag || []);
 
   const isLessThan600 = useMediaQuery('(max-width:600px)');
   const handleTagChange = (event) => {
@@ -21,27 +21,27 @@ export default function AddressForm({ formData, handleInputChange }) {
 
   const handleTagSubmit = () => {
     if (tagValue.trim() !== '') {
-      const updatedTags = [...tags, tagValue.trim()];
+      const updatedTags = [...tag, tagValue.trim()];
       setTags(updatedTags);
       setTagValue('');
-      handleInputChange({ target: { name: 'tags', value: updatedTags } });
+      handleInputChange({ target: { name: 'tag', value: updatedTags } });
     }
   };
 
   const handleTagDelete = (index) => {
-    const updatedTags = [...tags];
+    const updatedTags = [...tag];
     updatedTags.splice(index, 1);
     setTags(updatedTags);
-    handleInputChange({ target: { name: 'tags', value: updatedTags } });
+    handleInputChange({ target: { name: 'tag', value: updatedTags } });
   };
 
   const handleTagClick = (index) => {
-    const editedTag = prompt('Edit Tag', tags[index]);
+    const editedTag = prompt('Edit Tag', tag[index]);
     if (editedTag !== null) {
-      const updatedTags = [...tags];
+      const updatedTags = [...tag];
       updatedTags[index] = editedTag.trim();
       setTags(updatedTags);
-      handleInputChange({ target: { name: 'tags', value: updatedTags } });
+      handleInputChange({ target: { name: 'tag', value: updatedTags } });
     }
   };
 
@@ -85,25 +85,25 @@ export default function AddressForm({ formData, handleInputChange }) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="cell"
-            name="cell"
+            id="phone"
+            name="phone"
             label="Phone"
             fullWidth
             autoComplete="given-name"
             variant="standard"
-            value={formData.cell}
+            value={formData.phone}
             onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="work"
-            name="work"
+            id="phone2"
+            name="phone2"
             label="Phone 2"
             fullWidth
             autoComplete="family-name"
             variant="standard"
-            value={formData.work}
+            value={formData.phone2}
             onChange={handleInputChange}
           />
         </Grid>
@@ -120,10 +120,22 @@ export default function AddressForm({ formData, handleInputChange }) {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
+          <TextField
+            id="email"
+            name="email"
+            label="Email"
+            fullWidth
+            autoComplete="family-name"
+            variant="standard"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
           <Tooltip title="Tags are used for quick identification " arrow>
             <>
               <Stack direction={isLessThan600 ? 'column' : 'row'} spacing={1}>
-                {tags.map((tag, index) => (
+                {tag.map((tag, index) => (
                   <Box key={index}>
                     <Chip label={tag} variant="outlined" onDelete={() => handleTagDelete(index)} onClick={() => handleTagClick(index)} />
                   </Box>

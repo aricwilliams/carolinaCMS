@@ -13,9 +13,10 @@ import axios from 'axios';
 export default function Review({ formData, handleInputChange }) {
   const [availableServices, setAvailableServices] = useState([]);
   const [additionalServiceOptions, setAdditionalServiceOptions] = useState([]);
-  const [selectedServices, setSelectedServices] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [selectedAdditionalService, setSelectedAdditionalService] = useState('');
+
+  const { service: selectedServices = [] } = formData;
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -35,7 +36,6 @@ export default function Review({ formData, handleInputChange }) {
         setAdditionalServiceOptions(additionalServices);
 
         // Initialize selected services and total price with quick select options
-        setSelectedServices([]);
         setTotalPrice(0);
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -46,19 +46,22 @@ export default function Review({ formData, handleInputChange }) {
   }, []);
 
   const handleCheckboxChange = (serviceName, price) => {
+    let updatedServices;
+    let updatedPrice = totalPrice;
+
     if (selectedServices.includes(serviceName)) {
-      setSelectedServices(selectedServices.filter((service) => service !== serviceName));
-      setTotalPrice(totalPrice - parseInt(price.replace('$', '')));
+      updatedServices = selectedServices.filter((service) => service !== serviceName);
+      updatedPrice -= parseInt(price.replace('$', ''), 10);
     } else {
-      setSelectedServices([...selectedServices, serviceName]);
-      setTotalPrice(totalPrice + parseInt(price.replace('$', '')));
+      updatedServices = [...selectedServices, serviceName];
+      updatedPrice += parseInt(price.replace('$', ''), 10);
     }
+
+    setTotalPrice(updatedPrice);
     handleInputChange({
       target: {
-        name: 'selectedServices',
-        value: selectedServices.includes(serviceName)
-          ? selectedServices.filter((service) => service !== serviceName)
-          : [...selectedServices, serviceName]
+        name: 'service', // Ensure this matches the key in formData
+        value: updatedServices
       }
     });
   };

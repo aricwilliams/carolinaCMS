@@ -15,13 +15,13 @@ export default function PropertyDetails({ formData, handleInputChange }) {
         <Grid item xs={12}>
           <TextField
             required
-            id="address1"
-            name="address1"
+            id="address"
+            name="address"
             label="Address line 1"
             fullWidth
             autoComplete="shipping address-line1"
             variant="standard"
-            value={formData.address1 || ''}
+            value={formData.address || ''}
             onChange={handleInputChange}
           />
         </Grid>
