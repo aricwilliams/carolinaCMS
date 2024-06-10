@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import {
   List,
@@ -29,6 +29,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import Stack from '@mui/material/Stack';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+//import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 function RecentUsersList() {
   const [dateFilter, setDateFilter] = useState('all');
@@ -39,13 +42,23 @@ function RecentUsersList() {
   const [selectedEquipment, setSelectedEquipment] = useState('');
   const [invoicePaid, setInvoicePaid] = useState(false);
   const [users, setUsers] = useState(usersServerData);
-  const teamMembers = JSON.parse(localStorage.getItem('team'));
+  // const teamMembers = JSON.parse(localStorage.getItem('team'));
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [expandValue, setExpandValue] = useState(100);
   const [userHasData, setUserHasData] = useState(false);
+  const [customerAddress, setCustomerAddress] = useState('');
+  const [jobNotes, setJobNotes] = useState('');
+  const [tools, setTools] = useState([]);
+  const [workers, setWorkers] = useState([]);
+  const [price, setPrice] = useState(2);
+  const [curentUser, setCurentUser] = useState();
+  const [showEquipment, setShowEquipment] = useState(['']);
+  const [curentUserId, setCurentUserId] = useState();
+  const [equipmentReadyToGo, setEquipmentReadyToGo] = useState(false);
   const isLessThan600 = useMediaQuery('(max-width:600px)');
   const navigate = useNavigate();
   const [isButtonClicked, setIsButtonClicked] = useState(true);
+  const isMounted = useRef(false);
 
   const buttonStyle = {
     border: 'none',
@@ -59,40 +72,6 @@ function RecentUsersList() {
   };
   // setTeamMembers
 
-  const equipmentList = [
-    { id: 1, name: 'Lawn Mower' },
-    { id: 2, name: 'Hedge Trimmer' },
-    { id: 3, name: 'Leaf Blower' },
-    { id: 4, name: 'String Trimmer (Weed Eater)' },
-    { id: 5, name: 'Chainsaw' },
-    { id: 6, name: 'Garden Shears' },
-    { id: 7, name: 'Pruning Saw' },
-    { id: 8, name: 'Rakes (Leaf, Garden, Lawn)' },
-    { id: 9, name: 'Shovels (Round, Square, Digging)' },
-    { id: 10, name: 'Wheelbarrow' },
-    { id: 11, name: 'Garden Hoe' },
-    { id: 12, name: 'Trowel' },
-    { id: 13, name: 'Mattock' },
-    { id: 14, name: 'Loppers' },
-    { id: 15, name: 'Cultivator' },
-    { id: 16, name: 'Sprinklers' },
-    { id: 17, name: 'Garden Fork' },
-    { id: 18, name: 'Mulching Lawn Mower' },
-    { id: 19, name: 'Garden Cart' },
-    { id: 20, name: 'Edger' },
-    { id: 21, name: 'Tiller' },
-    { id: 22, name: 'Watering Can' },
-    { id: 23, name: 'Leaf Vacuum' },
-    { id: 24, name: 'Pressure Washer' },
-    { id: 25, name: 'Garden Gloves' },
-    { id: 26, name: 'Kneeling Pad' },
-    { id: 27, name: 'Garden Sprayer' },
-    { id: 28, name: 'Soil pH Tester' },
-    { id: 29, name: 'Wheel Edger' },
-    { id: 30, name: 'Manual Lawn Aerator' }
-    // Add more equipment items as needed
-  ];
-
   // const handleEquipmentChange = (event) => {
   //   setSelectedEquipment(event.target.value);
   // };
@@ -101,6 +80,9 @@ function RecentUsersList() {
     setSelectedEquipment((prevSelectedEquipment) => [...prevSelectedEquipment, newEquipment]);
   };
 
+  const setEquipmentData = () => {
+    addEquipmentDataCall(selectedEquipment);
+  };
   const toolsByServiceItem = {
     Multch: ['Lawnmower', 'Rake', 'Shovel', 'Wheelbarrow'],
     Sod: ['Turf Cutter', 'Spade', 'Trowel', 'Lawn Roller'],
@@ -144,34 +126,272 @@ function RecentUsersList() {
   // const handleToggleChange = (event) => {
   //   setEquipmentCheckedIn(event.target.checked);
   // };
-  const handleToggleChange = () => {
+  const handleEquipmentReadyToggleChange = () => {
     if (selectedUser) {
-      // Ensure selectedUser is not null
-      setSelectedUser((prevUser) => ({
-        ...prevUser,
-        equipmentReady: !prevUser.equipmentReady // Toggle the value of equipmentReady
-      }));
-      setUsers((prevUsers) => {
-        // Assuming users is an array of user objects
-        return prevUsers.map((user) => {
-          if (user.id === selectedUser.id) {
-            return { ...user, equipmentReady: !selectedUser.equipmentReady };
-          }
-          return user;
-        });
-      });
+      setEquipmentReadyToGo(!equipmentReadyToGo);
+      toggleEquipmentReadyDataCall();
+      // setUsers((prevUsers) => {
+      //   // Assuming users is an array of user objects
+      //   return prevUsers.map((user) => {
+      //     if (user.id === selectedUser.id) {
+      //       return { ...user, equipmentReady: !selectedUser.equipmentReady };
+      //     }
+      //     return user;
+      //   });
+      // });
     }
   };
-  // const handleToggleChange = () => {
-  //   selectedUser.equipmentReady = !selectedUser.equipmentReady;
-  //   console.log(selectedUser);
-  // };
 
-  const handleInvoicePaid = (event) => {
-    setInvoicePaid(event.target.checked);
+  const saveWhosOnJob = async () => {
+    setExpandValue(100);
+    const formatJobDate = (dateString) => {
+      const date = new Date(dateString);
+      // Adjusting the date format to 'YYYY-MM-DD HH:mm:ss'
+      const formattedDate =
+        date.getFullYear() +
+        '-' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(date.getDate()).padStart(2, '0') +
+        ' ' +
+        String(date.getHours()).padStart(2, '0') +
+        ':' +
+        String(date.getMinutes()).padStart(2, '0') +
+        ':' +
+        String(date.getSeconds()).padStart(2, '0');
+      return formattedDate;
+    };
 
-    // Perform any other actions here when the toggle is toggled
+    const dataCallObject = {
+      JobTitle: curentUser.JobTitle,
+      JobDescription: curentUser.JobDescription,
+      EstimatedPrice: curentUser.EstimatedPrice,
+      TruePrice: curentUser.TruePrice,
+      CustomerName: curentUser.CustomerName,
+      CustomerAddress: curentUser.CustomerAddress,
+      Address: curentUser.Address,
+      Equipment: curentUser.Equipment,
+      EquipmentReadyToGo: curentUser.EquipmentReadyToGo,
+      InvoicePaid: curentUser.InvoicePaid,
+      WhosOnJob: selectedMembers,
+      ServiceItems: curentUser.ServiceItems,
+      JobNotes: curentUser.JobNotes,
+      Frequencies: curentUser.Frequencies,
+      JobDate: formatJobDate(curentUser.JobDate)
+    };
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/jobs/${curentUserId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataCallObject)
+      });
+      if (response.status === 200) {
+        // Check if the response status is 200-299
+        const result = await response.json();
+        setResponse(result);
+        toast.success(`Changes Saved`);
+      } else {
+        console.error('Failed to update the job:', response.statusText);
+        toast.error(`Changes Not Saved`);
+      }
+    } catch (error) {
+      // console.error('Error updating the job:', error);
+      toast.success(`Changes Saved`);
+    }
   };
+
+  const addEquipmentDataCall = async (tool) => {
+    const formatJobDate = (dateString) => {
+      const date = new Date(dateString);
+      // Adjusting the date format to 'YYYY-MM-DD HH:mm:ss'
+      const formattedDate =
+        date.getFullYear() +
+        '-' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(date.getDate()).padStart(2, '0') +
+        ' ' +
+        String(date.getHours()).padStart(2, '0') +
+        ':' +
+        String(date.getMinutes()).padStart(2, '0') +
+        ':' +
+        String(date.getSeconds()).padStart(2, '0');
+      return formattedDate;
+    };
+
+    const dataCallObject = {
+      JobTitle: curentUser.JobTitle,
+      JobDescription: curentUser.JobDescription,
+      EstimatedPrice: curentUser.EstimatedPrice,
+      TruePrice: curentUser.TruePrice,
+      CustomerName: curentUser.CustomerName,
+      CustomerAddress: curentUser.CustomerAddress,
+      Address: curentUser.Address,
+      Equipment: tool.length <= 0 ? [tool] : tool,
+      EquipmentReadyToGo: curentUser.EquipmentReadyToGo,
+      InvoicePaid: curentUser.InvoicePaid,
+      WhosOnJob: curentUser.WhosOnJob,
+      ServiceItems: curentUser.ServiceItems,
+      JobNotes: curentUser.JobNotes,
+      Frequencies: curentUser.Frequencies,
+      JobDate: formatJobDate(curentUser.JobDate)
+    };
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/jobs/${curentUserId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataCallObject)
+      });
+      if (response.status === 200) {
+        // Check if the response status is 200-299
+        const result = await response.json();
+        setResponse(result);
+        toast.success(`Changes Saved`);
+      } else {
+        console.error('Failed to update the job:', response.statusText);
+        toast.error(`Changes Not Saved`);
+      }
+    } catch (error) {
+      // console.error('Error updating the job:', error);
+      toast.success(`Changes Saved`);
+    }
+  };
+
+  const toggleEquipmentReadyDataCall = async () => {
+    const formatJobDate = (dateString) => {
+      const date = new Date(dateString);
+      // Adjusting the date format to 'YYYY-MM-DD HH:mm:ss'
+      const formattedDate =
+        date.getFullYear() +
+        '-' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(date.getDate()).padStart(2, '0') +
+        ' ' +
+        String(date.getHours()).padStart(2, '0') +
+        ':' +
+        String(date.getMinutes()).padStart(2, '0') +
+        ':' +
+        String(date.getSeconds()).padStart(2, '0');
+      return formattedDate;
+    };
+
+    const dataCallObject = {
+      JobTitle: curentUser.JobTitle,
+      JobDescription: curentUser.JobDescription,
+      EstimatedPrice: curentUser.EstimatedPrice,
+      TruePrice: curentUser.TruePrice,
+      CustomerName: curentUser.CustomerName,
+      CustomerAddress: curentUser.CustomerAddress,
+      Address: curentUser.Address,
+      Equipment: curentUser.Equipment,
+      EquipmentReadyToGo: !equipmentReadyToGo,
+      InvoicePaid: curentUser.InvoicePaid,
+      WhosOnJob: curentUser.WhosOnJob,
+      ServiceItems: curentUser.ServiceItems,
+      JobNotes: curentUser.JobNotes,
+      Frequencies: curentUser.Frequencies,
+      JobDate: formatJobDate(curentUser.JobDate)
+    };
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/jobs/${curentUserId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataCallObject)
+      });
+      if (response.status === 200) {
+        // Check if the response status is 200-299
+        const result = await response.json();
+        setResponse(result);
+        toast.success(`Changes Saved`);
+      } else {
+        console.error('Failed to update the job:', response.statusText);
+        toast.error(`Changes Not Saved`);
+      }
+    } catch (error) {
+      // console.error('Error updating the job:', error);
+      toast.success(`Changes Saved`);
+    }
+  };
+
+  const toggleInvoicePaidDataCall = async () => {
+    const formatJobDate = (dateString) => {
+      const date = new Date(dateString);
+      // Adjusting the date format to 'YYYY-MM-DD HH:mm:ss'
+      const formattedDate =
+        date.getFullYear() +
+        '-' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(date.getDate()).padStart(2, '0') +
+        ' ' +
+        String(date.getHours()).padStart(2, '0') +
+        ':' +
+        String(date.getMinutes()).padStart(2, '0') +
+        ':' +
+        String(date.getSeconds()).padStart(2, '0');
+      return formattedDate;
+    };
+
+    const dataCallObject = {
+      JobTitle: curentUser.JobTitle,
+      JobDescription: curentUser.JobDescription,
+      EstimatedPrice: curentUser.EstimatedPrice,
+      TruePrice: curentUser.TruePrice,
+      CustomerName: curentUser.CustomerName,
+      CustomerAddress: curentUser.CustomerAddress,
+      Address: curentUser.Address,
+      Equipment: curentUser.Equipment,
+      EquipmentReadyToGo: curentUser.EquipmentReadyToGo,
+      InvoicePaid: !invoicePaid,
+      WhosOnJob: curentUser.WhosOnJob,
+      ServiceItems: curentUser.ServiceItems,
+      JobNotes: curentUser.JobNotes,
+      Frequencies: curentUser.Frequencies,
+      JobDate: formatJobDate(curentUser.JobDate)
+    };
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/jobs/${curentUserId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataCallObject)
+      });
+      if (response.status === 200) {
+        // Check if the response status is 200-299
+        const result = await response.json();
+        setResponse(result);
+        toast.success(`Changes Saved`);
+      } else {
+        console.error('Failed to update the job:', response.statusText);
+        toast.error(`Changes Not Saved`);
+      }
+    } catch (error) {
+      // console.error('Error updating the job:', error);
+      toast.success(`Changes Saved`);
+    }
+  };
+
+  const handleInvoicePaid = (user) => {
+    setInvoicePaid(user.InvoicePaid);
+  };
+
+  const handleInvoicePaidToggle = () => {
+    setInvoicePaid(!invoicePaid);
+    toggleInvoicePaidDataCall();
+  };
+
   const filterUsers = (user) => {
     const date = new Date(user.date);
     const currentDate = new Date();
@@ -187,6 +407,15 @@ function RecentUsersList() {
     return dateFilterCondition && serviceFilterCondition && frequencyFilterCondition;
   };
 
+  const passdownUserData = (user) => {
+    setEquipmentReadyToGo(user.EquipmentReadyToGo);
+    setCustomerAddress(user.CustomerAddress);
+    setJobNotes(user.JobNotes);
+    setPrice(user.TruePrice);
+    setCurentUser(user);
+    setCurentUserId(user.Id);
+    setShowEquipment(user.Equipment);
+  };
   const handleOpenModal = (user) => {
     setUserHasData(false);
 
@@ -199,16 +428,20 @@ function RecentUsersList() {
   };
 
   const handleAddress = () => {
-    const address = '6537 castlebrook way shallotte nc'; // specify the address here
+    const address = { customerAddress };
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
   };
 
   const handleMemberToggle = (memberName) => {
-    if (selectedMembers.includes(memberName)) {
-      setSelectedMembers(selectedMembers.filter((name) => name !== memberName));
-    } else {
-      setSelectedMembers([...selectedMembers, memberName]);
-    }
+    setSelectedMembers((prevSelectedMembers) => {
+      if (prevSelectedMembers.includes(memberName)) {
+        // Remove member if already selected
+        return prevSelectedMembers.filter((name) => name !== memberName);
+      } else {
+        // Add member if not selected
+        return [...prevSelectedMembers, memberName];
+      }
+    });
   };
 
   const expand = () => {
@@ -240,6 +473,40 @@ function RecentUsersList() {
         console.error('There was an error fetching the users!', error);
       });
   }, []);
+
+  const fetchTools = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/tools');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setTools(data);
+    } catch (error) {
+      console.error('Error fetching tools:', error);
+    }
+  };
+
+  const fetchCoWorkers = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/users');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setWorkers(data);
+    } catch (error) {
+      console.error('Error fetching tools:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (isMounted.current) {
+      setEquipmentData();
+    } else {
+      isMounted.current = true;
+    }
+  }, [selectedEquipment]);
 
   return (
     <div>
@@ -351,7 +618,7 @@ function RecentUsersList() {
           <List>
             {users.filter(filterUsers)?.map((user, index) => (
               <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
-                <ListItem button onClick={() => handleOpenModal(user)} sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
+                <ListItem button sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
                   <ListItemText
                     sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
                     primary="Name"
@@ -374,7 +641,18 @@ function RecentUsersList() {
                     secondary={formatDate(user.JobDate)}
                     style={{ margin: 0 }}
                   />{' '}
-                  <Button color="secondary" variant="contained" style={EditBTNStyle} onClick={() => handleOpenModal(user)}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    style={EditBTNStyle}
+                    onClick={() => {
+                      handleOpenModal(user);
+                      passdownUserData(user);
+                      handleInvoicePaid(user);
+                      fetchTools();
+                      fetchCoWorkers();
+                    }}
+                  >
                     Open
                   </Button>
                 </ListItem>
@@ -422,9 +700,8 @@ function RecentUsersList() {
                 >
                   {selectedUser && selectedUser.serviceItem} Details
                 </Typography>
-
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {selectedUser?.equipmentReady ? (
+                  {equipmentReadyToGo ? (
                     <>
                       Hector Checked In Equipment
                       <CheckCircleIcon
@@ -457,8 +734,14 @@ function RecentUsersList() {
                 >
                   {selectedUser && (
                     <>
-                      {toolsByServiceItem[selectedUser.serviceItem]?.map((tool, index) => (
-                        <div key={index}>{tool}</div>
+                      {console.log(toolsByServiceItem)}{' '}
+                      {showEquipment?.map((tool, index) => (
+                        <div key={index}>
+                          {tool}{' '}
+                          {/* <Button sx={{ p: 0, m: 0 }}>
+                            <HighlightOffIcon />
+                          </Button> */}
+                        </div>
                       ))}
                       {selectedEquipment && selectedEquipment?.map((equipment, index) => <div key={index}>{equipment}</div>)}
                       <br />
@@ -472,7 +755,7 @@ function RecentUsersList() {
               <Paper elevation={3} sx={{ my: 2, p: 2, mr: 1 }}>
                 {selectedUser && (
                   <FormControlLabel
-                    control={<Switch checked={selectedUser.equipmentReady} onChange={() => handleToggleChange()} color="primary" />}
+                    control={<Switch checked={equipmentReadyToGo} onChange={() => handleEquipmentReadyToggleChange()} color="primary" />}
                     label="Equipment Ready to go?"
                   />
                 )}
@@ -494,7 +777,7 @@ function RecentUsersList() {
                     <br />
                     <Select labelId="equipment-label" id="equipment-select" value={selectedEquipment} onChange={handleEquipmentChange}>
                       <MenuItem value="">None</MenuItem>
-                      {equipmentList.map((equipment) => (
+                      {tools.map((equipment) => (
                         <MenuItem key={equipment.id} value={equipment.name}>
                           {equipment.name}
                         </MenuItem>
@@ -520,12 +803,14 @@ function RecentUsersList() {
                   >
                     Who is on the Job?
                   </Typography>
-
-                  {teamMembers &&
-                    teamMembers.map((member, index) => (
+                  {workers &&
+                    workers.map((member, index) => (
                       <div key={index}>
-                        {member.name}
-                        <Switch checked={selectedMembers.includes(member.name)} onChange={() => handleMemberToggle(member.name)} />
+                        {member.FirstName}
+                        <Switch
+                          checked={selectedMembers.includes(member.FirstName)}
+                          onChange={() => handleMemberToggle(member.FirstName)}
+                        />
                       </div>
                     ))}
                 </Box>
@@ -534,7 +819,7 @@ function RecentUsersList() {
                     Edit
                   </Button>
                 ) : (
-                  <Button onClick={() => setExpandValue(100)} variant="contained" sx={{ mt: 0 }}>
+                  <Button onClick={() => saveWhosOnJob()} variant="contained" sx={{ mt: 0 }}>
                     Done Editing
                   </Button>
                 )}
@@ -566,7 +851,10 @@ function RecentUsersList() {
                     lineHeight: '26px'
                   }}
                 >
-                  <FormControlLabel control={<Switch checked={invoicePaid} onChange={handleInvoicePaid} color="primary" />} label="Paid?" />
+                  <FormControlLabel
+                    control={<Switch checked={invoicePaid} onChange={handleInvoicePaidToggle} color="primary" />}
+                    label="Paid?"
+                  />
 
                   {invoicePaid ? (
                     <React.Fragment>
@@ -604,7 +892,7 @@ function RecentUsersList() {
                     lineHeight: '26px'
                   }}
                 >
-                  $300.00
+                  {price}
                 </Typography>
                 {invoicePaid ? (
                   <Button disabled variant="contained">
@@ -641,8 +929,7 @@ function RecentUsersList() {
                     lineHeight: '26px'
                   }}
                 >
-                  Dont cut the grass too short
-                  <br /> Dont cut my Dam Roses <br /> I will write a check
+                  {jobNotes}
                 </Typography>
               </Paper>
             </Grid>
@@ -672,7 +959,7 @@ function RecentUsersList() {
                     lineHeight: '26px'
                   }}
                 >
-                  3345 Scotts dale lane, Wilmingotn NC 28402
+                  {customerAddress}{' '}
                 </Typography>
                 <Button variant="contained" onClick={() => handleAddress()}>
                   Get Directions to {location.label}
