@@ -12,12 +12,11 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Select,
-  IconButton,
-  Box,
-  useMediaQuery
+  Select
 } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from '@mui/icons-material/Delete'; // Import DeleteIcon from MUI
+import IconButton from '@mui/material/IconButton';
+import { useMediaQuery } from '@mui/material';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -35,31 +34,21 @@ function CrewMessage() {
   const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [conversations, setConversations] = useState([]);
-  const [newConversation, setNewConversation] = useState('');
   const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/conversations')
+    fetch('http://localhost:3001/api/messages')
       .then((response) => response.json())
       .then((data) => {
-        setConversations(data);
-        if (data.length > 0) {
-          setSelectedConversation(data[0].conversation_id); // Set the first conversation as the default
+        setMessages(data);
+        const uniqueSenders = Array.from(new Set(data.map((msg) => msg.senderName)));
+        setConversations(uniqueSenders);
+        if (uniqueSenders.length > 0) {
+          setSelectedConversation(uniqueSenders[0]); // Set the first conversation as the default
         }
       })
-      .catch((error) => console.error('Error fetching conversations:', error));
+      .catch((error) => console.error('Error fetching messages:', error));
   }, []);
-
-  useEffect(() => {
-    if (selectedConversation) {
-      fetch(`http://localhost:3001/api/messages?conversation_id=${selectedConversation}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setMessages(data);
-        })
-        .catch((error) => console.error('Error fetching messages:', error));
-    }
-  }, [selectedConversation]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -69,10 +58,6 @@ function CrewMessage() {
 
   const handleInputChange = (event) => {
     setInputMessage(event.target.value);
-  };
-
-  const handleNewConversationChange = (event) => {
-    setNewConversation(event.target.value);
   };
 
   const formatDate = (date) => {
@@ -92,19 +77,23 @@ function CrewMessage() {
   };
 
   const handleSubmit = () => {
-    if (!inputMessage || !selectedConversation) return;
-
     const date = new Date();
     const formattedDate = formatDate(date);
 
     const newMessage = {
-      // message_id: messages.length + 1,
-      sender_name: 'You', // Assuming the user's name is 'You'
-      message_text: inputMessage,
+      id: messages.length + 1,
+      senderName: 'You', // Assuming the user's name is 'You'
+      messageText: inputMessage,
+      timestamp: formattedDate
+    };
+
+    const messageToSend = {
+      landscapingJobId: 10, // Assuming this is the required ID
+      senderName: 'You', // Assuming the user's name is 'You'
+      messageText: inputMessage,
+      participants: [selectedConversation, 'You'],
       timestamp: formattedDate,
-      conversation_id: selectedConversation,
-      landscaping_job_id: 10, // Assuming this is the required ID
-      message_read: false
+      messageRead: false
     };
 
     fetch('http://localhost:3001/api/messages', {
@@ -112,7 +101,7 @@ function CrewMessage() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(newMessage)
+      body: JSON.stringify(messageToSend)
     })
       .then((response) => {
         if (!response.ok) {
@@ -121,9 +110,9 @@ function CrewMessage() {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         const updatedMessages = [...messages, newMessage];
         setMessages(updatedMessages);
+        console.log('data', data);
         setInputMessage('');
       })
       .catch((error) => console.error('Error sending message:', error));
@@ -132,98 +121,46 @@ function CrewMessage() {
   const handleChange = (event) => {
     setSelectedConversation(event.target.value);
   };
-  const handleNewConversation = () => {
-    if (!newConversation) return;
-
-    const currentTime = new Date().toISOString().slice(0, 19).replace('T', ' '); // Format datetime to 'YYYY-MM-DD HH:MM:SS'
-
-    fetch('http://localhost:3001/api/conversations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        created_at: currentTime,
-        updated_at: currentTime,
-        name: newConversation
-      })
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setConversations((prevConversations) => [...prevConversations, data]);
-        setSelectedConversation(data.conversation_id);
-        setNewConversation('');
-      })
-      .catch((error) => console.error('Error creating conversation:', error)); // Ensure this is chained correctly
-  };
 
   const handleDelete = (messageId) => {
-    fetch(`http://localhost:3001/api/messages/${messageId}`, {
-      method: 'DELETE'
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const updatedMessages = messages.filter((message) => message.message_id !== messageId);
-        setMessages(updatedMessages);
-      })
-      .catch((error) => console.error('Error deleting message:', error));
+    const updatedMessages = messages.filter((message) => message.id !== messageId);
+    setMessages(updatedMessages);
   };
-  console.log('ddd', conversations);
+
   return (
     <>
       <Grid item xs={12}>
         <Paper elevation={3} sx={{ padding: 2 }}>
-          <Stack direction="row" spacing={2} sx={{ padding: '20px' }}>
-            <Box sx={{ width: '50%' }}>
-              <FormControl fullWidth>
-                <InputLabel id="conversation-select-label">Select Conversation</InputLabel>
-                <Select labelId="conversation-select-label" id="conversation-select" value={selectedConversation} onChange={handleChange}>
-                  {conversations.map((conversation) => (
-                    <MenuItem key={conversation.conversation_id} value={conversation.conversation_id}>
-                      {conversation.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-            <Box sx={{ width: '50%' }}>
-              <TextField
-                label="New Conversation"
-                variant="outlined"
-                fullWidth
-                value={newConversation}
-                onChange={handleNewConversationChange}
-                sx={{ mt: 2 }}
-              />
-              <Button variant="contained" onClick={handleNewConversation} sx={{ mt: 1, display: 'inline-block' }}>
-                Add Conversation
-              </Button>
-            </Box>
-          </Stack>
+          <FormControl fullWidth>
+            <InputLabel id="conversation-select-label" sx={{ marginBottom: '40px', color: 'white' }}>
+              Select Conversation
+            </InputLabel>
+            <div style={{ color: 'white' }}>d</div>
 
+            <Select labelId="conversation-select-label" id="conversation-select" value={selectedConversation} onChange={handleChange}>
+              {conversations.map((sender, index) => (
+                <MenuItem key={index} value={sender}>
+                  {sender}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TabPanel value={selectedConversation} index={selectedConversation}>
             <Typography variant="h6">Messages</Typography>
             <List sx={{ maxHeight: isLessThan600 ? 'calc(100vh - 350px)' : 400, overflow: 'auto' }}>
               {messages
-                .filter((message) => message.conversation_id === selectedConversation)
+                .filter((message) => message.senderName === selectedConversation)
                 .map((message) => (
                   <ListItem
-                    key={message.message_id}
+                    key={message.id}
                     alignItems="flex-start"
-                    style={{ flexDirection: 'row', justifyContent: message.sender_name === 'You' ? 'flex-end' : 'flex-start' }}
+                    style={{ flexDirection: 'row', justifyContent: message.senderName === 'You' ? 'flex-end' : 'flex-start' }}
                   >
                     <ListItemText
                       primary={
                         <>
                           <Typography variant="body2" component="span" color="text.secondary" ml={1}>
-                            {message.sender_name}
+                            {message.senderName}
                           </Typography>
                           <Typography variant="body2" component="span" color="text.secondary" ml={1}>
                             {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -234,15 +171,15 @@ function CrewMessage() {
                         <>
                           <Stack direction="column">
                             <Typography variant="body2" component="span" fontWeight="bold">
-                              {message.message_text}
+                              {message.messageText}
                             </Typography>
                           </Stack>{' '}
-                          <IconButton onClick={() => handleDelete(message.message_id)} aria-label="delete message">
+                          <IconButton onClick={() => handleDelete(message.id)} aria-label="delete message">
                             <DeleteIcon />
                           </IconButton>
                         </>
                       }
-                      style={{ textAlign: message.sender_name === 'You' ? 'right' : 'left' }}
+                      style={{ textAlign: message.senderName === 'You' ? 'right' : 'left' }}
                     />
                   </ListItem>
                 ))}
