@@ -36,7 +36,7 @@ function RecentUsersList() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/customers');
+        const response = await axios.get('http://localhost:3001/listings/customers');
         setUsers(response.data);
         setUserHasData(false);
       } catch (error) {
@@ -427,7 +427,11 @@ function RecentUsersList() {
         expand={expand}
         showToast={handleShowToast}
       />
-      <CustomerModalContent handleCloseCustomerModal={handleCloseCustomerModal} openCustomerModal={openCustomerModal} />
+      <CustomerModalContent
+        handleCloseCustomerModal={handleCloseCustomerModal}
+        openCustomerModal={openCustomerModal}
+        showToast={handleShowToast}
+      />
     </div>
   );
 }

@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import Typography from '@mui/material/Typography';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import React, { useEffect } from 'react';
+// import Typography from '@mui/material/Typography';
+// import List from '@mui/material/List';
+// import ListItem from '@mui/material/ListItem';
+// import ListItemText from '@mui/material/ListItemText';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
+// import Button from '@mui/material/Button';
+// import MenuItem from '@mui/material/MenuItem';
+// import Select from '@mui/material/Select';
 import axios from 'axios';
 
 export default function Review({ formData, handleInputChange }) {
-  const [availableServices, setAvailableServices] = useState([]);
-  const [additionalServiceOptions, setAdditionalServiceOptions] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [selectedAdditionalService, setSelectedAdditionalService] = useState('');
+  // const [availableServices, setAvailableServices] = useState([]);
+  // const [additionalServiceOptions, setAdditionalServiceOptions] = useState([]);
+  // const [totalPrice, setTotalPrice] = useState(0);
+  // const [selectedAdditionalService, setSelectedAdditionalService] = useState('');
 
-  const { service: selectedServices = [] } = formData;
+  // const { service: selectedServices = [] } = formData;
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/products');
+        const response = await axios.get('http://localhost:3001/listings/products');
         const services = response.data.map((service) => ({
           name: service.name,
-          desc: service.productDetail,
-          price: `$${service.cost}`,
+          detail: service.productDetail,
+          cost: service.cost,
           quickSelectOption: service.quickSelectOption
         }));
 
@@ -45,49 +45,50 @@ export default function Review({ formData, handleInputChange }) {
     fetchServices();
   }, []);
 
-  const handleCheckboxChange = (serviceName, price) => {
-    let updatedServices;
-    let updatedPrice = totalPrice;
+  // const handleCheckboxChange = (serviceName, price) => {
+  //   let updatedServices;
+  //   let updatedPrice = totalPrice;
 
-    if (selectedServices.includes(serviceName)) {
-      updatedServices = selectedServices.filter((service) => service !== serviceName);
-      updatedPrice -= parseInt(price.replace('$', ''), 10);
-    } else {
-      updatedServices = [...selectedServices, serviceName];
-      updatedPrice += parseInt(price.replace('$', ''), 10);
-    }
+  //   if (selectedServices.includes(serviceName)) {
+  //     updatedServices = selectedServices.filter((service) => service !== serviceName);
+  //     updatedPrice -= parseInt(price.replace('$', ''), 10);
+  //   } else {
+  //     updatedServices = [...selectedServices, serviceName];
+  //     updatedPrice += parseInt(price.replace('$', ''), 10);
+  //   }
 
-    setTotalPrice(updatedPrice);
-    handleInputChange({
-      target: {
-        name: 'service', // Ensure this matches the key in formData
-        value: updatedServices
-      }
-    });
-  };
+  //   setTotalPrice(updatedPrice);
+  //   handleInputChange({
+  //     target: {
+  //       name: 'service', // Ensure this matches the key in formData
+  //       value: updatedServices
+  //     }
+  //   });
+  // };
 
-  const handleAddService = () => {
-    const serviceToAdd = additionalServiceOptions.find((service) => service.name === selectedAdditionalService);
-    if (serviceToAdd) {
-      setAvailableServices([...availableServices, serviceToAdd]);
-      setAdditionalServiceOptions(additionalServiceOptions.filter((service) => service.name !== selectedAdditionalService));
-      setSelectedAdditionalService('');
-    }
-  };
+  // const handleAddService = () => {
+  //   const serviceToAdd = additionalServiceOptions.find((service) => service.name === selectedAdditionalService);
+  //   if (serviceToAdd) {
+  //     setAvailableServices([...availableServices, serviceToAdd]);
+  //     setAdditionalServiceOptions(additionalServiceOptions.filter((service) => service.name !== selectedAdditionalService));
+  //     setSelectedAdditionalService('');
+  //   }
+  // };
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
+      {/* <Typography variant="h6" gutterBottom>
         Fast Addon services to customer & Add Notes
       </Typography>
       <List disablePadding>
         {availableServices?.map((service) => (
           <ListItem key={service.name} sx={{ py: 1, px: 0 }}>
-            <ListItemText primary={service.name} secondary={service.desc} />
-            <Typography variant="body2">{service.price}</Typography>
+            <ListItemText primary={service.name} />
+            <ListItemText primary={service.productDetail} />
+            <Typography variant="body2">{service.cost}</Typography>
             <input
               type="checkbox"
-              onChange={() => handleCheckboxChange(service.name, service.price)}
+              onChange={() => handleCheckboxChange(service.name, service.cost)}
               checked={selectedServices.includes(service.name)}
             />
           </ListItem>
@@ -117,7 +118,7 @@ export default function Review({ formData, handleInputChange }) {
             Add Service
           </Button>
         </Grid>
-      </Grid>
+      </Grid> */}
       <Grid container spacing={2} sx={{ mt: 2 }}>
         <TextField
           id="outlined-multiline-static"

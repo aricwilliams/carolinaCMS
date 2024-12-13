@@ -16,7 +16,6 @@ import {
   useMediaQuery
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { usersServerData } from '../../Util'; // Assuming toolsByServiceItem contains data for landscaping tools by service item
 import { EditBTNStyle } from '../../Util';
 // import { teamState } from '../../atom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -41,7 +40,7 @@ function RecentUsersList() {
   const [openModal, setOpenModal] = useState(false); // State to manage modal open/close
   const [selectedEquipment, setSelectedEquipment] = useState('');
   const [invoicePaid, setInvoicePaid] = useState(false);
-  const [users, setUsers] = useState(usersServerData);
+  const [jobs, setJobs] = useState('');
   // const teamMembers = JSON.parse(localStorage.getItem('team'));
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [expandValue, setExpandValue] = useState(100);
@@ -59,6 +58,7 @@ function RecentUsersList() {
   const navigate = useNavigate();
   const [isButtonClicked, setIsButtonClicked] = useState(true);
   const isMounted = useRef(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   const buttonStyle = {
     border: 'none',
@@ -83,13 +83,13 @@ function RecentUsersList() {
   const setEquipmentData = () => {
     addEquipmentDataCall(selectedEquipment);
   };
-  const toolsByServiceItem = {
-    Multch: ['Lawnmower', 'Rake', 'Shovel', 'Wheelbarrow'],
-    Sod: ['Turf Cutter', 'Spade', 'Trowel', 'Lawn Roller'],
-    BasicPackage: ['Lawnmower', 'Hedge Trimmer', 'Leaf Blower', 'Pruning Shears'],
-    Irrigation: ['Trencher', 'Pipe Cutter', 'Sprinkler Heads', 'Valves'],
-    None: [] // No tools needed for prospect users
-  };
+  // const toolsByServiceItem = {
+  //   Multch: ['Lawnmower', 'Rake', 'Shovel', 'Wheelbarrow'],
+  //   Sod: ['Turf Cutter', 'Spade', 'Trowel', 'Lawn Roller'],
+  //   BasicPackage: ['Lawnmower', 'Hedge Trimmer', 'Leaf Blower', 'Pruning Shears'],
+  //   Irrigation: ['Trencher', 'Pipe Cutter', 'Sprinkler Heads', 'Valves'],
+  //   None: [] // No tools needed for prospect users
+  // };
 
   const handleDateChange = (event) => {
     setDateFilter(event.target.value);
@@ -428,7 +428,7 @@ function RecentUsersList() {
   };
 
   const handleAddress = () => {
-    const address = { customerAddress };
+    const address = customerAddress;
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
   };
 
@@ -464,10 +464,11 @@ function RecentUsersList() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3001/api/jobs')
+      .get('http://localhost:3001/listings/jobs')
       .then((response) => {
-        setUsers(response.data);
+        setJobs(response.data);
         setUserHasData(response.data.length === 0);
+        setDataLoaded(true);
       })
       .catch((error) => {
         console.error('There was an error fetching the users!', error);
@@ -476,7 +477,7 @@ function RecentUsersList() {
 
   const fetchTools = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/tools');
+      const response = await fetch('http://localhost:3001/listings/tools');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -489,7 +490,7 @@ function RecentUsersList() {
 
   const fetchCoWorkers = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/users');
+      const response = await fetch('http://localhost:3001/listings/teams');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -616,48 +617,54 @@ function RecentUsersList() {
           </Grid>
           {/* User List */}
           <List>
-            {users.filter(filterUsers)?.map((user, index) => (
-              <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
-                <ListItem button sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
-                  <ListItemText
-                    sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
-                    primary="Name"
-                    secondary={`${user.JobTitle}`}
-                  />
-                  <ListItemText
-                    sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
-                    primary="Address"
-                    secondary={`${user.Address}`}
-                  />
-                  <ListItemText
-                    sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
-                    primary="Service Items"
-                    secondary={`${user.ServiceItems}`}
-                    style={{ margin: 0 }}
-                  />
-                  <ListItemText
-                    sx={{ textAlign: 'center', paddingBottom: isLessThan600 ? 1.5 : 0, paddingTop: isLessThan600 ? 1.5 : 0 }}
-                    primary="Date"
-                    secondary={formatDate(user.JobDate)}
-                    style={{ margin: 0 }}
-                  />{' '}
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    style={EditBTNStyle}
-                    onClick={() => {
-                      handleOpenModal(user);
-                      passdownUserData(user);
-                      handleInvoicePaid(user);
-                      fetchTools();
-                      fetchCoWorkers();
-                    }}
-                  >
-                    Open
-                  </Button>
-                </ListItem>
-              </Paper>
-            ))}
+            {dataLoaded &&
+              jobs.filter(filterUsers)?.map((user, index) => (
+                <Paper elevation={3} key={index} sx={{ my: 1, backgroundColor: isDateSoon(user.date) }}>
+                  <ListItem button sx={{ flexDirection: isLessThan600 ? 'column' : 'row' }}>
+                    <ListItemText
+                      sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                      primary="Job Title"
+                      secondary={`${user.JobTitle}`}
+                    />{' '}
+                    <ListItemText
+                      sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                      primary="Frequencies"
+                      secondary={`${user.Frequencies}`}
+                    />
+                    <ListItemText
+                      sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                      primary="Address"
+                      secondary={`${user.Address}`}
+                    />
+                    {/* <ListItemText
+                      sx={{ textAlign: 'center', paddingTop: isLessThan600 ? 1.5 : 0 }}
+                      primary="Service Items"
+                      secondary={`${user.ServiceItems}`}
+                      style={{ margin: 0 }}
+                    /> */}
+                    <ListItemText
+                      sx={{ textAlign: 'center', paddingBottom: isLessThan600 ? 1.5 : 0, paddingTop: isLessThan600 ? 1.5 : 0 }}
+                      primary="Date"
+                      secondary={formatDate(user.JobDate)}
+                      style={{ margin: 0 }}
+                    />{' '}
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      style={EditBTNStyle}
+                      onClick={() => {
+                        handleOpenModal(user);
+                        passdownUserData(user);
+                        handleInvoicePaid(user);
+                        fetchTools();
+                        fetchCoWorkers();
+                      }}
+                    >
+                      Open
+                    </Button>
+                  </ListItem>
+                </Paper>
+              ))}
           </List>
         </>
       )}
@@ -734,7 +741,6 @@ function RecentUsersList() {
                 >
                   {selectedUser && (
                     <>
-                      {console.log(toolsByServiceItem)}{' '}
                       {showEquipment?.map((tool, index) => (
                         <div key={index}>
                           {tool}{' '}
@@ -806,11 +812,8 @@ function RecentUsersList() {
                   {workers &&
                     workers.map((member, index) => (
                       <div key={index}>
-                        {member.FirstName}
-                        <Switch
-                          checked={selectedMembers.includes(member.FirstName)}
-                          onChange={() => handleMemberToggle(member.FirstName)}
-                        />
+                        {member.Names}
+                        <Switch checked={selectedMembers.includes(member.Names)} onChange={() => handleMemberToggle(member.Names)} />
                       </div>
                     ))}
                 </Box>

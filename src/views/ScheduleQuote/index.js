@@ -107,7 +107,7 @@ function CustomerModal() {
               )}
 
               <Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }}>
-                {activeStep === steps.length - 1 ? 'Save Customer' : 'Next'}
+                {activeStep === steps.length - 1 ? 'Next' : 'Next'}
               </Button>
             </Box>
           </React.Fragment>

@@ -5,6 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import axios from 'axios';
+import { Typography } from '@mui/material';
 
 function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, showToast }) {
   const isLessThan600 = useMediaQuery('(max-width:600px)');
@@ -18,7 +19,6 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
     fontSize: '0.8rem',
     marginTop: '10px'
   };
-
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -28,21 +28,21 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
     phone: '',
     phone2: '',
     companyName: '',
-    tag: '',
+    tag: [], // Array for tags
     city: '',
     state: '',
     zip: '',
     notes: '',
-    billingSameAddress: false,
-    invoices: '',
-    activeJobs: '',
-    quotes: '',
-    scheduledJobs: '',
-    frequencies: '',
-    status: '',
-    nextServiceDate: '',
-    service: '',
-    activeCustomer: true
+    billingSameAddress: false, // Boolean for billing address
+    invoices: '', // String for invoices
+    activeJobs: 0, // Default as integer
+    quotes: 0, // Default as integer
+    scheduledJobs: 0, // Default as integer
+    frequencies: '', // String for frequency
+    status: 'Active', // String for status
+    nextServiceDate: null, // String for date, ensure proper format
+    service: [], // Array for services
+    activeCustomer: true // Boolean for active status
   });
 
   useEffect(() => {
@@ -56,21 +56,21 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
         phone: selectedUser.phone || '',
         phone2: selectedUser.phone2 || '',
         companyName: selectedUser.companyName || '',
-        tag: selectedUser.tag || '',
+        tag: Array.isArray(selectedUser.tag) ? selectedUser.tag : selectedUser.tag ? JSON.parse(selectedUser.tag) : [], // Parse if string, default to array
         city: selectedUser.city || '',
         state: selectedUser.state || '',
         zip: selectedUser.zip || '',
         notes: selectedUser.notes || '',
-        billingSameAddress: selectedUser.billingSameAddress || false,
+        billingSameAddress: !!selectedUser.billingSameAddress, // Force to boolean
         invoices: selectedUser.invoices || '',
-        activeJobs: selectedUser.activeJobs || '',
-        quotes: selectedUser.quotes || 0,
-        scheduledJobs: selectedUser.scheduledJobs || '',
+        activeJobs: Number.isInteger(selectedUser.activeJobs) ? selectedUser.activeJobs : 0, // Ensure integer
+        quotes: Number.isInteger(selectedUser.quotes) ? selectedUser.quotes : 0, // Ensure integer
+        scheduledJobs: Number.isInteger(selectedUser.scheduledJobs) ? selectedUser.scheduledJobs : 0, // Ensure integer
         frequencies: selectedUser.frequencies || '',
-        status: selectedUser.status || '',
-        nextServiceDate: selectedUser.nextServiceDate || '',
-        service: selectedUser.service || '',
-        activeCustomer: selectedUser.activeCustomer || true
+        status: selectedUser.status || 'Active',
+        nextServiceDate: selectedUser.nextServiceDate || null, // Ensure proper format
+        service: Array.isArray(selectedUser.service) ? selectedUser.service : selectedUser.service ? JSON.parse(selectedUser.service) : [], // Parse if string, default to array
+        activeCustomer: !!selectedUser.activeCustomer // Force to boolean
       });
     }
   }, [selectedUser]);
@@ -84,7 +84,7 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
 
   const handleSave = async () => {
     try {
-      const response = await axios.put(`https://localhost:7185/api/Customers/updateCustomer/${selectedUser.id}`, formData);
+      const response = await axios.put(`http://localhost:3001/listings/customers/update/${selectedUser.id}`, formData);
       console.log('Customer updated:', response.data);
 
       showToast('Customer updated successfully!', 'success');
@@ -97,8 +97,8 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:3001/api/customers/${selectedUser.id}`);
-      if (response.status === 204) {
+      const response = await axios.delete(`http://localhost:3001/listings/customers/delete/${selectedUser.id}`);
+      if (response.status === 204 || response.status === 200) {
         showToast('Customer deleted successfully!', 'success');
         handleCloseModal();
         refreshPage();
@@ -131,7 +131,23 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
           overflowY: 'auto'
         }}
       >
+        {/* //////////////////////// */}
         <Grid item xs={12} md={12}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#eeeeee',
+              border: '1px solid black',
+              padding: 2, // Adjust padding as needed
+              borderRadius: 1,
+              width: '100%',
+              marginBottom: '20px'
+            }}
+          >
+            <Typography variant="h6">Lawn Care Customer Details</Typography>
+          </Box>
           <Box sx={{ textAlign: 'right' }}>
             <Button style={buttonStyle} onClick={handleCloseModal} variant="contained" disableElevation>
               <CloseIcon />

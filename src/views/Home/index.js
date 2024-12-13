@@ -11,6 +11,7 @@ import Link from '@mui/material/Link';
 // import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Button from '@mui/material/Button';
 import { Box } from '@mui/material';
+import axios from 'axios';
 
 const MyCard = ({ title, value, onClick }) => {
   return (
@@ -97,8 +98,35 @@ function Home() {
     navigate('/ScheduleProject', { state: { runCode: true } });
   };
 
+  const [file, setFile] = useState(null);
+
+  const onFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const onUpload = async () => {
+    const formData = new FormData();
+    formData.append('video', file);
+
+    try {
+      const response = await axios.post('http://localhost:3001/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      alert(response.data.message);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Error uploading file');
+    }
+  };
   return (
     <>
+      <div>
+        <input type="file" onChange={onFileChange} />
+        <button onClick={onUpload}>Upload Video</button>
+      </div>
+
       <Button
         sx={{
           ml: '45%'

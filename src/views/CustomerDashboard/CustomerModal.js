@@ -11,12 +11,12 @@ import Button from '@mui/material/Button';
 import Address from './Address';
 import PropertyDetails from './PropertyDetails';
 import Review from './Review';
-import Stack from '@mui/material/Stack';
+// import Stack from '@mui/material/Stack';
 import { useMediaQuery } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const steps = ['Customer Information', 'Property details', 'Quick Service Addon & Notes'];
+const steps = ['Customer Information', 'Property details', 'Notes'];
 
 function getStepContent(step, formData, handleInputChange) {
   switch (step) {
@@ -31,7 +31,7 @@ function getStepContent(step, formData, handleInputChange) {
   }
 }
 
-function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
+function CustomerModal({ handleCloseCustomerModal, openCustomerModal, showToast }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -39,28 +39,28 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
     phone: '',
     phone2: '',
     companyName: '',
-    tag: [], // This can be an array or null based on your backend handling
-    address: '', // Renamed from address1 to address
-    address2: '',
+    tag: [], // Array for tags
+    address: '', // Primary address
+    address2: '', // Secondary address
     email: '',
     city: '',
     state: '',
     zip: '',
     notes: '',
-    billingSameAddress: true, // Corrected spelling
+    billingSameAddress: true, // Boolean
     invoices: '',
-    activeJobs: '',
-    quotes: '',
-    scheduledJobs: '',
-    frequencies: '',
-    status: '',
-    nextServiceDate: '', // Ensure this matches your backend date format
-    activeCustomer: true,
-    service: [] // This can be an array or null based on your backend handling
+    activeJobs: 0, // Default as integer
+    quotes: 0, // Default as integer
+    scheduledJobs: 0, // Default as integer
+    frequencies: '', // Service frequency
+    status: 'Active', // Customer status
+    nextServiceDate: null, // Ensure proper date format
+    activeCustomer: true, // Boolean
+    service: [] // Array for services
   });
 
   const isLessThan600 = useMediaQuery('(max-width:600px)');
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -70,9 +70,9 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
     });
   };
 
-  const handleClickQuote = () => {
-    navigate('/ScheduleQuote');
-  };
+  // const handleClickQuote = () => {
+  //   navigate('/ScheduleQuote');
+  // };
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -82,15 +82,22 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
   };
 
   const handleFormSubmit = () => {
-    console.log('ff', formData);
     axios
-      .post('http://localhost:3001/api/customers', formData)
+      .post('http://localhost:3001/listings/customers/new', formData)
       .then((response) => {
         console.log('Customer saved successfully', response);
+        showToast('Customer updated successfully!', 'success');
+        handleCloseCustomerModal();
+        refreshPage();
       })
       .catch((error) => {
         console.error('There was an error saving the customer!', error);
+        showToast('Failed to delete customer.', 'error');
+        handleCloseCustomerModal();
       });
+  };
+  const refreshPage = () => {
+    window.location.reload();
   };
 
   return (
@@ -135,17 +142,18 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
             </Stepper>
             {activeStep === steps.length ? (
               <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                  Customer Added
-                </Typography>
-                <Stack direction={'row'}>
+                {/* <Stack direction={'row'}>
                   <Typography variant="subtitle1">Schedule a quote for this customer?</Typography>
                   <Button onClick={handleClickQuote} variant="contained" sx={{ ml: 1 }}>
                     + Quote
                   </Button>
-                </Stack>
+                </Stack> */}
+                <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
+                  Back
+                </Button>
+
                 <Button variant="contained" onClick={handleFormSubmit} sx={{ mt: 3, ml: 1 }}>
-                  Submit
+                  Save Customer!
                 </Button>
               </React.Fragment>
             ) : (
@@ -157,11 +165,9 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal }) {
                       Back
                     </Button>
                   )}
-                  <Button variant="contained" sx={{ mt: 3, ml: 1 }}>
-                    Upload CSV File?
-                  </Button>
+
                   <Button variant="contained" onClick={handleNext} sx={{ mt: 3, ml: 1 }}>
-                    {activeStep === steps.length - 1 ? 'Save Customer' : 'Next'}
+                    {activeStep === steps.length - 1 ? 'Next' : 'Next'}
                   </Button>
                 </Box>
               </React.Fragment>

@@ -74,21 +74,7 @@ export default function PropertyDetails({ formData, handleInputChange }) {
             onChange={handleInputChange}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
-            id="notes"
-            name="notes"
-            label="Notes"
-            fullWidth
-            autoComplete="Customer Notes"
-            variant="standard"
-            multiline
-            rows={2} // You can adjust the number of rows as needed
-            value={formData.notes || ''}
-            onChange={handleInputChange}
-          />
-        </Grid>
+
         {/* <Grid item xs={12}>
           <FormControlLabel
             control={<Checkbox color="secondary" name="saveCard" value="yes" />}
