@@ -21,7 +21,7 @@ export default function Review({ formData, handleInputChange }) {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/listings/products');
+        const response = await axios.get('http://127.0.0.1:8000/api/products');
         const services = response.data.map((service) => ({
           name: service.name,
           detail: service.productDetail,

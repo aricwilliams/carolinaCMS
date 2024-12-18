@@ -39,7 +39,7 @@ function CrewMessage() {
   const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/conversations')
+    fetch('http://127.0.0.1:8000/api/conversations')
       .then((response) => response.json())
       .then((data) => {
         setConversations(data);
@@ -52,7 +52,7 @@ function CrewMessage() {
 
   useEffect(() => {
     if (selectedConversation) {
-      fetch(`http://localhost:3001/api/messages?conversation_id=${selectedConversation}`)
+      fetch(`http://127.0.0.1:8000/api/messages?conversation_id=${selectedConversation}`)
         .then((response) => response.json())
         .then((data) => {
           setMessages(data);
@@ -107,7 +107,7 @@ function CrewMessage() {
       message_read: false
     };
 
-    fetch('http://localhost:3001/api/messages', {
+    fetch('http://127.0.0.1:8000/api/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -137,7 +137,7 @@ function CrewMessage() {
 
     const currentTime = new Date().toISOString().slice(0, 19).replace('T', ' '); // Format datetime to 'YYYY-MM-DD HH:MM:SS'
 
-    fetch('http://localhost:3001/api/conversations', {
+    fetch('http://127.0.0.1:8000/api/conversations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -163,7 +163,7 @@ function CrewMessage() {
   };
 
   const handleDelete = (messageId) => {
-    fetch(`http://localhost:3001/api/messages/${messageId}`, {
+    fetch(`http://127.0.0.1:8000/api/messages/${messageId}`, {
       method: 'DELETE'
     })
       .then((response) => {

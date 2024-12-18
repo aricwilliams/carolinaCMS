@@ -37,7 +37,7 @@ function CrewMessage() {
   const isLessThan600 = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/messages')
+    fetch('http://127.0.0.1:8000/api/messages')
       .then((response) => response.json())
       .then((data) => {
         setMessages(data);
@@ -96,7 +96,7 @@ function CrewMessage() {
       messageRead: false
     };
 
-    fetch('http://localhost:3001/api/messages', {
+    fetch('http://127.0.0.1:8000/api/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

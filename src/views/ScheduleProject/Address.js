@@ -146,7 +146,7 @@ export default function AddressForm() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/listings/customers');
+        const response = await axios.get('http://127.0.0.1:8000/api/customers');
         setCustomerExisting(response.data);
         setUserHasData(false);
       } catch (error) {
@@ -168,7 +168,7 @@ export default function AddressForm() {
 
   const handleSaveCustomer = async () => {
     try {
-      const response = await axios.put(`http://localhost:3001/listings/customers/update/${chosenCustomer[0].id}`, formData);
+      const response = await axios.put(`http://127.0.0.1:8000/api/customers/update/${chosenCustomer[0].id}`, formData);
       console.log('Customer updated:', response.data);
 
       handleShowToast('Customer updated successfully!', 'success');

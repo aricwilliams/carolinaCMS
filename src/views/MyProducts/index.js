@@ -9,7 +9,7 @@ const LandscapeInvoice = () => {
   useEffect(() => {
     const fetchLandscapingItems = async () => {
       try {
-        const response = await axios.get('https://localhost:7185/api/Products');
+        const response = await axios.get('https://127.0.0.1:8000/api/Products');
         const items = response.data;
         setLandscapingItems(items);
 

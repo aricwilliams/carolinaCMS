@@ -83,7 +83,7 @@ function CustomerModal({ handleCloseCustomerModal, openCustomerModal, showToast 
 
   const handleFormSubmit = () => {
     axios
-      .post('http://localhost:3001/listings/customers/new', formData)
+      .post('http://127.0.0.1:8000/api/customers/new', formData)
       .then((response) => {
         console.log('Customer saved successfully', response);
         showToast('Customer updated successfully!', 'success');

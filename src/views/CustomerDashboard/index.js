@@ -36,7 +36,7 @@ function RecentUsersList() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/listings/customers');
+        const response = await axios.get('http://127.0.0.1:8000/api/customers');
         setUsers(response.data);
         setUserHasData(false);
       } catch (error) {

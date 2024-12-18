@@ -181,7 +181,7 @@ function RecentUsersList() {
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/api/jobs/${curentUserId}`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/jobs/${curentUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -241,7 +241,7 @@ function RecentUsersList() {
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/api/jobs/${curentUserId}`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/jobs/${curentUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -301,7 +301,7 @@ function RecentUsersList() {
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/api/jobs/${curentUserId}`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/jobs/${curentUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -361,7 +361,7 @@ function RecentUsersList() {
     };
 
     try {
-      const response = await fetch(`http://localhost:3001/api/jobs/${curentUserId}`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/jobs/${curentUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -414,7 +414,7 @@ function RecentUsersList() {
     setPrice(user.TruePrice);
     setCurentUser(user);
     setCurentUserId(user.Id);
-    setShowEquipment(user.Equipment);
+    setShowEquipment(user.Equipment.length < 1 ? user.Equipment : ['None']);
   };
   const handleOpenModal = (user) => {
     setUserHasData(false);
@@ -464,7 +464,7 @@ function RecentUsersList() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3001/listings/jobs')
+      .get('http://127.0.0.1:8000/api/jobs')
       .then((response) => {
         setJobs(response.data);
         setUserHasData(response.data.length === 0);
@@ -477,7 +477,7 @@ function RecentUsersList() {
 
   const fetchTools = async () => {
     try {
-      const response = await fetch('http://localhost:3001/listings/tools');
+      const response = await fetch('http://127.0.0.1:8000/api/tools');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -490,7 +490,7 @@ function RecentUsersList() {
 
   const fetchCoWorkers = async () => {
     try {
-      const response = await fetch('http://localhost:3001/listings/teams');
+      const response = await fetch('http://127.0.0.1:8000/api/teams');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

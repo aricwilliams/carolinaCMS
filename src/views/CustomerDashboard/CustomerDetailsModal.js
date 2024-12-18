@@ -84,7 +84,7 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
 
   const handleSave = async () => {
     try {
-      const response = await axios.put(`http://localhost:3001/listings/customers/update/${selectedUser.id}`, formData);
+      const response = await axios.put(`http://127.0.0.1:8000/api/customers/update/${selectedUser.id}`, formData);
       console.log('Customer updated:', response.data);
 
       showToast('Customer updated successfully!', 'success');
@@ -97,7 +97,7 @@ function CustomerDetailsModalFUNC({ openModal, handleCloseModal, selectedUser, s
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:3001/listings/customers/delete/${selectedUser.id}`);
+      const response = await axios.delete(`http://127.0.0.1:8000/api/customers/delete/${selectedUser.id}`);
       if (response.status === 204 || response.status === 200) {
         showToast('Customer deleted successfully!', 'success');
         handleCloseModal();
