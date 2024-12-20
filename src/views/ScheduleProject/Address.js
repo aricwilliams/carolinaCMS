@@ -110,7 +110,7 @@ export default function AddressForm() {
         phone: customer.phone || '',
         phone2: customer.phone2 || '',
         companyName: customer.companyName || '',
-        tag: customer.tag || [], // Ensure it's an array
+        tag: JSON.parse(customer.tag) || [], // Ensure it's an array
         city: customer.city || '',
         state: customer.state || '',
         zip: customer.zip || '',
