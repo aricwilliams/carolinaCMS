@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -9,9 +9,6 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { useNavigate } from 'react-router-dom';
 import Link from '@mui/material/Link';
 // import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import Button from '@mui/material/Button';
-import { Box } from '@mui/material';
-import axios from 'axios';
 
 const MyCard = ({ title, value, onClick }) => {
   return (
@@ -41,7 +38,7 @@ const MyCard = ({ title, value, onClick }) => {
 
 function Home() {
   // const isLessThan600 = useMediaQuery('(max-width:600px)');
-
+  let totalProfit = 200;
   const sampleData = {
     targetProfit: 10000
   };
@@ -59,10 +56,6 @@ function Home() {
   //   transform: 'rotate(180deg)' // Rotate the icon 180 degrees
   // };
 
-  const [totalProfit, setTotalProfit] = useState(600);
-  const [userHasData, setUserHasData] = useState(true);
-  const [isButtonClicked, setIsButtonClicked] = useState(true);
-
   const percentageAchieved = (totalProfit / sampleData.targetProfit) * 100;
   const navigate = useNavigate();
   // Function to handle incrementing totalProfit
@@ -78,65 +71,31 @@ function Home() {
     navigate('/CustomerDashboard');
   };
 
-  const toggleUserHasData = () => {
-    setUserHasData(!userHasData);
-    if (!userHasData) {
-      // If userHasData is false after toggling, set totalProfit to 0
-      setTotalProfit(6000);
-    } else {
-      setTotalProfit(0);
-    }
-  };
-  const handleMakeNewCustomerNoData = () => {
-    setIsButtonClicked(true);
+  // const [file, setFile] = useState(null);
 
-    navigate('/CustomerDashboard', { state: { runCode: true } });
-  };
-  const handleMakeNewProjectNoData = () => {
-    setIsButtonClicked(true);
+  // const onFileChange = (event) => {
+  //   setFile(event.target.files[0]);
+  // };
 
-    navigate('/ScheduleProject', { state: { runCode: true } });
-  };
+  // const onUpload = async () => {
+  //   const formData = new FormData();
+  //   formData.append('video', file);
 
-  const [file, setFile] = useState(null);
-
-  const onFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  const onUpload = async () => {
-    const formData = new FormData();
-    formData.append('video', file);
-
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      alert(response.data.message);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      alert('Error uploading file');
-    }
-  };
+  //   try {
+  //     const response = await axios.post('http://127.0.0.1:8000/api/upload', formData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data'
+  //       }
+  //     });
+  //     alert(response.data.message);
+  //   } catch (error) {
+  //     console.error('Error uploading file:', error);
+  //     alert('Error uploading file');
+  //   }
+  // };
   return (
     <>
-      <div>
-        <input type="file" onChange={onFileChange} />
-        <button onClick={onUpload}>Upload Video</button>
-      </div>
-
-      <Button
-        sx={{
-          ml: '45%'
-        }}
-        onClick={toggleUserHasData}
-      >
-        Toggle No Data Button
-      </Button>
-
-      {userHasData == false ? (
+      {/* {userHasData == false ? (
         <>
           <Grid container spacing={3} style={{ marginBottom: 20 }}>
             <Grid item xs={12} sm={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 5 }}>
@@ -207,37 +166,36 @@ function Home() {
             </Grid>
           </Grid>
         </>
-      ) : (
-        <>
-          <Grid container spacing={3} style={{ marginBottom: 20 }}>
-            <Grid item xs={12} sm={12}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Target till 4/14/24
-                  </Typography>
-                  <Typography variant="body1">{`$${totalProfit} / $${sampleData.targetProfit}`}</Typography>
-                  <LinearProgress
-                    variant="determinate"
-                    value={percentageAchieved}
-                    sx={{
-                      height: 20,
-                      borderRadius: 10,
-                      marginTop: 2,
-                      marginBottom: 2,
-                      '& .MuiLinearProgress-bar': {
-                        borderRadius: 10,
-                        backgroundColor: '#4caf50'
-                      }
-                    }}
-                  />
-                  <Typography variant="body2" color="text.secondary">
-                    {`${percentageAchieved}% Achieved`}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            {/* <Box style={{ margin: isLessThan600 ? 'auto' : 0 }}>
+      ) : ( */}
+      <Grid container spacing={3} style={{ marginBottom: 20 }}>
+        <Grid item xs={12} sm={12}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Target till 4/14/24
+              </Typography>
+              <Typography variant="body1">{`$${totalProfit} / $${sampleData.targetProfit}`}</Typography>
+              <LinearProgress
+                variant="determinate"
+                value={percentageAchieved}
+                sx={{
+                  height: 20,
+                  borderRadius: 10,
+                  marginTop: 2,
+                  marginBottom: 2,
+                  '& .MuiLinearProgress-bar': {
+                    borderRadius: 10,
+                    backgroundColor: '#4caf50'
+                  }
+                }}
+              />
+              <Typography variant="body2" color="text.secondary">
+                {`${percentageAchieved}% Achieved`}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        {/* <Box style={{ margin: isLessThan600 ? 'auto' : 0 }}>
               <Button style={buttonStyle} onClick={decrementTotalProfit} variant="contained" disableElevation>
                 <PlayArrowIcon style={iconStyle} />
               </Button>
@@ -245,17 +203,15 @@ function Home() {
                 <PlayArrowIcon />
               </Button>
             </Box> */}
-          </Grid>
-          <Grid container spacing={3}>
-            <MyCard title="Unpaid Invoices" value={5} onClick={handleClick} />
-            <MyCard title="Invoices Total" value={14} onClick={handleClick} />
-            <MyCard title="Projects Total" value={19} onClick={handleClick} />
-            <MyCard title="Unaccepted Quotes" value={2} onClick={handleClick} />
-            <MyCard title="Potential Deals" value={3} onClick={handleClick} />
-            <MyCard title="Completed Sales" value={13} onClick={handleClick} />
-          </Grid>
-        </>
-      )}
+      </Grid>
+      <Grid container spacing={3}>
+        <MyCard title="Unpaid Invoices" value={5} onClick={handleClick} />
+        <MyCard title="Invoices Total" value={14} onClick={handleClick} />
+        <MyCard title="Projects Total" value={19} onClick={handleClick} />
+        <MyCard title="Unaccepted Quotes" value={2} onClick={handleClick} />
+        <MyCard title="Potential Deals" value={3} onClick={handleClick} />
+        <MyCard title="Completed Sales" value={13} onClick={handleClick} />
+      </Grid>
     </>
   );
 }

@@ -77,7 +77,7 @@ function CustomerModal() {
 
       <Paper variant="outlined" sx={{ p: 2 }}>
         <Typography component="h1" variant="h4" align="center">
-          New Project
+          New Job
         </Typography>
         <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
           {steps.map((label) => (
@@ -89,12 +89,12 @@ function CustomerModal() {
         {activeStep === steps.length ? (
           <React.Fragment>
             <Typography variant="h5" gutterBottom>
-              Project Added!
+              Job Added!
             </Typography>
             <Stack direction={'row'}>
-              <Typography variant="subtitle1">See project in dashboard?</Typography>
+              <Typography variant="subtitle1">See Job in dashboard?</Typography>
               <Button onClick={handleClickJob} variant="contained" sx={{ ml: 1 }}>
-                See Project
+                See Job
               </Button>
             </Stack>
           </React.Fragment>
