@@ -13,7 +13,18 @@ import Box from '@mui/material/Box';
 import { useEffect } from 'react';
 import axios from 'axios';
 
-export default function PropertyDetails() {
+export default function PropertyDetails({
+  selectedItemsNew,
+  setSelectedItemsNew,
+  totalCostNew,
+  setTotalCostNew,
+  setSubtotalNew,
+  subtotalNew,
+  setDiscountPercentageNew,
+  setTaxPercentageNew,
+  discountPercentageNew,
+  taxPercentageNew
+}) {
   const isLessThan600 = useMediaQuery('(max-width:600px)');
   const [error, setError] = useState('new');
 
@@ -104,14 +115,6 @@ export default function PropertyDetails() {
   // useEffect(() => {
   //   fetchInvoiceData();
   // }, []);
-
-  const [selectedItemsNew, setSelectedItemsNew] = useState([]);
-  const [totalCostNew, setTotalCostNew] = useState(0);
-
-  const [subtotalNew, setSubtotalNew] = useState(0);
-
-  const [discountPercentageNew, setDiscountPercentageNew] = useState(0);
-  const [taxPercentageNew, setTaxPercentageNew] = useState(0);
 
   const handleDescriptionChangeNew = (itemId, newDescription) => {
     const updatedItems = selectedItemsNew.map((item) => {

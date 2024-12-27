@@ -9,7 +9,6 @@ import FormControl from '@mui/material/FormControl';
 import Checkbox from '@mui/material/Checkbox';
 import Select from '@mui/material/Select';
 import { FormControlLabel } from '@mui/material';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
@@ -20,7 +19,15 @@ import axios from 'axios'; // HTTP client for making API requests
 
 import { useState } from 'react';
 import Stack from '@mui/material/Stack';
-export default function AddressForm() {
+export default function AddressForm({
+  setFormData,
+  formData,
+  setNewFormData,
+  newFormData,
+  setChosenCustomer,
+  chosenCustomer,
+  handleSaveCustomer
+}) {
   const [editMode, setEditMode] = React.useState(false);
   const [editModeNew, setEditModeNew] = React.useState(false);
   const isLessThan600 = useMediaQuery('(max-width:600px)');
@@ -34,7 +41,6 @@ export default function AddressForm() {
 
   const [tagValue, setTagValue] = useState('');
   // const [tags, setTags] = useState([]);
-  const [chosenCustomer, setChosenCustomer] = useState([]);
   const [showSave, setShowSave] = useState(false);
   const handleChangeCustomer = (event) => {
     setCustomer(event.target.value);
@@ -42,60 +48,6 @@ export default function AddressForm() {
     setChosenCustomer(ChosenCustomer);
   };
   console.log('userHasData', userHasData);
-
-  const [newFormData, setNewFormData] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    address2: '',
-    email: '',
-    phone: '',
-    phone2: '',
-    companyName: '',
-    tag: [], // Tags as an array
-    city: '',
-    state: '',
-    zip: '',
-    notes: '',
-    billingSameAddress: true, // Convert to boolean
-    invoices: '',
-    activeJobs: 0,
-    quotes: 0,
-    scheduledJobs: 0,
-    frequencies: '',
-    status: 'Active',
-    nextServiceDate: null, // Keep as date
-    service: [],
-    activeCustomer: true, // Convert to boolean
-    created_at: null // Add created_at for timestamp
-  });
-
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    address2: '',
-    email: '',
-    phone: '',
-    phone2: '',
-    companyName: '',
-    tag: [], // Tags as an array
-    city: '',
-    state: '',
-    zip: '',
-    notes: '',
-    billingSameAddress: true, // Convert to boolean
-    invoices: '',
-    activeJobs: 0,
-    quotes: 0,
-    scheduledJobs: 0,
-    frequencies: '',
-    status: 'Active',
-    nextServiceDate: null, // Keep as date
-    service: [],
-    activeCustomer: true, // Convert to boolean
-    created_at: null // Add created_at for timestamp
-  });
 
   useEffect(() => {
     if (chosenCustomer.length > 0) {
@@ -157,26 +109,6 @@ export default function AddressForm() {
 
     fetchUsers();
   }, []);
-
-  const handleShowToast = (message, type) => {
-    if (type === 'success') {
-      toast.success(message);
-    } else if (type === 'error') {
-      toast.error(message);
-    }
-  };
-
-  const handleSaveCustomer = async () => {
-    try {
-      const response = await axios.put(`http://127.0.0.1:8000/api/customers/update/${chosenCustomer[0].id}`, formData);
-      console.log('Customer updated:', response.data);
-
-      handleShowToast('Customer updated successfully!', 'success');
-    } catch (error) {
-      console.error('Error updating customer:', error);
-      handleShowToast('Failed to update customer.', 'error');
-    }
-  };
 
   const handleShowCheckboxCustomer = (event) => {
     if (customer) {
